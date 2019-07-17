@@ -12,4 +12,8 @@ public class NodeLabel extends ConstraintTerm {
 	public NodeLabel(ASTNode node) {
 		this.node = node;
 	}
+
+	public ASTNode getNode(){
+		return node;
+	}
 }

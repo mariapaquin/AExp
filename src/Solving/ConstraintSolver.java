@@ -56,7 +56,7 @@ public class ConstraintSolver {
 
         for (int j = 0; j < workList.size(); j++) {
             ConstraintTerm t = workList.get(j);
-            System.out.println(t + "\n--------------\n" + t.getDefinitionSet());
+            System.out.println(t + "\n--------------\n" + t.getAvailableExpressionSet());
             System.out.println();
         }
     }
@@ -65,51 +65,51 @@ public class ConstraintSolver {
         ConstraintTerm lhs = constraint.getLhs();
         ConstraintTerm rhs = constraint.getRhs();
 
-        DefinitionSet lhsEst = lhs.getDefinitionSet();
-        DefinitionSet rhsEst = rhs.getDefinitionSet();
+        AvailableExpressionSet lhsEst = lhs.getAvailableExpressionSet();
+        AvailableExpressionSet rhsEst = rhs.getAvailableExpressionSet();
 
-        if (!rhsEst.containsAll(lhsEst)) {
-            System.out.println(lhs.getDefinitionSet() + " is not in " + rhs.getDefinitionSet());
-            System.out.println("Performing union operation...");
-
-            // copy the previous definition set for change detection
-            HashMap<String, List<DefinitionLiteral>> prev = new HashMap<>();
-            for (String var : rhsEst.getVariables()) {
-                prev.put(var, rhsEst.get(var));
-            }
-
-            DefinitionSet union = rhsEst.unionWith(lhsEst);
-
-            rhs.updateDefinitionSet(union);
-
-            if (changed(prev, rhs.getDefinitionSet().getVarMap())) {
-                System.out.println("set was changed");
-                change = true;
-            }
-            System.out.println(lhs.getDefinitionSet() + " is now in " + rhs.getDefinitionSet());
-
-        } else {
-            System.out.println(lhsEst + " is in " + rhsEst);
-            System.out.println("Constraint already satisfied.");
-        }
+//        if (!rhsEst.containsAll(lhsEst)) {
+//            System.out.println(lhs.getAvailableExpressionSet() + " is not in " + rhs.getAvailableExpressionSet());
+//            System.out.println("Performing union operation...");
+//
+//            // copy the previous definition set for change detection
+//            HashMap<String, List<ExpressionLiteral>> prev = new HashMap<>();
+//            for (String var : rhsEst.getVariables()) {
+//                prev.put(var, rhsEst.get(var));
+//            }
+//
+//            AvailableExpressionSet union = rhsEst.unionWith(lhsEst);
+//
+//            rhs.updateDefinitionSet(union);
+//
+//            if (changed(prev, rhs.getAvailableExpressionSet().getVarMap())) {
+//                System.out.println("set was changed");
+//                change = true;
+//            }
+//            System.out.println(lhs.getAvailableExpressionSet() + " is now in " + rhs.getAvailableExpressionSet());
+//
+//        } else {
+//            System.out.println(lhsEst + " is in " + rhsEst);
+//            System.out.println("Constraint already satisfied.");
+//        }
     }
 
-    private boolean changed(HashMap<String, List<DefinitionLiteral>> prevMap, HashMap<String, List<DefinitionLiteral>> newMap) {
+    private boolean changed(HashMap<String, List<ExpressionLiteral>> prevMap, HashMap<String, List<ExpressionLiteral>> newMap) {
 
         for (String var : newMap.keySet()) {
-            List<DefinitionLiteral> l1 = prevMap.get(var);
-            List<DefinitionLiteral> l2 = newMap.get(var);
+            List<ExpressionLiteral> l1 = prevMap.get(var);
+            List<ExpressionLiteral> l2 = newMap.get(var);
 
             if (l1 == null || l2 == null) {
                 return true;
             }
-            for (DefinitionLiteral def : l2) {
+            for (ExpressionLiteral def : l2) {
                 if (!l1.contains(def)) {
                     return true;
                 }
             }
 
-            for (DefinitionLiteral def : l1) {
+            for (ExpressionLiteral def : l1) {
                 if (!l2.contains(def)) {
                     return true;
                 }

@@ -38,7 +38,7 @@ public class Driver {
 
         int i = 0;
         for (Constraint constraint : constraints) {
-            System.out.println(++i + " " + constraint);
+            System.out.println(++i + ") " + constraint);
         }
 
         System.out.println();
@@ -68,11 +68,11 @@ public class Driver {
         System.out.println(" ------------  \n| Constraint |\n| Solutions  |\n ------------  ");
         ConstraintSolver solver = new ConstraintSolver(constraints, variables);
 
-        solver.buildConstraintGraph();
-
-        solver.initializeDefinitionSet();
-
-        solver.processWorkList();
+//        solver.buildConstraintGraph();
+//
+//        solver.initializeDefinitionSet();
+//
+//        solver.processWorkList();
 
     }
 

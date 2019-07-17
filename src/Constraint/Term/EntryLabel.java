@@ -2,38 +2,56 @@ package Constraint.Term;
 
 import org.eclipse.jdt.core.dom.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * RD_entry[n]
  *
  */
 public class EntryLabel extends NodeLabel {
+	private List<ExpressionLiteral> expressionList;
 
 	public EntryLabel(ASTNode node) {
 		super(node);
+		expressionList = new ArrayList<>();
 	}
-	
+
+	public void addExpression(ExpressionLiteral e) {
+		expressionList.add(e);
+	}
+
+
 	public String toString() {
-		if(node instanceof ExpressionStatement){
-			return "RD@entry[" + ((ExpressionStatement) node).getExpression() + "]";
+		String nodeExpr = node.toString();
+
+		if (node instanceof VariableDeclarationStatement) {
+			nodeExpr = ((VariableDeclarationStatement) node).fragments().get(0).toString();
 		}
 
-		if(node instanceof VariableDeclarationStatement){
-			return "RD@entry[" + ((VariableDeclarationStatement) node).fragments().get(0) + "]";
+		if(node instanceof ExpressionStatement){
+			nodeExpr = ((ExpressionStatement) node).getExpression().toString();
 		}
 
 		if (node instanceof IfStatement) {
-			return "RD@entry[if(" + ((IfStatement) node).getExpression() + ")]";
+			nodeExpr = ((IfStatement) node).getExpression().toString();
 		}
 
 		if (node instanceof WhileStatement) {
-			return "RD@entry[while(" + ((WhileStatement) node).getExpression() + ")]";
+			nodeExpr = ((WhileStatement) node).getExpression().toString();
 		}
 
 		if (node instanceof ForStatement) {
-			return "RD@entry[for(" + ((ForStatement) node).getExpression() + ")]";
+			nodeExpr = ((ForStatement) node).getExpression() .toString();
+
 		}
 
-
-		return "RD@entry[" + node + "]";
+		String ret = "entry[" + nodeExpr + "] ";
+		if (!expressionList.isEmpty()) {
+			for (int i = 0; i < expressionList.size(); i++) {
+				ret += " U " + expressionList.get(i);
+			}
+		}
+		return ret;
 	}
 }

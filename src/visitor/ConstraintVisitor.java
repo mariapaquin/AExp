@@ -21,80 +21,85 @@ public class ConstraintVisitor extends ASTVisitor {
 	}
 
 	@Override
-	public boolean visit(Assignment node) {
-		constraints.addAll(creator.create(node));
-		return true;
-	}
-
-	@Override
 	public  void endVisit(Block node) {
 		// adding Constraint RD_exit[S] \sub RD_entry[S']
 		//
 		// for S' following S in the block
 		// (after we have already generated the terms RD_exit[S] and RD_entry[S']
-		constraints.addAll(creator.create(node));
+		constraints.addAll(creator.createConstraints(node));
 	}
 
 	@Override
-	public boolean visit(EnhancedForStatement node) {
-		constraints.addAll(creator.create(node));
-		return true;
+	public void endVisit(EnhancedForStatement node) {
+		constraints.addAll(creator.createConstraints(node));
 	}
 
 	@Override
-	public boolean visit(ForStatement node) {
-		constraints.addAll(creator.create(node));
-		return true;
+	public void endVisit(ForStatement node) {
+		constraints.addAll(creator.createConstraints(node));
 	}
 
 	@Override
-	public boolean visit(IfStatement node) {
-		constraints.addAll(creator.create(node));
+	public void endVisit(IfStatement node) {
+		constraints.addAll(creator.createConstraints(node));
+	}
+
+	@Override
+	public boolean visit(InfixExpression node) {
+		creator.createTerms(node);
 		return true;
 	}
+
 
 	@Override
 	public boolean visit(MethodInvocation node) {
-		constraints.addAll(creator.create(node));
+		creator.createTerms(node);
 		return true;
+	}
+
+	@Override
+	public void endVisit(MethodInvocation node) {
+		constraints.addAll(creator.createConstraints(node));
 	}
 
 	@Override
 	public boolean visit(PostfixExpression node) {
-		constraints.addAll(creator.create(node));
+		creator.createTerms(node);
 		return true;
 	}
 
 	@Override
 	public boolean visit(PrefixExpression node) {
-		constraints.addAll(creator.create(node));
+		creator.createTerms(node);
 		return true;
 	}
 
 
-
 	@Override
-	public boolean visit(SwitchStatement node) {
-		constraints.addAll(creator.create(node));
-		return true;
+	public void endVisit(SwitchStatement node) {
+		constraints.addAll(creator.createConstraints(node));
 	}
 
 	@Override
 	public boolean visit(VariableDeclarationExpression node) {
-		constraints.addAll(creator.create(node));
+		constraints.addAll(creator.createConstraints(node));
 		return true;
 	}
 
 	@Override
 	public boolean visit(VariableDeclarationStatement node) {
-		constraints.addAll(creator.create(node));
+		creator.createTerms(node);
 		return true;
 	}
 
 	@Override
-	public boolean visit(WhileStatement node) {
-		constraints.addAll(creator.create(node));
-		return true;
+	public void endVisit(VariableDeclarationStatement node) {
+		constraints.addAll(creator.createConstraints(node));
+	}
+
+	@Override
+	public void endVisit(WhileStatement node) {
+		constraints.addAll(creator.createConstraints(node));
 	}
 
 	public HashSet getConstraints() {

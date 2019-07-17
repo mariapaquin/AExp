@@ -13,27 +13,30 @@ public class ExitLabel extends NodeLabel {
 	}
 
 	public String toString() {
-		if(node instanceof ExpressionStatement){
-			return "RD@exit[" + ((ExpressionStatement) node).getExpression() + "]";
+
+		String nodeExpr = node.toString();
+
+		if (node instanceof VariableDeclarationStatement) {
+			nodeExpr = ((VariableDeclarationStatement) node).fragments().get(0).toString();
 		}
 
-		if(node instanceof VariableDeclarationStatement){
-			return "RD@exit[" + ((VariableDeclarationStatement) node).fragments().get(0) + "]";
+		if(node instanceof ExpressionStatement){
+			nodeExpr = ((ExpressionStatement) node).getExpression().toString();
 		}
 
 		if (node instanceof IfStatement) {
-			return "RD@exit[if(" + ((IfStatement) node).getExpression() + ")]";
+			nodeExpr = ((IfStatement) node).getExpression().toString();
 		}
 
 		if (node instanceof WhileStatement) {
-			return "RD@exit[while(" + ((WhileStatement) node).getExpression() + ")]";
+			nodeExpr = ((WhileStatement) node).getExpression().toString();
 		}
 
 		if (node instanceof ForStatement) {
-			return "RD@exit[for(" + ((ForStatement) node).getExpression() + ")]";
+			nodeExpr = ((ForStatement) node).getExpression() .toString();
 		}
 
-		return "RD@exit[" + node + "]";
+		return "exit[" + nodeExpr + "]";
 	}
 	
 }
