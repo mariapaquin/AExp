@@ -94,16 +94,16 @@ public class ConstraintVisitor extends ASTVisitor {
 		// TODO
 		// Statement elseStmt = node.getElseStatement();
 
-		prev.clear();
-		
-		if(thenStmt instanceof Block){
-			List<Statement> blockStmts = ((Block) thenStmt).statements();
-			if(!blockStmts.isEmpty()){
-				prev.add(blockStmts.get(blockStmts.size() - 1));
-			}
-		} else {
-			prev.add(thenStmt);
-		}
+//		prev.clear();
+//
+//		if(thenStmt instanceof Block){
+//			List<Statement> blockStmts = ((Block) thenStmt).statements();
+//			if(!blockStmts.isEmpty()){
+//				prev.add(blockStmts.get(blockStmts.size() - 1));
+//			}
+//		} else {
+//			prev.add(thenStmt);
+//		}
 
 		prev.add(node);
 
