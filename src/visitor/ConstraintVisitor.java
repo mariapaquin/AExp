@@ -7,9 +7,8 @@ import java.util.List;
 import Constraint.Constraint;
 import Constraint.Operator.SubsetOperator;
 import Constraint.Term.ConstraintTerm;
-import Constraint.Term.EntryUnionAE;
 import Constraint.Term.ExpressionLiteral;
-import ConstraintCreator.ConstraintCreator;
+import Constraint.Term.SetDifference;
 import ConstraintCreator.ConstraintTermFactory;
 import org.eclipse.jdt.core.dom.*;
 
@@ -19,15 +18,38 @@ import org.eclipse.jdt.core.dom.*;
  *
  */
 public class ConstraintVisitor extends ASTVisitor {
-	private ConstraintCreator creator;
 	private HashSet constraints = new HashSet();
 	private ConstraintTermFactory variableFactory;
-	private List<ASTNode> prev;
 
-	public ConstraintVisitor(ConstraintCreator creator) {
-		this.creator = creator;
+	public ConstraintVisitor() {
 		variableFactory = new ConstraintTermFactory();
-		prev = new ArrayList<>();
+	}
+
+	@Override
+	public boolean visit(Assignment node) {
+		variableFactory.createEntryLabel(node);
+		variableFactory.createExitLabel(node);
+		return true;
+	}
+
+	@Override
+	public void endVisit(Assignment node) {
+		// TODO: Before subtracting the expression from AE,
+		// (1) Check that the lhs is a symbolic variable,
+		// (2) and that rhs is a constant.
+
+		List<Constraint> result = new ArrayList<Constraint>();
+
+		ConstraintTerm entry = variableFactory.createEntryLabel(node);
+		ExpressionLiteral expr = variableFactory.createExpressionLiteral(node.getRightHandSide());
+		ConstraintTerm setDiff = getSetDiff(entry, expr);
+		variableFactory.setEntryLabel(node, setDiff);
+
+		ConstraintTerm exit = variableFactory.createExitLabel(node);
+
+		result.add(newSubsetConstraint(exit, setDiff));
+
+		constraints.addAll(result);
 	}
 
 //	@Override
@@ -52,77 +74,6 @@ public class ConstraintVisitor extends ASTVisitor {
 //		constraints.addAll(result);
 //	}
 
-	@Override
-	public boolean visit(IfStatement node) {
-		List<Constraint> result = new ArrayList<Constraint>();
-
-		ConstraintTerm entry = variableFactory.createEntryLabel(node);
-		ConstraintTerm exit = variableFactory.createExitLabel(node);
-
-		if (!prev.isEmpty()) {
-			for (ASTNode p : prev) {
-				result.add(newSubsetConstraint(entry, variableFactory.createExitLabel(p)));
-			}
-		}
-
-		constraints.addAll(result);
-
-		prev.clear();
-		prev.add(node);
-
-		return true;
-	}
-
-	@Override
-	public void endVisit(IfStatement node) {
-		List<Constraint> result = new ArrayList<Constraint>();
-
-		ConstraintTerm entryUnionAE = variableFactory.createEntryUnionLabel(node);
-		ConstraintTerm entry = variableFactory.createEntryLabel(node);
-		ConstraintTerm exit = variableFactory.createExitLabel(node);
-
-		if (entryUnionAE != null) {
-			// the statement created at least one expression
-			result.add(newSubsetConstraint(exit, entryUnionAE));
-		} else {
-			result.add(newSubsetConstraint(exit, entry));
-		}
-
-		constraints.addAll(result);
-
-		Statement thenStmt = node.getThenStatement();
-		// TODO
-		// Statement elseStmt = node.getElseStatement();
-
-//		prev.clear();
-//
-//		if(thenStmt instanceof Block){
-//			List<Statement> blockStmts = ((Block) thenStmt).statements();
-//			if(!blockStmts.isEmpty()){
-//				prev.add(blockStmts.get(blockStmts.size() - 1));
-//			}
-//		} else {
-//			prev.add(thenStmt);
-//		}
-
-		prev.add(node);
-
-	}
-
-	@Override
-	public boolean visit(InfixExpression node) {
-		ExpressionLiteral expr = variableFactory.createExpressionLiteral(node);
-
-		ASTNode parentStmt = node.getParent();
-
-		while(!(parentStmt instanceof Statement)){
-			parentStmt = parentStmt.getParent();
-		}
-
-		EntryUnionAE parentStmtEntryUnion = variableFactory.createEntryUnionLabel(parentStmt);
-		parentStmtEntryUnion.addExpression(expr);
-		return true;
-	}
 
 
 	@Override
@@ -140,16 +91,10 @@ public class ConstraintVisitor extends ASTVisitor {
 
 		if (node.getParent() instanceof ExpressionStatement) {
 
-			ConstraintTerm entryUnionAE = variableFactory.createEntryUnionLabel(node);
 			ConstraintTerm entry = variableFactory.createEntryLabel(node);
 			ConstraintTerm exit = variableFactory.createExitLabel(node);
 
-			if (entryUnionAE != null) {
-				// the statement created at least one expression
-				result.add(newSubsetConstraint(exit, entryUnionAE));
-			} else {
-				result.add(newSubsetConstraint(exit, entry));
-			}
+			result.add(newSubsetConstraint(exit, entry));
 		}
 		constraints.addAll(result);
 	}
@@ -172,25 +117,11 @@ public class ConstraintVisitor extends ASTVisitor {
 	public void endVisit(VariableDeclarationStatement node) {
 		List<Constraint> result = new ArrayList<Constraint>();
 
-		ConstraintTerm entryUnionAE = variableFactory.createEntryUnionLabel(node);
 		ConstraintTerm entry = variableFactory.createEntryLabel(node);
 		ConstraintTerm exit = variableFactory.createExitLabel(node);
 
-		if (entryUnionAE != null) {
-			// the statement created at least one expression
-			result.add(newSubsetConstraint(exit, entryUnionAE));
-		} else {
-			result.add(newSubsetConstraint(exit, entry));
-		}
+		result.add(newSubsetConstraint(exit, entry));
 
-		if (!prev.isEmpty()) {
-			for (ASTNode p : prev) {
-				result.add(newSubsetConstraint(entry, variableFactory.createExitLabel(p)));
-			}
-		}
-
-		prev.clear();
-		prev.add(node);
 
 		constraints.addAll(result);
 	}
@@ -208,5 +139,9 @@ public class ConstraintVisitor extends ASTVisitor {
 
 	public Constraint newSubsetConstraint(ConstraintTerm l, ConstraintTerm r) {
 		return new Constraint(l, new SubsetOperator(), r);
+	}
+
+	public ConstraintTerm getSetDiff(ConstraintTerm t1, ExpressionLiteral t2) {
+		return new SetDifference(t1, t2); // temporary
 	}
 }

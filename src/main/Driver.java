@@ -1,7 +1,6 @@
 package main;
 
 import Constraint.Constraint;
-import ConstraintCreator.ConstraintCreator;
 import Solving.ConstraintSolver;
 import org.eclipse.jdt.core.dom.*;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
@@ -30,7 +29,7 @@ public class Driver {
 
         // TODO: Need to do this separately for each method
 
-        ConstraintVisitor visitor = new ConstraintVisitor(new ConstraintCreator());
+        ConstraintVisitor visitor = new ConstraintVisitor();
         cu.accept(visitor);
 
         System.out.println(" ------------- \n| Constraints |\n ------------- ");
@@ -40,7 +39,6 @@ public class Driver {
         for (Constraint constraint : constraints) {
             System.out.println(++i + ") " + constraint);
         }
-
         System.out.println();
 
         // find local variables in the method
