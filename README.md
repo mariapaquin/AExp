@@ -1,2 +1,2 @@
 # AvailableExpressions
-Implementation of available expressions in java through constraint based analysis.
+Implementation of available expressions through constraint based analysis.
