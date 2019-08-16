@@ -1,15 +1,18 @@
 package main;
 
 import Constraint.Constraint;
+import Constraint.Term.ExpressionLiteral;
 import Solving.ConstraintSolver;
 import org.eclipse.jdt.core.dom.*;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import visitor.ConstraintVisitor;
+import visitor.ExpressionVisitor;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -29,11 +32,15 @@ public class Driver {
 
         // TODO: Need to do this separately for each method
 
-        ConstraintVisitor visitor = new ConstraintVisitor();
-        cu.accept(visitor);
+        ExpressionVisitor exprVisitor = new ExpressionVisitor();
+        cu.accept(exprVisitor);
+        List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
+
+        ConstraintVisitor constraintVisitor = new ConstraintVisitor(ae);
+        cu.accept(constraintVisitor);
 
         System.out.println(" ------------- \n| Constraints |\n ------------- ");
-        HashSet<Constraint> constraints = visitor.getConstraints();
+        HashSet<Constraint> constraints = constraintVisitor.getConstraints();
 
         int i = 0;
         for (Constraint constraint : constraints) {

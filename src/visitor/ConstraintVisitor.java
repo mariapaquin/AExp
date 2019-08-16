@@ -9,6 +9,7 @@ import Constraint.Operator.SubsetOperator;
 import Constraint.Term.ConstraintTerm;
 import Constraint.Term.ExpressionLiteral;
 import Constraint.Term.SetDifference;
+import Constraint.Term.SetUnion;
 import ConstraintCreator.ConstraintTermFactory;
 import org.eclipse.jdt.core.dom.*;
 
@@ -20,9 +21,13 @@ import org.eclipse.jdt.core.dom.*;
 public class ConstraintVisitor extends ASTVisitor {
 	private HashSet constraints = new HashSet();
 	private ConstraintTermFactory variableFactory;
+	private List<ExpressionLiteral> availableExpressions;
+	private List<Statement> prev;
 
-	public ConstraintVisitor() {
+	public ConstraintVisitor(List<ExpressionLiteral> availableExpressions) {
+		this.availableExpressions = availableExpressions;
 		variableFactory = new ConstraintTermFactory();
+		prev = new ArrayList<>();
 	}
 
 	@Override
@@ -34,77 +39,27 @@ public class ConstraintVisitor extends ASTVisitor {
 
 	@Override
 	public void endVisit(Assignment node) {
-		// TODO: Before subtracting the expression from AE,
-		// (1) Check that the lhs is a symbolic variable,
-		// (2) and that rhs is a constant.
-
 		List<Constraint> result = new ArrayList<Constraint>();
 
 		ConstraintTerm entry = variableFactory.createEntryLabel(node);
-		ExpressionLiteral expr = variableFactory.createExpressionLiteral(node.getRightHandSide());
-		ConstraintTerm setDiff = getSetDiff(entry, expr);
-		variableFactory.setEntryLabel(node, setDiff);
+		String lhs = node.getLeftHandSide().toString();
+		List<ExpressionLiteral>  exprToSubtract = getExpressionsInvolving(lhs);
+		SetDifference setDifference = getSetDifference(entry, exprToSubtract);
+
+		ExpressionLiteral newExpr = variableFactory.createExpressionLiteral(node.getRightHandSide());
+
+		ConstraintTerm setUnion = getSetUnion(setDifference, newExpr);
+
+		variableFactory.setEntryLabel(node, setUnion);
 
 		ConstraintTerm exit = variableFactory.createExitLabel(node);
 
-		result.add(newSubsetConstraint(exit, setDiff));
+		result.add(newSubsetConstraint(exit, setUnion));
 
 		constraints.addAll(result);
 	}
 
-//	@Override
-//	public boolean visit(EnhancedForStatement node) {
-//		return true;
-//	}
-//
-//	@Override
-//	public void endVisit(EnhancedForStatement node) {
-//		List<Constraint> result = new ArrayList<Constraint>();
-//		constraints.addAll(result);
-//	}
-//
-//	@Override
-//	public boolean visit(ForStatement node) {
-//		return true;
-//	}
-//
-//	@Override
-//	public void endVisit(ForStatement node) {
-//		List<Constraint> result = new ArrayList();
-//		constraints.addAll(result);
-//	}
 
-
-
-	@Override
-	public boolean visit(MethodInvocation node) {
-		if (node.getParent() instanceof ExpressionStatement) {
-			variableFactory.createEntryLabel(node.getParent());
-			variableFactory.createExitLabel(node.getParent());
-		}
-		return true;
-	}
-
-	@Override
-	public void endVisit(MethodInvocation node) {
-		List<Constraint> result = new ArrayList<Constraint>();
-
-		if (node.getParent() instanceof ExpressionStatement) {
-
-			ConstraintTerm entry = variableFactory.createEntryLabel(node);
-			ConstraintTerm exit = variableFactory.createExitLabel(node);
-
-			result.add(newSubsetConstraint(exit, entry));
-		}
-		constraints.addAll(result);
-	}
-
-
-//	@Override
-//	public void endVisit(SwitchStatement node) {
-//		List<Constraint> result = new ArrayList<Constraint>();
-//		constraints.addAll(result);
-//	}
 
 	@Override
 	public boolean visit(VariableDeclarationStatement node) {
@@ -118,19 +73,34 @@ public class ConstraintVisitor extends ASTVisitor {
 		List<Constraint> result = new ArrayList<Constraint>();
 
 		ConstraintTerm entry = variableFactory.createEntryLabel(node);
+		VariableDeclarationFragment fragment = ((List<VariableDeclarationFragment>) node.fragments()).get(0);
+		String lhs = fragment.getName().getIdentifier();
+		List<ExpressionLiteral>  exprToSubtract = getExpressionsInvolving(lhs);
+		SetDifference setDifference = getSetDifference(entry, exprToSubtract);
+
+		ExpressionLiteral newExpr = variableFactory.createExpressionLiteral(fragment.getInitializer());
+
+		ConstraintTerm setUnion = getSetUnion(setDifference, newExpr);
+
+		variableFactory.setEntryLabel(node, setUnion);
+
 		ConstraintTerm exit = variableFactory.createExitLabel(node);
 
-		result.add(newSubsetConstraint(exit, entry));
-
+		result.add(newSubsetConstraint(exit, setUnion));
 
 		constraints.addAll(result);
 	}
 
-//	@Override
-//	public void endVisit(WhileStatement node) {
-//		List<Constraint> result = new ArrayList<Constraint>();
-//		constraints.addAll(result);
-//	}
+	private List<ExpressionLiteral> getExpressionsInvolving(String lhs) {
+		List<ExpressionLiteral> exprsInvolvingLhs = new ArrayList<>();
+		for (ExpressionLiteral expr : availableExpressions) {
+			if (expr.involves(lhs)) {
+				exprsInvolvingLhs.add(expr);
+			}
+		}
+		return exprsInvolvingLhs;
+	}
+
 
 	public HashSet getConstraints() {
 		return constraints;
@@ -141,7 +111,11 @@ public class ConstraintVisitor extends ASTVisitor {
 		return new Constraint(l, new SubsetOperator(), r);
 	}
 
-	public ConstraintTerm getSetDiff(ConstraintTerm t1, ExpressionLiteral t2) {
+	public SetUnion getSetUnion(SetDifference t1, ExpressionLiteral t2) {
+		return new SetUnion(t1, t2); // temporary
+	}
+
+	public SetDifference getSetDifference(ConstraintTerm t1,  List<ExpressionLiteral>  t2) {
 		return new SetDifference(t1, t2); // temporary
 	}
 }

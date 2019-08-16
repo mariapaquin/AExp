@@ -18,6 +18,8 @@ public class Test {
     public void m(int a, int b){
         a = 1+1;
         b = 2+2;
+
+        int c = a+b;
     }
 
 //    public void m(){
