@@ -43,12 +43,4 @@ public class ConstraintTermFactory {
         termMapEntry.put(node, term);
     }
 
-    public ConstraintTerm getEntryLabel(ASTNode node) {
-        return termMapEntry.get(node);
-    }
-
-    public ConstraintTerm getExitLabel(ASTNode node) {
-        return termMapExit.get(node);
-    }
-
 }

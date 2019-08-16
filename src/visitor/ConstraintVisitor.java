@@ -22,7 +22,7 @@ public class ConstraintVisitor extends ASTVisitor {
 	private HashSet constraints = new HashSet();
 	private ConstraintTermFactory variableFactory;
 	private List<ExpressionLiteral> availableExpressions;
-	private List<Statement> prev;
+	private List<ASTNode> prev;
 
 	public ConstraintVisitor(List<ExpressionLiteral> availableExpressions) {
 		this.availableExpressions = availableExpressions;
@@ -56,9 +56,39 @@ public class ConstraintVisitor extends ASTVisitor {
 
 		result.add(newSubsetConstraint(exit, setUnion));
 
+		if(!prev.isEmpty()){
+			for (ASTNode stmt : prev) {
+				ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
+				result.add(newSubsetConstraint(entry, prevExit));
+
+			}
+		}
+
+		prev.clear();
+		prev.add(node);
+
 		constraints.addAll(result);
 	}
 
+
+	@Override
+	public boolean visit(Block node) {
+
+		if (node.getParent() instanceof MethodDeclaration) {
+			return true;
+		}
+
+		BlockVisitor visitor = new BlockVisitor(prev, constraints, variableFactory, availableExpressions);
+		node.accept(visitor);
+
+		List<ASTNode> blockPrev = visitor.getPrev();
+		prev.clear();
+
+		for (ASTNode p : blockPrev) {
+			prev.add(p);
+		}
+		return false;
+	}
 
 
 	@Override
@@ -88,6 +118,17 @@ public class ConstraintVisitor extends ASTVisitor {
 
 		result.add(newSubsetConstraint(exit, setUnion));
 
+		if(!prev.isEmpty()){
+			for (ASTNode stmt : prev) {
+				ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
+				result.add(newSubsetConstraint(entry, prevExit));
+
+			}
+		}
+
+		prev.clear();
+		prev.add(node);
+
 		constraints.addAll(result);
 	}
 
@@ -112,10 +153,10 @@ public class ConstraintVisitor extends ASTVisitor {
 	}
 
 	public SetUnion getSetUnion(SetDifference t1, ExpressionLiteral t2) {
-		return new SetUnion(t1, t2); // temporary
+		return new SetUnion(t1, t2);
 	}
 
 	public SetDifference getSetDifference(ConstraintTerm t1,  List<ExpressionLiteral>  t2) {
-		return new SetDifference(t1, t2); // temporary
+		return new SetDifference(t1, t2);
 	}
 }

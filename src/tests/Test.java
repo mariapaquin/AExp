@@ -15,11 +15,18 @@ public class Test {
 //        }
 //    }
 
-    public void m(int a, int b){
-        a = 1+1;
-        b = 2+2;
+    public void testIf(int a, int b){
+        a = b+1;
 
-        int c = a+b;
+        {
+            {
+                b = 0;
+
+            }
+        }
+
+        a = b+2;
+
     }
 
 //    public void m(){
