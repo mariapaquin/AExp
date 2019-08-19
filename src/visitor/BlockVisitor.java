@@ -46,19 +46,21 @@ public class BlockVisitor extends ASTVisitor {
         List<Constraint> result = new ArrayList<Constraint>();
 
         ConstraintTerm entry = variableFactory.createEntryLabel(node);
+        ConstraintTerm exit = variableFactory.createExitLabel(node);
+
         String lhs = node.getLeftHandSide().toString();
         List<ExpressionLiteral>  exprToSubtract = getExpressionsInvolving(lhs);
         SetDifference setDifference = getSetDifference(entry, exprToSubtract);
 
-        ExpressionLiteral newExpr = variableFactory.createExpressionLiteral(node.getRightHandSide());
-
-        ConstraintTerm setUnion = getSetUnion(setDifference, newExpr);
-
-        variableFactory.setEntryLabel(node, setUnion);
-
-        ConstraintTerm exit = variableFactory.createExitLabel(node);
-
-        result.add(newSubsetConstraint(exit, setUnion));
+        if (node.getRightHandSide() instanceof InfixExpression) {
+            ExpressionLiteral newExpr = variableFactory.createExpressionLiteral(node.getRightHandSide());
+            ConstraintTerm setUnion = getSetUnion(setDifference, newExpr);
+            variableFactory.setEntryLabel(node, setUnion);
+            result.add(newSubsetConstraint(exit, setUnion));
+        } else {
+            variableFactory.setEntryLabel(node, setDifference);
+            result.add(newSubsetConstraint(exit, setDifference));
+        }
 
         if(!prev.isEmpty()){
             for (ASTNode stmt : prev) {
@@ -106,20 +108,22 @@ public class BlockVisitor extends ASTVisitor {
         List<Constraint> result = new ArrayList<Constraint>();
 
         ConstraintTerm entry = variableFactory.createEntryLabel(node);
+        ConstraintTerm exit = variableFactory.createExitLabel(node);
+
         VariableDeclarationFragment fragment = ((List<VariableDeclarationFragment>) node.fragments()).get(0);
         String lhs = fragment.getName().getIdentifier();
         List<ExpressionLiteral>  exprToSubtract = getExpressionsInvolving(lhs);
         SetDifference setDifference = getSetDifference(entry, exprToSubtract);
 
-        ExpressionLiteral newExpr = variableFactory.createExpressionLiteral(fragment.getInitializer());
-
-        ConstraintTerm setUnion = getSetUnion(setDifference, newExpr);
-
-        variableFactory.setEntryLabel(node, setUnion);
-
-        ConstraintTerm exit = variableFactory.createExitLabel(node);
-
-        result.add(newSubsetConstraint(exit, setUnion));
+        if (fragment.getInitializer() instanceof InfixExpression) {
+            ExpressionLiteral newExpr = variableFactory.createExpressionLiteral(fragment.getInitializer());
+            ConstraintTerm setUnion = getSetUnion(setDifference, newExpr);
+            variableFactory.setEntryLabel(node, setUnion);
+            result.add(newSubsetConstraint(exit, setUnion));
+        } else {
+            variableFactory.setEntryLabel(node, setDifference);
+            result.add(newSubsetConstraint(exit, setDifference));
+        }
 
         if(!prev.isEmpty()){
             for (ASTNode stmt : prev) {

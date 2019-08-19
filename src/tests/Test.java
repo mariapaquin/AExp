@@ -16,13 +16,11 @@ public class Test {
 //    }
 
     public void testIf(int a, int b){
-        a = b+1;
+        a = b+4;
 
-        {
-            {
-                b = 0;
-
-            }
+        if (true) {
+            b = 0;
+            a = 1;
         }
 
         a = b+2;
