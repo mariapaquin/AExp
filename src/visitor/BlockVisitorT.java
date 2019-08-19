@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-public class BlockVisitor extends ASTVisitor {
+public class BlockVisitorT extends ASTVisitor {
 
     private List<ASTNode> prev;
     private HashSet constraints;
@@ -21,8 +21,8 @@ public class BlockVisitor extends ASTVisitor {
     private List<ExpressionLiteral> availableExpressions;
     private boolean innerBlock;
 
-    public BlockVisitor(List<ASTNode> blockPrev, HashSet constraints,
-                        ConstraintTermFactory variableFactory, List<ExpressionLiteral> availableExpressions) {
+    public BlockVisitorT(List<ASTNode> blockPrev, HashSet constraints,
+                         ConstraintTermFactory variableFactory, List<ExpressionLiteral> availableExpressions) {
         prev = new ArrayList<>();
         for (ASTNode p : blockPrev) {
             prev.add(p);
@@ -83,7 +83,7 @@ public class BlockVisitor extends ASTVisitor {
             return true;
         }
 
-        BlockVisitor visitor = new BlockVisitor(prev, constraints, variableFactory, availableExpressions);
+        BlockVisitorT visitor = new BlockVisitorT(prev, constraints, variableFactory, availableExpressions);
         node.accept(visitor);
 
         List<ASTNode> blockPrev = visitor.getPrev();

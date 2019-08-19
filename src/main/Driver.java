@@ -7,6 +7,7 @@ import org.eclipse.jdt.core.dom.*;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import visitor.ConstraintVisitor;
 import visitor.ExpressionVisitor;
+import visitor.MethodVisitor;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,11 +37,14 @@ public class Driver {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        ConstraintVisitor constraintVisitor = new ConstraintVisitor(ae);
-        cu.accept(constraintVisitor);
+//        ConstraintVisitor constraintVisitor = new ConstraintVisitor(ae);
+//        cu.accept(constraintVisitor);
+
+        MethodVisitor methodVisitor = new MethodVisitor(ae);
+        cu.accept(methodVisitor);
 
         System.out.println(" ------------- \n| Constraints |\n ------------- ");
-        HashSet<Constraint> constraints = constraintVisitor.getConstraints();
+        HashSet<Constraint> constraints = methodVisitor.getConstraints();
 
         int i = 0;
         for (Constraint constraint : constraints) {

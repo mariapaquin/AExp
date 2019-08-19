@@ -62,7 +62,6 @@ public class ConstraintVisitor extends ASTVisitor {
 			for (ASTNode stmt : prev) {
 				ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
 				result.add(newSubsetConstraint(entry, prevExit));
-
 			}
 		}
 
@@ -80,7 +79,7 @@ public class ConstraintVisitor extends ASTVisitor {
 			return true;
 		}
 
-		BlockVisitor visitor = new BlockVisitor(prev, constraints, variableFactory, availableExpressions);
+		BlockVisitorT visitor = new BlockVisitorT(prev, constraints, variableFactory, availableExpressions);
 		node.accept(visitor);
 
 		List<ASTNode> blockPrev = visitor.getPrev();
@@ -113,6 +112,7 @@ public class ConstraintVisitor extends ASTVisitor {
 		SetDifference setDifference = getSetDifference(entry, exprToSubtract);
 
 		if (fragment.getInitializer() instanceof InfixExpression) {
+
 			ExpressionLiteral newExpr = variableFactory.createExpressionLiteral(fragment.getInitializer());
 			ConstraintTerm setUnion = getSetUnion(setDifference, newExpr);
 			variableFactory.setEntryLabel(node, setUnion);
@@ -126,7 +126,6 @@ public class ConstraintVisitor extends ASTVisitor {
 			for (ASTNode stmt : prev) {
 				ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
 				result.add(newSubsetConstraint(entry, prevExit));
-
 			}
 		}
 
@@ -147,9 +146,6 @@ public class ConstraintVisitor extends ASTVisitor {
 	}
 
 
-	public HashSet getConstraints() {
-		return constraints;
-	}
 
 
 	public Constraint newSubsetConstraint(ConstraintTerm l, ConstraintTerm r) {
