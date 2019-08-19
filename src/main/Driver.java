@@ -5,7 +5,6 @@ import Constraint.Term.ExpressionLiteral;
 import Solving.ConstraintSolver;
 import org.eclipse.jdt.core.dom.*;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
-import visitor.ConstraintVisitor;
 import visitor.ExpressionVisitor;
 import visitor.MethodVisitor;
 
@@ -36,9 +35,6 @@ public class Driver {
         ExpressionVisitor exprVisitor = new ExpressionVisitor();
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
-
-//        ConstraintVisitor constraintVisitor = new ConstraintVisitor(ae);
-//        cu.accept(constraintVisitor);
 
         MethodVisitor methodVisitor = new MethodVisitor(ae);
         cu.accept(methodVisitor);

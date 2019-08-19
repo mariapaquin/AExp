@@ -19,9 +19,10 @@ public class Test {
         a = b+1;
 
         if (true) {
-           b = 0;
+            b = 0;
+        } else {
+            b = 1;
         }
-
         a = b+2;
 
     }

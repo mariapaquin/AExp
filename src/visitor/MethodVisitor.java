@@ -33,13 +33,13 @@ public class MethodVisitor extends ASTVisitor {
 
     public class BlockVisitor extends ASTVisitor {
         private ASTNode blockNode;
-        private List<ASTNode> prev;
+        private List<ASTNode> exitStmts;
 
         public BlockVisitor(ASTNode node, List<ASTNode> blockPrev) {
             blockNode = node;
-            prev = new ArrayList<>();
+            exitStmts = new ArrayList<>();
             for (ASTNode p : blockPrev) {
-                prev.add(p);
+                exitStmts.add(p);
             }
         }
 
@@ -71,66 +71,100 @@ public class MethodVisitor extends ASTVisitor {
                 result.add(newSubsetConstraint(exit, setDifference));
             }
 
-            if(!prev.isEmpty()){
-                for (ASTNode stmt : prev) {
+            if(!exitStmts.isEmpty()){
+                for (ASTNode stmt : exitStmts) {
                     ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
                     result.add(newSubsetConstraint(entry, prevExit));
                 }
             }
 
-            prev.clear();
-            prev.add(node);
+            exitStmts.clear();
+            exitStmts.add(node);
 
             constraints.addAll(result);
         }
 
-        @Override
-        public boolean visit(Block node) {
-            if(node.equals(blockNode)){
-                return true;
-            }
-
-            BlockVisitor visitor = new BlockVisitor(node, prev);
-            node.accept(visitor);
-
-            List<ASTNode> blockPrev = visitor.getPrev();
-            prev.clear();
-
-            for (ASTNode p : blockPrev) {
-                prev.add(p);
-            }
-
-            return false;
-        }
+//        @Override
+//        public boolean visit(Block node) {
+//            if(node.equals(blockNode)){
+//                return true;
+//            }
+//
+//            BlockVisitor visitor = new BlockVisitor(node, exitStmts);
+//            node.accept(visitor);
+//
+//            List<ASTNode> blockPrev = visitor.getExitStmts();
+//            exitStmts.clear();
+//
+//            for (ASTNode p : blockPrev) {
+//                exitStmts.add(p);
+//            }
+//
+//            return false;
+//        }
 
         @Override
         public boolean visit(IfStatement node) {
+//            if(node.equals(blockNode)){
+//                return true;
+//            }
+
+            // TODO: Handle when then/else statements aren't in block
             ConstraintTerm entry = variableFactory.createEntryLabel(node);
             ConstraintTerm exit = variableFactory.createExitLabel(node);
 
             List<Constraint> result = new ArrayList<Constraint>();
 
             result.add(newSubsetConstraint(exit, entry));
-            
-            if(!prev.isEmpty()){
-                for (ASTNode stmt : prev) {
+
+            if(!exitStmts.isEmpty()){
+                for (ASTNode stmt : exitStmts) {
                     ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
                     result.add(newSubsetConstraint(entry, prevExit));
-
                 }
             }
 
-            prev.clear();
-            prev.add(node);
+            exitStmts.clear();
+            exitStmts.add(node);
+
+            Statement thenBlock = node.getThenStatement();
+            List<ASTNode> thenBlockExit = new ArrayList<>();
+
+            Statement elseBlock = node.getElseStatement();
+            List<ASTNode> elseBlockExit = new ArrayList<>();
+
+            if (thenBlock instanceof Block) {
+                BlockVisitor visitor = new BlockVisitor(thenBlock, exitStmts);
+                thenBlock.accept(visitor);
+
+                thenBlockExit = visitor.getExitStmts();
+            }
+
+            if(elseBlock != null && elseBlock instanceof Block){
+                BlockVisitor visitor = new BlockVisitor(elseBlock, exitStmts);
+                elseBlock.accept(visitor);
+
+                elseBlockExit = visitor.getExitStmts();
+            }
+
+            exitStmts.clear();
+
+            for (ASTNode stmt : thenBlockExit) {
+                exitStmts.add(stmt);
+            }
+
+            for (ASTNode stmt : elseBlockExit) {
+                exitStmts.add(stmt);
+            }
 
             constraints.addAll(result);
-            return true;
+            return false;
         }
 
         @Override
         public void endVisit(IfStatement node) {
             // TODO: Check for else
-            prev.add(node);
+//            exitStmts.add(node);
 
         }
 
@@ -163,16 +197,16 @@ public class MethodVisitor extends ASTVisitor {
                 result.add(newSubsetConstraint(exit, setDifference));
             }
 
-            if(!prev.isEmpty()){
-                for (ASTNode stmt : prev) {
+            if(!exitStmts.isEmpty()){
+                for (ASTNode stmt : exitStmts) {
                     ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
                     result.add(newSubsetConstraint(entry, prevExit));
 
                 }
             }
 
-            prev.clear();
-            prev.add(node);
+            exitStmts.clear();
+            exitStmts.add(node);
 
             constraints.addAll(result);
         }
@@ -190,8 +224,8 @@ public class MethodVisitor extends ASTVisitor {
             return new SetDifference(t1, t2);
         }
 
-        public List<ASTNode> getPrev() {
-            return prev;
+        public List<ASTNode> getExitStmts() {
+            return exitStmts;
         }
 
         private List<ExpressionLiteral> getExpressionsInvolving(String lhs) {
