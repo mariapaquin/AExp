@@ -2,6 +2,13 @@ package tests;
 
 public class Test {
 
+    public void testWhile(int a, int b){
+        b = 1;
+        while (b != 2) {
+            b = 2;
+        }
+        b = 3;
+    }
 /*    public void m(int x, int y){
         int a = 1;
         int b = 2;
@@ -15,13 +22,13 @@ public class Test {
         }
     }*/
 
-    public void testNoBracketsIf(int a, int b){
+/*    public void testNoBracketsIf(int a, int b){
         if (true)
             b = 1;
         else
             b = 2;
         b = 3;
-    }
+    }*/
 
 /*    public void testIfElse(int a, int b){
         a = b+1;

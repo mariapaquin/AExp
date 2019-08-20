@@ -86,8 +86,6 @@ public class MethodVisitor extends ASTVisitor {
 
         @Override
         public boolean visit(IfStatement node) {
-
-            // TODO: Handle when then/else statements aren't in block
             ConstraintTerm entry = variableFactory.createEntryLabel(node);
             ConstraintTerm exit = variableFactory.createExitLabel(node);
 
@@ -136,12 +134,6 @@ public class MethodVisitor extends ASTVisitor {
             return false;
         }
 
-        @Override
-        public void endVisit(IfStatement node) {
-            // TODO: Check for else
-//            exitStmts.add(node);
-
-        }
 
         @Override
         public boolean visit(VariableDeclarationStatement node) {
@@ -184,6 +176,49 @@ public class MethodVisitor extends ASTVisitor {
             exitStmts.add(node);
 
             constraints.addAll(result);
+        }
+
+        @Override
+        public boolean visit(WhileStatement node) {
+
+            ConstraintTerm entry = variableFactory.createEntryLabel(node);
+            ConstraintTerm exit = variableFactory.createExitLabel(node);
+
+            List<Constraint> result = new ArrayList<Constraint>();
+
+            result.add(newSubsetConstraint(exit, entry));
+
+            if(!exitStmts.isEmpty()){
+                for (ASTNode stmt : exitStmts) {
+                    ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
+                    result.add(newSubsetConstraint(entry, prevExit));
+                }
+            }
+
+            Statement body = node.getBody();
+            List<ASTNode> bodyExit = new ArrayList<>();
+
+            BlockVisitor visitor = new BlockVisitor(body, exitStmts);
+            body.accept(visitor);
+
+            bodyExit = visitor.getExitStmts();
+
+            if(!bodyExit.isEmpty()){
+                for (ASTNode stmt : bodyExit) {
+                    ConstraintTerm prevStmtExit = variableFactory.createExitLabel(stmt);
+                    result.add(newSubsetConstraint(entry, prevStmtExit));
+                }
+            }
+
+            exitStmts.clear();
+            exitStmts.add(node);
+
+            for (ASTNode stmt : bodyExit) {
+                exitStmts.add(stmt);
+            }
+
+            constraints.addAll(result);
+            return false;
         }
 
 
