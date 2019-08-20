@@ -20,7 +20,7 @@ public class Driver {
 
     public static void main(String[] args) throws IOException {
 
-        File file = new File("./src/tests/Test.java");
+        File file = new File("./src/test/Test.java");
         String source = new String(Files.readAllBytes(file.toPath()));
         ASTParser parser = ASTParser.newParser(AST.JLS3);
         parser.setSource(source.toCharArray());

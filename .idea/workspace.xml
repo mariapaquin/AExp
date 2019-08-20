@@ -2,9 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="deacf3e9-89cd-4aa7-b8ee-09a81fc3238f" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/tests/IfNestedWhile.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/IfStmt.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/While.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/tests/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/tests/Test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/visitor/MethodVisitor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/visitor/MethodVisitor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvailableExpressions.iml" beforeDir="false" afterPath="$PROJECT_DIR$/AvailableExpressions.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/Driver.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/Driver.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tests/ASTTester.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tests/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/tests/TestCFG.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -17,95 +22,81 @@
     <option name="isMigrated" value="true" />
   </component>
   <component name="DockManager">
-    <window id="3">
+    <window id="4">
       <content type="file-editors">
         <state>
-          <splitter split-orientation="horizontal" split-proportion="0.5">
-            <split-first>
-              <leaf>
-                <file pinned="false" current-in-tab="false">
-                  <entry file="file://$PROJECT_DIR$/src/main/Driver.java">
-                    <provider selected="true" editor-type-id="text-editor">
-                      <state relative-caret-position="323">
-                        <caret line="42" column="13" selection-start-line="42" selection-start-column="13" selection-end-line="42" selection-end-column="13" />
-                      </state>
-                    </provider>
-                  </entry>
-                </file>
-                <file pinned="false" current-in-tab="true">
-                  <entry file="file://$PROJECT_DIR$/src/visitor/BlockVisitorT.java">
-                    <provider selected="true" editor-type-id="text-editor">
-                      <state relative-caret-position="-910">
-                        <caret line="23" column="25" lean-forward="true" selection-start-line="23" selection-start-column="25" selection-end-line="23" selection-end-column="48" />
-                        <folding>
-                          <element signature="imports" expanded="true" />
-                          <element signature="e#5291#5292#0" expanded="true" />
-                          <element signature="e#5318#5319#0" expanded="true" />
-                        </folding>
-                      </state>
-                    </provider>
-                  </entry>
-                </file>
-              </leaf>
-            </split-first>
-            <split-second>
-              <leaf>
-                <file pinned="false" current-in-tab="true">
-                  <entry file="file://$PROJECT_DIR$/src/visitor/ConstraintVisitor.java">
-                    <provider selected="true" editor-type-id="text-editor">
-                      <state relative-caret-position="1751">
-                        <caret line="148" selection-start-line="148" selection-end-line="148" />
-                        <folding>
-                          <element signature="imports" expanded="true" />
-                        </folding>
-                      </state>
-                    </provider>
-                  </entry>
-                </file>
-              </leaf>
-            </split-second>
-          </splitter>
+          <leaf>
+            <file pinned="false" current-in-tab="true">
+              <entry file="file://$PROJECT_DIR$/src/main/Driver.java">
+                <provider selected="true" editor-type-id="text-editor">
+                  <state relative-caret-position="391">
+                    <caret line="42" column="8" lean-forward="true" selection-start-line="42" selection-start-column="8" selection-end-line="42" selection-end-column="28" />
+                  </state>
+                </provider>
+              </entry>
+            </file>
+          </leaf>
         </state>
       </content>
     </window>
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.47839507">
-      <split-first>
-        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/src/visitor/MethodVisitor.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="68">
-                  <caret line="132" column="57" selection-start-line="132" selection-start-column="57" selection-end-line="132" selection-end-column="57" />
-                  <folding>
-                    <element signature="imports" expanded="true" />
-                    <element signature="e#4880#4881#0" expanded="true" />
-                    <element signature="e#4931#4932#0" expanded="true" />
-                    <element signature="e#5127#5128#0" expanded="true" />
-                    <element signature="e#5162#5163#0" expanded="true" />
-                    <element signature="e#8450#8451#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-        </leaf>
-      </split-first>
-      <split-second>
-        <leaf>
-          <file pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/src/tests/Test.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="104">
-                  <caret line="16" lean-forward="true" selection-start-line="16" selection-end-line="16" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-        </leaf>
-      </split-second>
-    </splitter>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/visitor/MethodVisitor.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1884">
+              <caret line="181" column="51" selection-start-line="181" selection-start-column="51" selection-end-line="181" selection-end-column="51" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#8339#8340#0" expanded="true" />
+                <element signature="e#8580#8581#0" expanded="true" />
+                <element signature="e#9062#9063#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/tests/TestCFG.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="133">
+              <caret line="42" column="28" lean-forward="true" selection-start-line="42" selection-start-column="28" selection-end-line="42" selection-end-column="28" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tests/IfStmt.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="442">
+              <caret line="26" column="22" lean-forward="true" selection-start-line="26" selection-start-column="22" selection-end-line="26" selection-end-column="22" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tests/While.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="119">
+              <caret line="7" column="5" lean-forward="true" selection-start-line="7" selection-start-column="5" selection-end-line="7" selection-end-column="5" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tests/IfNestedWhile.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="34">
+              <caret line="2" selection-start-line="2" selection-end-line="10" selection-end-column="5" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -135,12 +126,20 @@
         <option value="$PROJECT_DIR$/src/Constraint/Term/ExpressionLiteral.java" />
         <option value="$PROJECT_DIR$/src/Constraint/Term/SetUnion.java" />
         <option value="$PROJECT_DIR$/src/ConstraintCreator/ConstraintTermFactory.java" />
-        <option value="$PROJECT_DIR$/src/main/Driver.java" />
         <option value="$PROJECT_DIR$/src/visitor/ConstraintVisitor.java" />
         <option value="$PROJECT_DIR$/src/visitor/BlockVisitor.java" />
         <option value="$PROJECT_DIR$/src/visitor/BlockVisitorT.java" />
-        <option value="$PROJECT_DIR$/src/tests/Test.java" />
+        <option value="$PROJECT_DIR$/src/main/Driver.java" />
         <option value="$PROJECT_DIR$/src/visitor/MethodVisitor.java" />
+        <option value="$PROJECT_DIR$/src/tests/Test.java" />
+        <option value="$PROJECT_DIR$/src/test/Test.java" />
+        <option value="$PROJECT_DIR$/src/test/ASTTester.java" />
+        <option value="$PROJECT_DIR$/tests/TestIf.java" />
+        <option value="$PROJECT_DIR$/tests/Test.java" />
+        <option value="$PROJECT_DIR$/tests/IfStmt.java" />
+        <option value="$PROJECT_DIR$/tests/IfNestedWhile.java" />
+        <option value="$PROJECT_DIR$/tests/While.java" />
+        <option value="$PROJECT_DIR$/tests/TestCFG.java" />
       </list>
     </option>
   </component>
@@ -210,13 +209,12 @@
               <item name="AvailableExpressions" type="b2602c69:ProjectViewProjectNode" />
               <item name="AvailableExpressions" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="tests" type="462c0819:PsiDirectoryNode" />
+              <item name="visitor" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="AvailableExpressions" type="b2602c69:ProjectViewProjectNode" />
               <item name="AvailableExpressions" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="visitor" type="462c0819:PsiDirectoryNode" />
+              <item name="tests" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -227,12 +225,22 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="Downloaded.Files.Path.Enabled" value="false" />
+    <property name="Repository.Attach.Annotations" value="false" />
+    <property name="Repository.Attach.JavaDocs" value="false" />
+    <property name="Repository.Attach.Sources" value="false" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../ReachingDefinitions" />
+    <property name="create.test.in.the.same.root" value="true" />
+    <property name="last_opened_file_path" value="$APPLICATION_HOME_DIR$/lib/junit.jar!/" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.10752688" />
     <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -246,23 +254,30 @@
       </list>
     </option>
   </component>
-  <component name="RunManager">
-    <configuration name="Driver" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="main.Driver" />
+  <component name="RunManager" selected="JUnit.TestCFG">
+    <configuration name="TestCFG.testNestedIf" type="AndroidJUnit" temporary="true" nameIsGenerated="true">
       <module name="AvailableExpressions" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="main.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="TestCFG" />
+      <option name="METHOD_NAME" value="testNestedIf" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestCFG" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="AvailableExpressions" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="TestCFG" />
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.Driver" />
+        <item itemvalue="JUnit.TestCFG" />
+        <item itemvalue="Android JUnit.TestCFG.testNestedIf" />
       </list>
     </recent_temporary>
   </component>
@@ -279,11 +294,43 @@
     </task>
     <servers />
   </component>
+  <component name="TestHistory">
+    <history-entry file="TestIf_testNestedIf - 2019.08.20 at 15h 50m 23s.xml">
+      <configuration name="TestIf.testNestedIf" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestIf_testNestedIf - 2019.08.20 at 15h 51m 36s.xml">
+      <configuration name="TestIf.testNestedIf" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestIf_testNestedIf - 2019.08.20 at 15h 52m 35s.xml">
+      <configuration name="TestIf.testNestedIf" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestIf_testNestedIf - 2019.08.20 at 15h 52m 43s.xml">
+      <configuration name="TestIf.testNestedIf" configurationId="AndroidJUnit" />
+    </history-entry>
+    <history-entry file="TestIf_testNestedIf - 2019.08.20 at 15h 53m 36s.xml">
+      <configuration name="TestIf.testNestedIf" configurationId="AndroidJUnit" />
+    </history-entry>
+    <history-entry file="TestIf_testNestedIf - 2019.08.20 at 15h 53m 48s.xml">
+      <configuration name="TestIf.testNestedIf" configurationId="AndroidJUnit" />
+    </history-entry>
+    <history-entry file="TestCFG - 2019.08.20 at 15h 56m 50s.xml">
+      <configuration name="TestCFG" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestCFG - 2019.08.20 at 15h 57m 10s.xml">
+      <configuration name="TestCFG" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestCFG - 2019.08.20 at 16h 02m 35s.xml">
+      <configuration name="TestCFG" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestCFG - 2019.08.20 at 16h 06m 27s.xml">
+      <configuration name="TestCFG" configurationId="JUnit" />
+    </history-entry>
+  </component>
   <component name="ToolWindowManager">
     <frame x="1920" y="-3" width="1920" height="1052" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.08785942" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.15495208" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -292,8 +339,8 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32975295" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.35982814" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.2867884" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.39957035" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -307,22 +354,10 @@
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="right" id="Maven" order="4" />
       <window_info anchor="right" id="Theme Preview" order="5" />
-      <window_info anchor="right" id="JDT AST" order="6" visible="true" weight="0.04952077" />
+      <window_info anchor="right" id="JDT AST" order="6" visible="true" weight="0.015974442" />
       <window_info anchor="right" id="Capture Analysis" order="7" />
       <window_info anchor="right" id="Palette&#9;" order="8" />
     </layout>
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-field">
-          <url>file://$PROJECT_DIR$/src/visitor/ConstraintVisitor.java</url>
-          <line>22</line>
-          <properties field="variableFactory" class="visitor.ConstraintVisitor" />
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/Constraint/Operator/SubsetOperator.java">
@@ -454,23 +489,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/Driver.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="42" column="13" selection-start-line="42" selection-start-column="13" selection-end-line="42" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/visitor/ConstraintVisitor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1751">
-          <caret line="148" selection-start-line="148" selection-end-line="148" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Constraint/Term/SetDifference.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="408">
@@ -493,24 +511,87 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/tests/Test.java">
+    <entry file="file://$PROJECT_DIR$/src/visitor/ConstraintVisitor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="104">
-          <caret line="16" lean-forward="true" selection-start-line="16" selection-end-line="16" />
+        <state relative-caret-position="592">
+          <caret line="148" selection-start-line="148" selection-end-line="148" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/Test.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="527">
+          <caret line="31" column="20" lean-forward="true" selection-start-line="31" selection-start-column="20" selection-end-line="31" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/ASTTester.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="12" column="13" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/lib/jpf.jar!/org/junit/Test.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="14" column="18" selection-start-line="14" selection-start-column="18" selection-end-line="14" selection-end-column="18" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/visitor/MethodVisitor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="132" column="57" selection-start-line="132" selection-start-column="57" selection-end-line="132" selection-end-column="57" />
+        <state relative-caret-position="1884">
+          <caret line="181" column="51" selection-start-line="181" selection-start-column="51" selection-end-line="181" selection-end-column="51" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#4880#4881#0" expanded="true" />
-            <element signature="e#4931#4932#0" expanded="true" />
-            <element signature="e#5127#5128#0" expanded="true" />
-            <element signature="e#5162#5163#0" expanded="true" />
-            <element signature="e#8450#8451#0" expanded="true" />
+            <element signature="e#8339#8340#0" expanded="true" />
+            <element signature="e#8580#8581#0" expanded="true" />
+            <element signature="e#9062#9063#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.attach_pid134443">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/Driver.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="391">
+          <caret line="42" column="8" lean-forward="true" selection-start-line="42" selection-start-column="8" selection-end-line="42" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/IfStmt.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="442">
+          <caret line="26" column="22" lean-forward="true" selection-start-line="26" selection-start-column="22" selection-end-line="26" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/IfNestedWhile.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" selection-start-line="2" selection-end-line="10" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/While.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" column="5" lean-forward="true" selection-start-line="7" selection-start-column="5" selection-end-line="7" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/TestCFG.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="133">
+          <caret line="42" column="28" lean-forward="true" selection-start-line="42" selection-start-column="28" selection-end-line="42" selection-end-column="28" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
