@@ -18,7 +18,9 @@ public class Test {
     public void testNoBracketsIf(int a, int b){
         if (true)
             b = 1;
-        b = 2;
+        else
+            b = 2;
+        b = 3;
     }
 
 /*    public void testIfElse(int a, int b){
