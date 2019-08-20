@@ -111,21 +111,16 @@ public class MethodVisitor extends ASTVisitor {
             Statement elseBlock = node.getElseStatement();
             List<ASTNode> elseBlockExit = new ArrayList<>();
 
-            if (thenBlock instanceof Block) {
                 BlockVisitor visitor = new BlockVisitor(thenBlock, exitStmts);
                 thenBlock.accept(visitor);
 
                 thenBlockExit = visitor.getExitStmts();
-            }
 
-            if(elseBlock != null && elseBlock instanceof Block){
-                BlockVisitor visitor = new BlockVisitor(elseBlock, exitStmts);
-                elseBlock.accept(visitor);
+            if(elseBlock != null ){
+                BlockVisitor elseVisitor = new BlockVisitor(elseBlock, exitStmts);
+                elseBlock.accept(elseVisitor);
 
-                elseBlockExit = visitor.getExitStmts();
-            }
-
-            if (elseBlock != null) {
+                elseBlockExit = elseVisitor.getExitStmts();
                 exitStmts.clear();
             }
 
@@ -136,8 +131,6 @@ public class MethodVisitor extends ASTVisitor {
             for (ASTNode stmt : elseBlockExit) {
                 exitStmts.add(stmt);
             }
-
-//            System.out.println("Exit statements, visit IfStmt " + node.getExpression() + ": "+ exitStmts);
 
             constraints.addAll(result);
             return false;
