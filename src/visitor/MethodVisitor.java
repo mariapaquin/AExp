@@ -9,6 +9,7 @@ import Constraint.Term.SetUnion;
 import ConstraintCreator.ConstraintTermFactory;
 import org.eclipse.jdt.core.dom.*;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -84,30 +85,8 @@ public class MethodVisitor extends ASTVisitor {
             constraints.addAll(result);
         }
 
-//        @Override
-//        public boolean visit(Block node) {
-//            if(node.equals(blockNode)){
-//                return true;
-//            }
-//
-//            BlockVisitor visitor = new BlockVisitor(node, exitStmts);
-//            node.accept(visitor);
-//
-//            List<ASTNode> blockPrev = visitor.getExitStmts();
-//            exitStmts.clear();
-//
-//            for (ASTNode p : blockPrev) {
-//                exitStmts.add(p);
-//            }
-//
-//            return false;
-//        }
-
         @Override
         public boolean visit(IfStatement node) {
-//            if(node.equals(blockNode)){
-//                return true;
-//            }
 
             // TODO: Handle when then/else statements aren't in block
             ConstraintTerm entry = variableFactory.createEntryLabel(node);
@@ -147,7 +126,7 @@ public class MethodVisitor extends ASTVisitor {
                 elseBlockExit = visitor.getExitStmts();
             }
 
-            exitStmts.clear();
+//            exitStmts.clear();
 
             for (ASTNode stmt : thenBlockExit) {
                 exitStmts.add(stmt);
@@ -156,6 +135,8 @@ public class MethodVisitor extends ASTVisitor {
             for (ASTNode stmt : elseBlockExit) {
                 exitStmts.add(stmt);
             }
+
+            System.out.println("Exit statements, visit IfStmt " + node.getExpression() + ": "+ exitStmts);
 
             constraints.addAll(result);
             return false;

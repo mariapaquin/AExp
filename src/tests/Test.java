@@ -15,13 +15,26 @@ public class Test {
 //        }
 //    }
 
-    public void testIf(int a, int b){
+//    public void testIfElse(int a, int b){
+//        a = b+1;
+//
+//        if (true) {
+//            b = 0;
+//        } else {
+//            b = 1;
+//        }
+//        a = b+2;
+//
+//    }
+
+        public void testNestedIf(int a, int b){
         a = b+1;
 
         if (true) {
             b = 0;
-        } else {
-            b = 1;
+            if (false) {
+                b = 1;
+            }
         }
         a = b+2;
 
