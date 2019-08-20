@@ -27,16 +27,17 @@ public class Test {
 //
 //    }
 
-        public void testNestedIf(int a, int b){
-        a = b+1;
-
+    public void testNestedIf(int a, int b){
         if (true) {
-            b = 0;
             if (false) {
                 b = 1;
+            } else {
+                b = 2;
             }
+        } else {
+            b = 3;
         }
-        a = b+2;
+        b = 4;
 
     }
 

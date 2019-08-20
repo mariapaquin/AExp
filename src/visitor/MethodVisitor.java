@@ -9,7 +9,6 @@ import Constraint.Term.SetUnion;
 import ConstraintCreator.ConstraintTermFactory;
 import org.eclipse.jdt.core.dom.*;
 
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -126,7 +125,9 @@ public class MethodVisitor extends ASTVisitor {
                 elseBlockExit = visitor.getExitStmts();
             }
 
-//            exitStmts.clear();
+            if (elseBlock != null) {
+                exitStmts.clear();
+            }
 
             for (ASTNode stmt : thenBlockExit) {
                 exitStmts.add(stmt);
@@ -136,7 +137,7 @@ public class MethodVisitor extends ASTVisitor {
                 exitStmts.add(stmt);
             }
 
-            System.out.println("Exit statements, visit IfStmt " + node.getExpression() + ": "+ exitStmts);
+//            System.out.println("Exit statements, visit IfStmt " + node.getExpression() + ": "+ exitStmts);
 
             constraints.addAll(result);
             return false;
