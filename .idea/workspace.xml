@@ -2,14 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="deacf3e9-89cd-4aa7-b8ee-09a81fc3238f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/tests/IfNestedWhile.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/IfStmt.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/While.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/IfElseNested.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/IfElseNoBrackets.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/IfNested.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/IfNoBrackets.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/NestedWhile.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AvailableExpressions.iml" beforeDir="false" afterPath="$PROJECT_DIR$/AvailableExpressions.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/Driver.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/Driver.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/tests/ASTTester.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/tests/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/tests/TestCFG.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/IfElse.java" beforeDir="false" afterPath="$PROJECT_DIR$/tests/IfElse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/IfNestedWhile.java" beforeDir="false" afterPath="$PROJECT_DIR$/tests/IfNestedWhile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/IfStmt.java" beforeDir="false" afterPath="$PROJECT_DIR$/tests/If.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/TestCFG.java" beforeDir="false" afterPath="$PROJECT_DIR$/tests/TestCFG.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/While.java" beforeDir="false" afterPath="$PROJECT_DIR$/tests/While.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -29,8 +32,8 @@
             <file pinned="false" current-in-tab="true">
               <entry file="file://$PROJECT_DIR$/src/main/Driver.java">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="391">
-                    <caret line="42" column="8" lean-forward="true" selection-start-line="42" selection-start-column="8" selection-end-line="42" selection-end-column="28" />
+                  <state relative-caret-position="425">
+                    <caret line="44" selection-start-line="44" selection-end-line="47" selection-end-column="9" />
                   </state>
                 </provider>
               </entry>
@@ -60,8 +63,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tests/TestCFG.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="133">
-              <caret line="42" column="28" lean-forward="true" selection-start-line="42" selection-start-column="28" selection-end-line="42" selection-end-column="28" />
+            <state relative-caret-position="645">
+              <caret line="237" column="43" selection-start-line="237" selection-start-column="43" selection-end-line="237" selection-end-column="43" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -70,19 +73,19 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/IfStmt.java">
+        <entry file="file://$PROJECT_DIR$/tests/IfElseNested.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="442">
-              <caret line="26" column="22" lean-forward="true" selection-start-line="26" selection-start-column="22" selection-end-line="26" selection-end-column="22" />
+            <state relative-caret-position="34">
+              <caret line="2" column="20" selection-start-line="2" selection-start-column="20" selection-end-line="2" selection-end-column="20" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/While.java">
+        <entry file="file://$PROJECT_DIR$/tests/IfNested.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="7" column="5" lean-forward="true" selection-start-line="7" selection-start-column="5" selection-end-line="7" selection-end-column="5" />
+            <state relative-caret-position="204">
+              <caret line="12" lean-forward="true" selection-start-line="12" selection-end-line="12" />
             </state>
           </provider>
         </entry>
@@ -92,6 +95,33 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="34">
               <caret line="2" selection-start-line="2" selection-end-line="10" selection-end-column="5" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tests/NestedWhile.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="187">
+              <caret line="11" selection-start-line="11" selection-end-line="11" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tests/IfElseNoBrackets.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="17">
+              <caret line="1" selection-start-line="1" selection-end-line="7" selection-end-column="5" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tests/IfNoBrackets.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="68">
+              <caret line="4" column="13" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
             </state>
           </provider>
         </entry>
@@ -137,8 +167,15 @@
         <option value="$PROJECT_DIR$/tests/TestIf.java" />
         <option value="$PROJECT_DIR$/tests/Test.java" />
         <option value="$PROJECT_DIR$/tests/IfStmt.java" />
-        <option value="$PROJECT_DIR$/tests/IfNestedWhile.java" />
+        <option value="$PROJECT_DIR$/tests/IfElseNested.java" />
         <option value="$PROJECT_DIR$/tests/While.java" />
+        <option value="$PROJECT_DIR$/tests/IfNestedWhile.java" />
+        <option value="$PROJECT_DIR$/tests/IfElse.java" />
+        <option value="$PROJECT_DIR$/tests/If.java" />
+        <option value="$PROJECT_DIR$/tests/NestedWhile.java" />
+        <option value="$PROJECT_DIR$/tests/IfElseNoBrackets.java" />
+        <option value="$PROJECT_DIR$/tests/IfNoBrackets.java" />
+        <option value="$PROJECT_DIR$/tests/IfNested.java" />
         <option value="$PROJECT_DIR$/tests/TestCFG.java" />
       </list>
     </option>
@@ -295,34 +332,34 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="TestIf_testNestedIf - 2019.08.20 at 15h 50m 23s.xml">
-      <configuration name="TestIf.testNestedIf" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="TestIf_testNestedIf - 2019.08.20 at 15h 51m 36s.xml">
-      <configuration name="TestIf.testNestedIf" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="TestIf_testNestedIf - 2019.08.20 at 15h 52m 35s.xml">
-      <configuration name="TestIf.testNestedIf" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="TestIf_testNestedIf - 2019.08.20 at 15h 52m 43s.xml">
-      <configuration name="TestIf.testNestedIf" configurationId="AndroidJUnit" />
-    </history-entry>
-    <history-entry file="TestIf_testNestedIf - 2019.08.20 at 15h 53m 36s.xml">
-      <configuration name="TestIf.testNestedIf" configurationId="AndroidJUnit" />
-    </history-entry>
-    <history-entry file="TestIf_testNestedIf - 2019.08.20 at 15h 53m 48s.xml">
-      <configuration name="TestIf.testNestedIf" configurationId="AndroidJUnit" />
-    </history-entry>
-    <history-entry file="TestCFG - 2019.08.20 at 15h 56m 50s.xml">
+    <history-entry file="TestCFG - 2019.08.20 at 16h 23m 49s.xml">
       <configuration name="TestCFG" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestCFG - 2019.08.20 at 15h 57m 10s.xml">
+    <history-entry file="TestCFG - 2019.08.20 at 16h 24m 45s.xml">
       <configuration name="TestCFG" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestCFG - 2019.08.20 at 16h 02m 35s.xml">
+    <history-entry file="TestCFG - 2019.08.20 at 16h 25m 25s.xml">
       <configuration name="TestCFG" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestCFG - 2019.08.20 at 16h 06m 27s.xml">
+    <history-entry file="TestCFG - 2019.08.20 at 16h 25m 33s.xml">
+      <configuration name="TestCFG" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestCFG - 2019.08.20 at 16h 25m 43s.xml">
+      <configuration name="TestCFG" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestCFG - 2019.08.20 at 16h 26m 40s.xml">
+      <configuration name="TestCFG" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestCFG - 2019.08.20 at 16h 27m 04s.xml">
+      <configuration name="TestCFG" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestCFG - 2019.08.20 at 16h 27m 18s.xml">
+      <configuration name="TestCFG" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestCFG - 2019.08.20 at 16h 27m 26s.xml">
+      <configuration name="TestCFG" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestCFG - 2019.08.20 at 16h 28m 22s.xml">
       <configuration name="TestCFG" configurationId="JUnit" />
     </history-entry>
   </component>
@@ -339,7 +376,7 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32975295" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.2867884" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.19871107" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39957035" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -560,15 +597,22 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/Driver.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="42" column="8" lean-forward="true" selection-start-line="42" selection-start-column="8" selection-end-line="42" selection-end-column="28" />
+        <state relative-caret-position="425">
+          <caret line="44" selection-start-line="44" selection-end-line="47" selection-end-column="9" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/IfStmt.java">
+    <entry file="file://$PROJECT_DIR$/src/Constraint/Constraint.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="26" column="22" lean-forward="true" selection-start-line="26" selection-start-column="22" selection-end-line="26" selection-end-column="22" />
+        <state relative-caret-position="187">
+          <caret line="12" column="30" lean-forward="true" selection-start-line="12" selection-start-column="30" selection-end-line="12" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/While.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" column="17" selection-start-line="1" selection-start-column="17" selection-end-line="1" selection-end-column="17" />
         </state>
       </provider>
     </entry>
@@ -579,17 +623,59 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/While.java">
+    <entry file="file://$PROJECT_DIR$/tests/NestedWhile.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="11" selection-start-line="11" selection-end-line="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/IfNoBrackets.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="4" column="13" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/If.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="4" selection-start-line="4" selection-end-line="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/IfElseNoBrackets.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" selection-start-line="1" selection-end-line="7" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/IfElse.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
-          <caret line="7" column="5" lean-forward="true" selection-start-line="7" selection-start-column="5" selection-end-line="7" selection-end-column="5" />
+          <caret line="7" column="18" lean-forward="true" selection-start-line="7" selection-start-column="18" selection-end-line="7" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/IfNested.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="12" lean-forward="true" selection-start-line="12" selection-end-line="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/IfElseNested.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" column="20" selection-start-line="2" selection-start-column="20" selection-end-line="2" selection-end-column="20" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tests/TestCFG.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="42" column="28" lean-forward="true" selection-start-line="42" selection-start-column="28" selection-end-line="42" selection-end-column="28" />
+        <state relative-caret-position="645">
+          <caret line="237" column="43" selection-start-line="237" selection-start-column="43" selection-end-line="237" selection-end-column="43" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
