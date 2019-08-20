@@ -2,13 +2,26 @@ package tests;
 
 public class Test {
 
-    public void testWhile(int a, int b){
+/*    public void testWhile(int a, int b) {
         b = 1;
-        while (b != 2) {
-            b = 2;
+        if (b == 1) {
+            while (b != 2) {
+                b = 2;
+            }
         }
         b = 3;
-    }
+    }*/
+
+/*    public void testNestedWhile(int a, int b, boolean cond, boolean cond2) {
+        b = 1;
+        while (cond) {
+            while (cond2) {
+                b = 2;
+            }
+        }
+        b = 3;
+    }*/
+
 /*    public void m(int x, int y){
         int a = 1;
         int b = 2;
@@ -54,6 +67,17 @@ public class Test {
         }
         b = 4;
     }*/
+
+    public void testNestedIf(int a, int b){
+        a = b+1;
+        if (true) {
+            b = 0;
+            if (false) {
+                b = 1;
+            }
+        }
+        a = b+2;
+    }
 
 /*    public void m(){
         int a = 1;

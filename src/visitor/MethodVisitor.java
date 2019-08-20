@@ -195,6 +195,9 @@ public class MethodVisitor extends ASTVisitor {
                 }
             }
 
+            exitStmts.clear();
+            exitStmts.add(node);
+
             Statement body = node.getBody();
             List<ASTNode> bodyExit = new ArrayList<>();
 
@@ -210,14 +213,13 @@ public class MethodVisitor extends ASTVisitor {
                 }
             }
 
-            exitStmts.clear();
-            exitStmts.add(node);
-
             for (ASTNode stmt : bodyExit) {
                 exitStmts.add(stmt);
             }
 
             constraints.addAll(result);
+
+//            System.out.println("exit statements for while " + node.getExpression() + ": " + exitStmts);
             return false;
         }
 
