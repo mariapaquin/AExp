@@ -46,7 +46,7 @@ public class EntryLabel extends NodeLabel {
 
 		}
 
-		String ret = "entry[" + nodeExpr + "] ";
+		String ret = "entry[" + nodeExpr + "]";
 		if (!expressionList.isEmpty()) {
 			for (int i = 0; i < expressionList.size(); i++) {
 				ret += " U " + expressionList.get(i);

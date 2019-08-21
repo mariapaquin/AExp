@@ -11,6 +11,7 @@ import visitor.MethodVisitor;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -40,7 +41,7 @@ public class Driver {
         cu.accept(methodVisitor);
 
         System.out.println(" ------------- \n| Constraints |\n ------------- ");
-        HashSet<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
 
         int i = 0;
         for (Constraint constraint : constraints) {
@@ -71,7 +72,7 @@ public class Driver {
         });
 
         System.out.println(" ------------  \n| Constraint |\n| Solutions  |\n ------------  ");
-        ConstraintSolver solver = new ConstraintSolver(constraints, variables);
+//        ConstraintSolver solver = new ConstraintSolver(constraints, variables);
 
 //        solver.buildConstraintGraph();
 //

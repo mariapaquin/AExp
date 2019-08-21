@@ -27,7 +27,7 @@ public class SetDifference extends ConstraintTerm {
 
     @Override
     public String toString() {
-        return entryTerm + "\\ " + expressionList;
+        return entryTerm + " \\ " + expressionList;
     }
 
 }

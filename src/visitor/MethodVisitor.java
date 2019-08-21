@@ -10,18 +10,17 @@ import ConstraintCreator.ConstraintTermFactory;
 import org.eclipse.jdt.core.dom.*;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 public class MethodVisitor extends ASTVisitor {
-    private HashSet constraints;
+    private ArrayList<Constraint> constraints;
     private ConstraintTermFactory variableFactory;
     private List<ExpressionLiteral> availableExpressions;
 
     public MethodVisitor(List<ExpressionLiteral> availableExpressions) {
         this.availableExpressions = availableExpressions;
         variableFactory = new ConstraintTermFactory();
-        constraints  = new HashSet();
+        constraints  = new ArrayList<>();
     }
 
     @Override
@@ -251,7 +250,7 @@ public class MethodVisitor extends ASTVisitor {
         }
     }
 
-        public HashSet getConstraints() {
+        public ArrayList<Constraint> getConstraints() {
             return constraints;
         }
 }

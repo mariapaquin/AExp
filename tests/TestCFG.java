@@ -11,6 +11,7 @@ import visitor.MethodVisitor;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -40,13 +41,22 @@ public class TestCFG {
         MethodVisitor methodVisitor = new MethodVisitor(ae);
         cu.accept(methodVisitor);
 
-        HashSet<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
 
         assertEquals(constraints.size(), 8);
-/*        int i = 0;
-        for (Constraint constraint : constraints) {
-            System.out.println(++i + ") " + constraint);
-        }*/
+
+        assertEquals("exit[a=b + 1] subset entry[a=b + 1] \\ [] U (b + 1)", constraints.get(0).toString());
+        assertEquals("exit[b=0] subset entry[b=0] \\ [(b + 1), (b + 2)]", constraints.get(1).toString());
+        assertEquals("entry[b=0] subset exit[true]", constraints.get(2).toString());
+        assertEquals("exit[true] subset entry[true]", constraints.get(3).toString());
+        assertEquals("entry[true] subset exit[a=b + 1]", constraints.get(4).toString());
+        assertEquals("exit[a=b + 2] subset entry[a=b + 2] \\ [] U (b + 2)", constraints.get(5).toString());
+        assertEquals("entry[a=b + 2] subset exit[true]", constraints.get(6).toString());
+        assertEquals("entry[a=b + 2] subset exit[b=0]", constraints.get(7).toString());
+
+        for (int i = 0; i <constraints.size(); i++) {
+            System.out.println(constraints.get(i));
+        }
     }
 
     @Test
@@ -71,9 +81,10 @@ public class TestCFG {
         MethodVisitor methodVisitor = new MethodVisitor(ae);
         cu.accept(methodVisitor);
 
-        HashSet<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
 
         assertEquals(constraints.size(), 6);
+
     }
 
     @Test
@@ -98,7 +109,7 @@ public class TestCFG {
         MethodVisitor methodVisitor = new MethodVisitor(ae);
         cu.accept(methodVisitor);
 
-        HashSet<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
 
         assertEquals(constraints.size(), 10);
     }
@@ -125,7 +136,7 @@ public class TestCFG {
         MethodVisitor methodVisitor = new MethodVisitor(ae);
         cu.accept(methodVisitor);
 
-        HashSet<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
 
         assertEquals(constraints.size(), 8);
     }
@@ -152,7 +163,7 @@ public class TestCFG {
         MethodVisitor methodVisitor = new MethodVisitor(ae);
         cu.accept(methodVisitor);
 
-        HashSet<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
 
         assertEquals(constraints.size(), 13);
     }
@@ -179,7 +190,7 @@ public class TestCFG {
         MethodVisitor methodVisitor = new MethodVisitor(ae);
         cu.accept(methodVisitor);
 
-        HashSet<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
 
         assertEquals(constraints.size(), 13);
     }
@@ -206,7 +217,7 @@ public class TestCFG {
         MethodVisitor methodVisitor = new MethodVisitor(ae);
         cu.accept(methodVisitor);
 
-        HashSet<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
 
         assertEquals(constraints.size(), 9);
     }
@@ -233,7 +244,7 @@ public class TestCFG {
         MethodVisitor methodVisitor = new MethodVisitor(ae);
         cu.accept(methodVisitor);
 
-        HashSet<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
 
         assertEquals(constraints.size(), 14);
     }
@@ -260,7 +271,7 @@ public class TestCFG {
         MethodVisitor methodVisitor = new MethodVisitor(ae);
         cu.accept(methodVisitor);
 
-        HashSet<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
 
         assertEquals(constraints.size(), 12);
     }
