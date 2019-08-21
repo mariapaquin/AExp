@@ -172,7 +172,7 @@ public class MethodVisitor extends ASTVisitor {
             // SAVE prev, this will be what we propagate at the end
             Expression cond = node.getExpression();
             ConstraintTerm condEntry = variableFactory.createEntryLabel(cond);
-            ConstraintTerm condExit = variableFactory.createEntryLabel(cond);
+            ConstraintTerm condExit = variableFactory.createExitLabel(cond);
 
             if (cond instanceof InfixExpression) {
                 if (((InfixExpression) cond).getLeftOperand() instanceof InfixExpression) {
