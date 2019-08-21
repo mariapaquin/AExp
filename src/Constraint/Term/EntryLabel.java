@@ -42,7 +42,7 @@ public class EntryLabel extends NodeLabel {
 		}
 
 		if (node instanceof ForStatement) {
-			nodeExpr = ((ForStatement) node).getExpression() .toString();
+			nodeExpr = "for( " + ((ForStatement) node).getExpression() .toString() + ")";
 
 		}
 

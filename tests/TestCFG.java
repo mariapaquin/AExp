@@ -370,4 +370,33 @@ public class TestCFG {
         assertEquals("entry[b=3] subset exit[b=2]", constraints.get(11).toString());
     }
 
+    @Test
+    public void testFor(){
+        File file = new File("./tests/For.java");
+        String source = null;
+        try {
+            source = new String(Files.readAllBytes(file.toPath()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ASTParser parser = ASTParser.newParser(AST.JLS3);
+        parser.setSource(source.toCharArray());
+        parser.setKind(ASTParser.K_COMPILATION_UNIT);
+
+        CompilationUnit cu = (CompilationUnit) parser.createAST(null);
+
+        ExpressionVisitor exprVisitor = new ExpressionVisitor();
+        cu.accept(exprVisitor);
+        List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
+
+        MethodVisitor methodVisitor = new MethodVisitor(ae);
+        cu.accept(methodVisitor);
+
+        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+
+        for(int i = 0; i < constraints.size(); i++){
+            System.out.println((i+1) + " " + constraints.get(i));
+        }
+    }
+
 }

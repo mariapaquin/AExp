@@ -1,5 +1,7 @@
 package Constraint.Term;
 
+import Constraint.Constraint;
+
 import java.util.List;
 
 /**
@@ -10,12 +12,20 @@ import java.util.List;
 public class SetUnion extends ConstraintTerm {
 
     private SetDifference setDifference;
+    private ConstraintTerm entryTerm;
     private ExpressionLiteral expr;
     private List<ExpressionLiteral> expressionList;
 
     public SetUnion(SetDifference setDifference, ExpressionLiteral expr) {
         this.setDifference = setDifference;
         this.expr = expr;
+        this.entryTerm = null;
+    }
+
+    public SetUnion(ConstraintTerm entryTerm, ExpressionLiteral expr) {
+        this.entryTerm = entryTerm;
+        this.expr = expr;
+        this.setDifference = null;
     }
 
 

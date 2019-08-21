@@ -133,6 +133,115 @@ public class MethodVisitor extends ASTVisitor {
             return false;
         }
 
+        @Override
+        public boolean visit(ForStatement node){
+
+            // (0) generate constraints and set prev for loop
+            ConstraintTerm entry = variableFactory.createEntryLabel(node);
+            ConstraintTerm exit = variableFactory.createExitLabel(node);
+
+            List<Constraint> result = new ArrayList<Constraint>();
+
+            result.add(newSubsetConstraint(exit, entry));
+
+            if(!exitStmts.isEmpty()){
+                for (ASTNode stmt : exitStmts) {
+                    ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
+                    result.add(newSubsetConstraint(entry, prevExit));
+                }
+            }
+
+            exitStmts.clear();
+            exitStmts.add(node);
+
+            // (1) generate constraints and set prev for initialization
+            Expression init = (Expression) node.initializers().get(0);
+            ConstraintTerm initEntry = variableFactory.createEntryLabel(init);
+            ConstraintTerm initExit = variableFactory.createExitLabel(init);
+            result.add(newSubsetConstraint(initExit, initEntry));
+
+                for (ASTNode stmt : exitStmts) {
+                    ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
+                    result.add(newSubsetConstraint(initEntry, prevExit));
+                }
+
+            exitStmts.clear();
+            exitStmts.add(init);
+
+            // (2) generate constraints and set prev for condition
+            // SAVE prev, this will be what we propagate at the end
+            Expression cond = node.getExpression();
+            ConstraintTerm condEntry = variableFactory.createEntryLabel(cond);
+            ConstraintTerm condExit = variableFactory.createEntryLabel(cond);
+
+            if (cond instanceof InfixExpression) {
+                if (((InfixExpression) cond).getLeftOperand() instanceof InfixExpression) {
+                    ExpressionLiteral newExpr = variableFactory.createExpressionLiteral(
+                            ((InfixExpression) cond).getLeftOperand());
+                    ConstraintTerm setUnion = getSetUnion(condEntry, newExpr);
+                    variableFactory.setEntryLabel(cond, setUnion);
+                    // TODO: Can only be lhs or rhs? We are replacing init entry both, not adding to.
+                } else if (((InfixExpression) cond).getRightOperand() instanceof InfixExpression) {
+                    ExpressionLiteral newExpr = variableFactory.createExpressionLiteral(
+                            ((InfixExpression) cond).getRightOperand());
+                    ConstraintTerm setUnion = getSetUnion(condEntry, newExpr);
+                    variableFactory.setEntryLabel(cond, setUnion);
+                }
+            }
+
+                result.add(newSubsetConstraint(condExit, variableFactory.createEntryLabel(cond)));
+
+
+            for (ASTNode stmt : exitStmts) {
+                ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
+                result.add(newSubsetConstraint(condEntry, prevExit));
+            }
+
+            exitStmts.clear();
+            exitStmts.add(cond);
+
+            // (3) create body visitor. pass in and return prev
+            Statement body = node.getBody();
+
+            BlockVisitor visitor = new BlockVisitor(body, exitStmts);
+            body.accept(visitor);
+
+            List<ASTNode> bodyExitStmts = visitor.getExitStmts();
+            exitStmts.clear();
+
+            for (ASTNode stmt : bodyExitStmts) {
+                exitStmts.add(stmt);
+            }
+
+            // (4) generate constraints and set prev for update
+            // generate constraint for (condition subset update)
+
+            Expression update = (Expression) node.updaters().get(0);
+
+            ConstraintTerm updateEntry = variableFactory.createEntryLabel(update);
+            ConstraintTerm updateExit = variableFactory.createExitLabel(update);
+
+            result.add(newSubsetConstraint(updateExit, updateEntry));
+
+            if(!exitStmts.isEmpty()){
+                for (ASTNode stmt : exitStmts) {
+                    ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
+                    result.add(newSubsetConstraint(updateEntry, prevExit));
+                }
+            }
+
+            result.add(newSubsetConstraint(variableFactory.createEntryLabel(cond), updateExit));
+
+
+            // (5) Before returning, set prev to prev list of condition
+            exitStmts.clear();
+            exitStmts.add(cond);
+
+            constraints.addAll(result);
+
+            return false;
+        }
+
 
         @Override
         public boolean visit(VariableDeclarationStatement node) {
@@ -228,6 +337,10 @@ public class MethodVisitor extends ASTVisitor {
         }
 
         public SetUnion getSetUnion(SetDifference t1, ExpressionLiteral t2) {
+            return new SetUnion(t1, t2);
+        }
+
+        public SetUnion getSetUnion(ConstraintTerm t1, ExpressionLiteral t2) {
             return new SetUnion(t1, t2);
         }
 
