@@ -258,8 +258,12 @@ public class MethodVisitor extends ASTVisitor {
             thenBlock.accept(visitor);
 
             thenBlockExit = visitor.getExitStmts();
+            if (thenBlockExit.equals(exitStmts)) {
+                // then block was empty, nothing new added or deleted
+                exitStmts.clear();
+            }
 
-            if(elseBlock != null ){
+            if(elseBlock != null){
                 BlockVisitor elseVisitor = new BlockVisitor(elseBlock, exitStmts);
                 elseBlock.accept(elseVisitor);
 

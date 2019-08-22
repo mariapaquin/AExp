@@ -88,6 +88,76 @@ public class TestCFG {
         assertEquals("exit[b=2] subset entry[b=2] \\ []", constraints.get(3).toString());
         assertEquals("entry[b=2] subset exit[if(true)]", constraints.get(4).toString());
         assertEquals("entry[b=2] subset exit[b=1]", constraints.get(5).toString());
+    }
+
+    @Test
+    public void testIfEmptyBlock(){
+        File file = new File("./tests/IfEmptyBlock.java");
+        String source = null;
+        try {
+            source = new String(Files.readAllBytes(file.toPath()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ASTParser parser = ASTParser.newParser(AST.JLS3);
+        parser.setSource(source.toCharArray());
+        parser.setKind(ASTParser.K_COMPILATION_UNIT);
+
+        CompilationUnit cu = (CompilationUnit) parser.createAST(null);
+
+        ExpressionVisitor exprVisitor = new ExpressionVisitor();
+        cu.accept(exprVisitor);
+        List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
+
+        MethodVisitor methodVisitor = new MethodVisitor(ae);
+        cu.accept(methodVisitor);
+
+        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+
+        assertEquals("exit[if(true)] subset entry[if(true)]", constraints.get(0).toString());
+        assertEquals("exit[System.out.println(a)] subset entry[System.out.println(a)]", constraints.get(1).toString());
+        assertEquals("entry[System.out.println(a)] subset exit[if(true)]", constraints.get(2).toString());
+
+//        for(int i = 0; i < constraints.size(); i++){
+//            System.out.println((i+1) + " " + constraints.get(i));
+//        }
+
+    }
+
+    @Test
+    public void testIfNestedEmptyBlocks(){
+        File file = new File("./tests/IfNestedEmptyBlocks.java");
+        String source = null;
+        try {
+            source = new String(Files.readAllBytes(file.toPath()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ASTParser parser = ASTParser.newParser(AST.JLS3);
+        parser.setSource(source.toCharArray());
+        parser.setKind(ASTParser.K_COMPILATION_UNIT);
+
+        CompilationUnit cu = (CompilationUnit) parser.createAST(null);
+
+        ExpressionVisitor exprVisitor = new ExpressionVisitor();
+        cu.accept(exprVisitor);
+        List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
+
+        MethodVisitor methodVisitor = new MethodVisitor(ae);
+        cu.accept(methodVisitor);
+
+        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+
+        assertEquals("exit[if(false)] subset entry[if(false)]", constraints.get(0).toString());
+        assertEquals("entry[if(false)] subset exit[if(true)]", constraints.get(1).toString());
+        assertEquals("exit[if(true)] subset entry[if(true)]", constraints.get(2).toString());
+        assertEquals("exit[System.out.println(a)] subset entry[System.out.println(a)]", constraints.get(3).toString());
+        assertEquals("entry[System.out.println(a)] subset exit[if(true)]", constraints.get(4).toString());
+        assertEquals("entry[System.out.println(a)] subset exit[if(false)]", constraints.get(5).toString());
+
+//        for(int i = 0; i < constraints.size(); i++){
+//            System.out.println((i+1) + " " + constraints.get(i));
+//        }
 
     }
 
@@ -286,7 +356,6 @@ public class TestCFG {
         assertEquals("exit[b=3] subset entry[b=3] \\ [(b == 1)]", constraints.get(6).toString());
         assertEquals("entry[b=3] subset exit[while(b == 1)]", constraints.get(7).toString());
         assertEquals("entry[b=3] subset exit[b=2]", constraints.get(8).toString());
-
     }
 
     @Test
