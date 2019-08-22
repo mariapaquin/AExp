@@ -36,6 +36,10 @@ public class ExitLabel extends NodeLabel {
 			nodeExpr = "for( " + ((ForStatement) node).getExpression() .toString() + ")";
 		}
 
+		if (node instanceof EnhancedForStatement) {
+			nodeExpr = "for(" + ((EnhancedForStatement) node).getParameter() + ")";
+		}
+
 		return "exit[" + nodeExpr + "]";
 	}
 	

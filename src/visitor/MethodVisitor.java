@@ -84,7 +84,7 @@ public class MethodVisitor extends ASTVisitor {
         }
 
         @Override
-        public boolean visit(IfStatement node) {
+        public boolean visit(EnhancedForStatement node) {
             ConstraintTerm entry = variableFactory.createEntryLabel(node);
             ConstraintTerm exit = variableFactory.createExitLabel(node);
 
@@ -102,36 +102,25 @@ public class MethodVisitor extends ASTVisitor {
             exitStmts.clear();
             exitStmts.add(node);
 
-            Statement thenBlock = node.getThenStatement();
-            List<ASTNode> thenBlockExit = new ArrayList<>();
+            Statement body = node.getBody();
+            List<ASTNode> bodyExitStmts = new ArrayList<>();
 
-            Statement elseBlock = node.getElseStatement();
-            List<ASTNode> elseBlockExit = new ArrayList<>();
-
-                BlockVisitor visitor = new BlockVisitor(thenBlock, exitStmts);
-                thenBlock.accept(visitor);
-
-                thenBlockExit = visitor.getExitStmts();
-
-            if(elseBlock != null ){
-                BlockVisitor elseVisitor = new BlockVisitor(elseBlock, exitStmts);
-                elseBlock.accept(elseVisitor);
-
-                elseBlockExit = elseVisitor.getExitStmts();
-                exitStmts.clear();
+            // could body ever be null?
+            if(body != null ){
+                BlockVisitor visitor = new BlockVisitor(body, exitStmts);
+                body.accept(visitor);
+                bodyExitStmts = visitor.getExitStmts();
             }
 
-            for (ASTNode stmt : thenBlockExit) {
-                exitStmts.add(stmt);
-            }
-
-            for (ASTNode stmt : elseBlockExit) {
+            for (ASTNode stmt : bodyExitStmts) {
                 exitStmts.add(stmt);
             }
 
             constraints.addAll(result);
+
             return false;
         }
+
 
         @Override
         public boolean visit(ForStatement node){
@@ -238,6 +227,89 @@ public class MethodVisitor extends ASTVisitor {
             constraints.addAll(result);
 
             return false;
+        }
+
+        @Override
+        public boolean visit(IfStatement node) {
+            ConstraintTerm entry = variableFactory.createEntryLabel(node);
+            ConstraintTerm exit = variableFactory.createExitLabel(node);
+
+            List<Constraint> result = new ArrayList<Constraint>();
+
+            result.add(newSubsetConstraint(exit, entry));
+
+            if(!exitStmts.isEmpty()){
+                for (ASTNode stmt : exitStmts) {
+                    ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
+                    result.add(newSubsetConstraint(entry, prevExit));
+                }
+            }
+
+            exitStmts.clear();
+            exitStmts.add(node);
+
+            Statement thenBlock = node.getThenStatement();
+            List<ASTNode> thenBlockExit = new ArrayList<>();
+
+            Statement elseBlock = node.getElseStatement();
+            List<ASTNode> elseBlockExit = new ArrayList<>();
+
+            BlockVisitor visitor = new BlockVisitor(thenBlock, exitStmts);
+            thenBlock.accept(visitor);
+
+            thenBlockExit = visitor.getExitStmts();
+
+            if(elseBlock != null ){
+                BlockVisitor elseVisitor = new BlockVisitor(elseBlock, exitStmts);
+                elseBlock.accept(elseVisitor);
+
+                elseBlockExit = elseVisitor.getExitStmts();
+                exitStmts.clear();
+            }
+
+            for (ASTNode stmt : thenBlockExit) {
+                exitStmts.add(stmt);
+            }
+
+            for (ASTNode stmt : elseBlockExit) {
+                exitStmts.add(stmt);
+            }
+
+            constraints.addAll(result);
+            return false;
+        }
+
+        @Override
+        public boolean visit(MethodInvocation node) {
+            if (!(node.getParent() instanceof ExpressionStatement)) {
+                return false;
+            }
+
+            variableFactory.createEntryLabel(node);
+            variableFactory.createExitLabel(node);
+            return true;
+        }
+
+        @Override
+        public void endVisit(MethodInvocation node) {
+            List<Constraint> result = new ArrayList<Constraint>();
+
+            ConstraintTerm entry = variableFactory.createEntryLabel(node);
+            ConstraintTerm exit = variableFactory.createExitLabel(node);
+
+            result.add(newSubsetConstraint(exit, entry));
+
+            if(!exitStmts.isEmpty()){
+                for (ASTNode stmt : exitStmts) {
+                    ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
+                    result.add(newSubsetConstraint(entry, prevExit));
+                }
+            }
+
+            exitStmts.clear();
+            exitStmts.add(node);
+
+            constraints.addAll(result);
         }
 
 

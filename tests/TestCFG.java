@@ -456,8 +456,44 @@ public class TestCFG {
         assertEquals("entry[i < a] subset exit[i++]", constraints.get(14).toString());
         assertEquals("exit[a=3] subset entry[a=3] \\ [(i < a)]", constraints.get(15).toString());
         assertEquals("entry[a=3] subset exit[i < a]", constraints.get(16).toString());
+    }
 
+    @Test
+    public void testEnhancedFor(){
+        File file = new File("./tests/EnhancedFor.java");
+        String source = null;
+        try {
+            source = new String(Files.readAllBytes(file.toPath()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ASTParser parser = ASTParser.newParser(AST.JLS3);
+        parser.setSource(source.toCharArray());
+        parser.setKind(ASTParser.K_COMPILATION_UNIT);
 
+        CompilationUnit cu = (CompilationUnit) parser.createAST(null);
+
+        ExpressionVisitor exprVisitor = new ExpressionVisitor();
+        cu.accept(exprVisitor);
+        List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
+
+        MethodVisitor methodVisitor = new MethodVisitor(ae);
+        cu.accept(methodVisitor);
+
+        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+
+        assertEquals("exit[System.out.println(a)] subset entry[System.out.println(a)]", constraints.get(0).toString());
+        assertEquals("exit[System.out.println(b)] subset entry[System.out.println(b)]", constraints.get(1).toString());
+        assertEquals("entry[System.out.println(b)] subset exit[for(String str)]", constraints.get(2).toString());
+        assertEquals("exit[for(String str)] subset entry[for(String str)]", constraints.get(3).toString());
+        assertEquals("entry[for(String str)] subset exit[System.out.println(a)]", constraints.get(4).toString());
+        assertEquals("exit[System.out.println(c)] subset entry[System.out.println(c)]", constraints.get(5).toString());
+        assertEquals("entry[System.out.println(c)] subset exit[for(String str)]", constraints.get(6).toString());
+        assertEquals("entry[System.out.println(c)] subset exit[System.out.println(b)]", constraints.get(7).toString());
+
+//        for(int i = 0; i < constraints.size(); i++){
+//            System.out.println((i+1) + " " + constraints.get(i));
+//        }
     }
 
 }
