@@ -25,11 +25,11 @@ public class ExitLabel extends NodeLabel {
 		}
 
 		if (node instanceof IfStatement) {
-			nodeExpr = ((IfStatement) node).getExpression().toString();
+			nodeExpr = "if(" + ((IfStatement) node).getExpression().toString() + ")";
 		}
 
 		if (node instanceof WhileStatement) {
-			nodeExpr = ((WhileStatement) node).getExpression().toString();
+			nodeExpr = "while(" + ((WhileStatement) node).getExpression().toString() + ")";
 		}
 
 		if (node instanceof ForStatement) {

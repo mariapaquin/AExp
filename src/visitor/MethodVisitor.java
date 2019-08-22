@@ -188,9 +188,7 @@ public class MethodVisitor extends ASTVisitor {
                     variableFactory.setEntryLabel(cond, setUnion);
                 }
             }
-
                 result.add(newSubsetConstraint(condExit, variableFactory.createEntryLabel(cond)));
-
 
             for (ASTNode stmt : exitStmts) {
                 ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);

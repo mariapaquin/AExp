@@ -47,12 +47,13 @@ public class TestCFG {
 
         assertEquals("exit[a=b + 1] subset entry[a=b + 1] \\ [] U (b + 1)", constraints.get(0).toString());
         assertEquals("exit[b=0] subset entry[b=0] \\ [(b + 1), (b + 2)]", constraints.get(1).toString());
-        assertEquals("entry[b=0] subset exit[true]", constraints.get(2).toString());
-        assertEquals("exit[true] subset entry[true]", constraints.get(3).toString());
-        assertEquals("entry[true] subset exit[a=b + 1]", constraints.get(4).toString());
+        assertEquals("entry[b=0] subset exit[if(true)]", constraints.get(2).toString());
+        assertEquals("exit[if(true)] subset entry[if(true)]", constraints.get(3).toString());
+        assertEquals("entry[if(true)] subset exit[a=b + 1]", constraints.get(4).toString());
         assertEquals("exit[a=b + 2] subset entry[a=b + 2] \\ [] U (b + 2)", constraints.get(5).toString());
-        assertEquals("entry[a=b + 2] subset exit[true]", constraints.get(6).toString());
+        assertEquals("entry[a=b + 2] subset exit[if(true)]", constraints.get(6).toString());
         assertEquals("entry[a=b + 2] subset exit[b=0]", constraints.get(7).toString());
+
     }
 
     @Test
@@ -82,10 +83,10 @@ public class TestCFG {
         assertEquals(constraints.size(), 6);
 
         assertEquals("exit[b=1] subset entry[b=1] \\ []", constraints.get(0).toString());
-        assertEquals("entry[b=1] subset exit[true]", constraints.get(1).toString());
-        assertEquals("exit[true] subset entry[true]", constraints.get(2).toString());
+        assertEquals("entry[b=1] subset exit[if(true)]", constraints.get(1).toString());
+        assertEquals("exit[if(true)] subset entry[if(true)]", constraints.get(2).toString());
         assertEquals("exit[b=2] subset entry[b=2] \\ []", constraints.get(3).toString());
-        assertEquals("entry[b=2] subset exit[true]", constraints.get(4).toString());
+        assertEquals("entry[b=2] subset exit[if(true)]", constraints.get(4).toString());
         assertEquals("entry[b=2] subset exit[b=1]", constraints.get(5).toString());
 
     }
@@ -118,11 +119,11 @@ public class TestCFG {
 
         assertEquals("exit[a=b + 1] subset entry[a=b + 1] \\ [] U (b + 1)", constraints.get(0).toString());
         assertEquals("exit[b=0] subset entry[b=0] \\ [(b + 1), (b + 2)]", constraints.get(1).toString());
-        assertEquals("entry[b=0] subset exit[true]", constraints.get(2).toString());
+        assertEquals("entry[b=0] subset exit[if(true)]", constraints.get(2).toString());
         assertEquals("exit[b=1] subset entry[b=1] \\ [(b + 1), (b + 2)]", constraints.get(3).toString());
-        assertEquals("entry[b=1] subset exit[true]", constraints.get(4).toString());
-        assertEquals("exit[true] subset entry[true]", constraints.get(5).toString());
-        assertEquals("entry[true] subset exit[a=b + 1]", constraints.get(6).toString());
+        assertEquals("entry[b=1] subset exit[if(true)]", constraints.get(4).toString());
+        assertEquals("exit[if(true)] subset entry[if(true)]", constraints.get(5).toString());
+        assertEquals("entry[if(true)] subset exit[a=b + 1]", constraints.get(6).toString());
         assertEquals("exit[a=b + 2] subset entry[a=b + 2] \\ [] U (b + 2)", constraints.get(7).toString());
         assertEquals("entry[a=b + 2] subset exit[b=0]", constraints.get(8).toString());
         assertEquals("entry[a=b + 2] subset exit[b=1]", constraints.get(9).toString());
@@ -156,10 +157,10 @@ public class TestCFG {
         assertEquals(constraints.size(), 8);
 
         assertEquals("exit[b=1] subset entry[b=1] \\ []", constraints.get(0).toString());
-        assertEquals("entry[b=1] subset exit[true]", constraints.get(1).toString());
+        assertEquals("entry[b=1] subset exit[if(true)]", constraints.get(1).toString());
         assertEquals("exit[b=2] subset entry[b=2] \\ []", constraints.get(2).toString());
-        assertEquals("entry[b=2] subset exit[true]", constraints.get(3).toString());
-        assertEquals("exit[true] subset entry[true]", constraints.get(4).toString());
+        assertEquals("entry[b=2] subset exit[if(true)]", constraints.get(3).toString());
+        assertEquals("exit[if(true)] subset entry[if(true)]", constraints.get(4).toString());
         assertEquals("exit[b=3] subset entry[b=3] \\ []", constraints.get(5).toString());
         assertEquals("entry[b=3] subset exit[b=1]", constraints.get(6).toString());
         assertEquals("entry[b=3] subset exit[b=2]", constraints.get(7).toString());
@@ -194,16 +195,16 @@ public class TestCFG {
 
         assertEquals("exit[a=b + 1] subset entry[a=b + 1] \\ [] U (b + 1)", constraints.get(0).toString());
         assertEquals("exit[b=0] subset entry[b=0] \\ [(b + 1), (b + 2)]", constraints.get(1).toString());
-        assertEquals("entry[b=0] subset exit[true]", constraints.get(2).toString());
+        assertEquals("entry[b=0] subset exit[if(true)]", constraints.get(2).toString());
         assertEquals("exit[b=1] subset entry[b=1] \\ [(b + 1), (b + 2)]", constraints.get(3).toString());
-        assertEquals("entry[b=1] subset exit[false]", constraints.get(4).toString());
-        assertEquals("exit[false] subset entry[false]", constraints.get(5).toString());
-        assertEquals("entry[false] subset exit[b=0]", constraints.get(6).toString());
-        assertEquals("exit[true] subset entry[true]", constraints.get(7).toString());
-        assertEquals("entry[true] subset exit[a=b + 1]", constraints.get(8).toString());
+        assertEquals("entry[b=1] subset exit[if(false)]", constraints.get(4).toString());
+        assertEquals("exit[if(false)] subset entry[if(false)]", constraints.get(5).toString());
+        assertEquals("entry[if(false)] subset exit[b=0]", constraints.get(6).toString());
+        assertEquals("exit[if(true)] subset entry[if(true)]", constraints.get(7).toString());
+        assertEquals("entry[if(true)] subset exit[a=b + 1]", constraints.get(8).toString());
         assertEquals("exit[a=b + 2] subset entry[a=b + 2] \\ [] U (b + 2)", constraints.get(9).toString());
-        assertEquals("entry[a=b + 2] subset exit[true]", constraints.get(10).toString());
-        assertEquals("entry[a=b + 2] subset exit[false]", constraints.get(11).toString());
+        assertEquals("entry[a=b + 2] subset exit[if(true)]", constraints.get(10).toString());
+        assertEquals("entry[a=b + 2] subset exit[if(false)]", constraints.get(11).toString());
         assertEquals("entry[a=b + 2] subset exit[b=1]", constraints.get(12).toString());
 
     }
@@ -235,14 +236,14 @@ public class TestCFG {
         assertEquals(constraints.size(), 13);
 
         assertEquals("exit[b=1] subset entry[b=1] \\ []", constraints.get(0).toString());
-        assertEquals("entry[b=1] subset exit[false]", constraints.get(1).toString());
+        assertEquals("entry[b=1] subset exit[if(false)]", constraints.get(1).toString());
         assertEquals("exit[b=2] subset entry[b=2] \\ []", constraints.get(2).toString());
-        assertEquals("entry[b=2] subset exit[false]", constraints.get(3).toString());
-        assertEquals("exit[false] subset entry[false]", constraints.get(4).toString());
-        assertEquals("entry[false] subset exit[true]", constraints.get(5).toString());
+        assertEquals("entry[b=2] subset exit[if(false)]", constraints.get(3).toString());
+        assertEquals("exit[if(false)] subset entry[if(false)]", constraints.get(4).toString());
+        assertEquals("entry[if(false)] subset exit[if(true)]", constraints.get(5).toString());
         assertEquals("exit[b=3] subset entry[b=3] \\ []", constraints.get(6).toString());
-        assertEquals("entry[b=3] subset exit[true]", constraints.get(7).toString());
-        assertEquals("exit[true] subset entry[true]", constraints.get(8).toString());
+        assertEquals("entry[b=3] subset exit[if(true)]", constraints.get(7).toString());
+        assertEquals("exit[if(true)] subset entry[if(true)]", constraints.get(8).toString());
         assertEquals("exit[b=4] subset entry[b=4] \\ []", constraints.get(9).toString());
         assertEquals("entry[b=4] subset exit[b=1]", constraints.get(10).toString());
         assertEquals("entry[b=4] subset exit[b=2]", constraints.get(11).toString());
@@ -278,12 +279,12 @@ public class TestCFG {
 
         assertEquals("exit[b=1] subset entry[b=1] \\ [(b == 1)]", constraints.get(0).toString());
         assertEquals("exit[b=2] subset entry[b=2] \\ [(b == 1)]", constraints.get(1).toString());
-        assertEquals("entry[b=2] subset exit[b == 1]", constraints.get(2).toString());
-        assertEquals("exit[b == 1] subset entry[b == 1]", constraints.get(3).toString());
-        assertEquals("entry[b == 1] subset exit[b=1]", constraints.get(4).toString());
-        assertEquals("entry[b == 1] subset exit[b=2]", constraints.get(5).toString());
+        assertEquals("entry[b=2] subset exit[while(b == 1)]", constraints.get(2).toString());
+        assertEquals("exit[while(b == 1)] subset entry[while(b == 1)]", constraints.get(3).toString());
+        assertEquals("entry[while(b == 1)] subset exit[b=1]", constraints.get(4).toString());
+        assertEquals("entry[while(b == 1)] subset exit[b=2]", constraints.get(5).toString());
         assertEquals("exit[b=3] subset entry[b=3] \\ [(b == 1)]", constraints.get(6).toString());
-        assertEquals("entry[b=3] subset exit[b == 1]", constraints.get(7).toString());
+        assertEquals("entry[b=3] subset exit[while(b == 1)]", constraints.get(7).toString());
         assertEquals("entry[b=3] subset exit[b=2]", constraints.get(8).toString());
 
     }
@@ -316,17 +317,17 @@ public class TestCFG {
 
         assertEquals("exit[b=1] subset entry[b=1] \\ [(b == 1), (b != 2)]", constraints.get(0).toString());
         assertEquals("exit[b=2] subset entry[b=2] \\ [(b == 1), (b != 2)]", constraints.get(1).toString());
-        assertEquals("entry[b=2] subset exit[b != 2]", constraints.get(2).toString());
-        assertEquals("exit[b != 2] subset entry[b != 2]", constraints.get(3).toString());
-        assertEquals("entry[b != 2] subset exit[b == 1]", constraints.get(4).toString());
-        assertEquals("entry[b != 2] subset exit[b=2]", constraints.get(5).toString());
-        assertEquals("exit[b == 1] subset entry[b == 1]", constraints.get(6).toString());
-        assertEquals("entry[b == 1] subset exit[b=1]", constraints.get(7).toString());
-        assertEquals("entry[b == 1] subset exit[b != 2]", constraints.get(8).toString());
-        assertEquals("entry[b == 1] subset exit[b=2]", constraints.get(9).toString());
+        assertEquals("entry[b=2] subset exit[while(b != 2)]", constraints.get(2).toString());
+        assertEquals("exit[while(b != 2)] subset entry[while(b != 2)]", constraints.get(3).toString());
+        assertEquals("entry[while(b != 2)] subset exit[while(b == 1)]", constraints.get(4).toString());
+        assertEquals("entry[while(b != 2)] subset exit[b=2]", constraints.get(5).toString());
+        assertEquals("exit[while(b == 1)] subset entry[while(b == 1)]", constraints.get(6).toString());
+        assertEquals("entry[while(b == 1)] subset exit[b=1]", constraints.get(7).toString());
+        assertEquals("entry[while(b == 1)] subset exit[while(b != 2)]", constraints.get(8).toString());
+        assertEquals("entry[while(b == 1)] subset exit[b=2]", constraints.get(9).toString());
         assertEquals("exit[b=3] subset entry[b=3] \\ [(b == 1), (b != 2)]", constraints.get(10).toString());
-        assertEquals("entry[b=3] subset exit[b == 1]", constraints.get(11).toString());
-        assertEquals("entry[b=3] subset exit[b != 2]", constraints.get(12).toString());
+        assertEquals("entry[b=3] subset exit[while(b == 1)]", constraints.get(11).toString());
+        assertEquals("entry[b=3] subset exit[while(b != 2)]", constraints.get(12).toString());
         assertEquals("entry[b=3] subset exit[b=2]", constraints.get(13).toString());
     }
 
@@ -358,15 +359,15 @@ public class TestCFG {
 
         assertEquals("exit[b=1] subset entry[b=1] \\ [(b == 1), (b != 2)]", constraints.get(0).toString());
         assertEquals("exit[b=2] subset entry[b=2] \\ [(b == 1), (b != 2)]", constraints.get(1).toString());
-        assertEquals("entry[b=2] subset exit[b != 2]", constraints.get(2).toString());
-        assertEquals("exit[b != 2] subset entry[b != 2]", constraints.get(3).toString());
-        assertEquals("entry[b != 2] subset exit[b == 1]", constraints.get(4).toString());
-        assertEquals("entry[b != 2] subset exit[b=2]", constraints.get(5).toString());
-        assertEquals("exit[b == 1] subset entry[b == 1]", constraints.get(6).toString());
-        assertEquals("entry[b == 1] subset exit[b=1]", constraints.get(7).toString());
+        assertEquals("entry[b=2] subset exit[while(b != 2)]", constraints.get(2).toString());
+        assertEquals("exit[while(b != 2)] subset entry[while(b != 2)]", constraints.get(3).toString());
+        assertEquals("entry[while(b != 2)] subset exit[if(b == 1)]", constraints.get(4).toString());
+        assertEquals("entry[while(b != 2)] subset exit[b=2]", constraints.get(5).toString());
+        assertEquals("exit[if(b == 1)] subset entry[if(b == 1)]", constraints.get(6).toString());
+        assertEquals("entry[if(b == 1)] subset exit[b=1]", constraints.get(7).toString());
         assertEquals("exit[b=3] subset entry[b=3] \\ [(b == 1), (b != 2)]", constraints.get(8).toString());
-        assertEquals("entry[b=3] subset exit[b == 1]", constraints.get(9).toString());
-        assertEquals("entry[b=3] subset exit[b != 2]", constraints.get(10).toString());
+        assertEquals("entry[b=3] subset exit[if(b == 1)]", constraints.get(9).toString());
+        assertEquals("entry[b=3] subset exit[while(b != 2)]", constraints.get(10).toString());
         assertEquals("entry[b=3] subset exit[b=2]", constraints.get(11).toString());
     }
 
@@ -394,9 +395,69 @@ public class TestCFG {
 
         ArrayList<Constraint> constraints = methodVisitor.getConstraints();
 
-        for(int i = 0; i < constraints.size(); i++){
-            System.out.println((i+1) + " " + constraints.get(i));
+        assertEquals("exit[a=0] subset entry[a=0] \\ [(i < a)]", constraints.get(0).toString());
+        assertEquals("exit[a=1] subset entry[a=1] \\ [(i < a)]", constraints.get(1).toString());
+        assertEquals("entry[a=1] subset exit[i < a]", constraints.get(2).toString());
+        assertEquals("exit[for( i < a)] subset entry[for( i < a)]", constraints.get(3).toString());
+        assertEquals("entry[for( i < a)] subset exit[a=0]", constraints.get(4).toString());
+        assertEquals("exit[int i=0] subset entry[int i=0]", constraints.get(5).toString());
+        assertEquals("entry[int i=0] subset exit[for( i < a)]", constraints.get(6).toString());
+        assertEquals("exit[i < a] subset entry[i < a]", constraints.get(7).toString());
+        assertEquals("entry[i < a] subset exit[int i=0]", constraints.get(8).toString());
+        assertEquals("exit[i++] subset entry[i++]", constraints.get(9).toString());
+        assertEquals("entry[i++] subset exit[a=1]", constraints.get(10).toString());
+        assertEquals("entry[i < a] subset exit[i++]", constraints.get(11).toString());
+        assertEquals("exit[a=2] subset entry[a=2] \\ [(i < a)]", constraints.get(12).toString());
+        assertEquals("entry[a=2] subset exit[i < a]", constraints.get(13).toString());
+
+//        for(int i = 0; i < constraints.size(); i++){
+//            System.out.println((i+1) + " " + constraints.get(i));
+//        }
+    }
+
+    @Test
+    public void testForIfElse(){
+        File file = new File("./tests/ForIfElse.java");
+        String source = null;
+        try {
+            source = new String(Files.readAllBytes(file.toPath()));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        ASTParser parser = ASTParser.newParser(AST.JLS3);
+        parser.setSource(source.toCharArray());
+        parser.setKind(ASTParser.K_COMPILATION_UNIT);
+
+        CompilationUnit cu = (CompilationUnit) parser.createAST(null);
+
+        ExpressionVisitor exprVisitor = new ExpressionVisitor();
+        cu.accept(exprVisitor);
+        List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
+
+        MethodVisitor methodVisitor = new MethodVisitor(ae);
+        cu.accept(methodVisitor);
+
+        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+
+        assertEquals("exit[a=1] subset entry[a=1] \\ [(i < a)]", constraints.get(0).toString());
+        assertEquals("entry[a=1] subset exit[if(i == 0)]", constraints.get(1).toString());
+        assertEquals("exit[a=2] subset entry[a=2] \\ [(i < a)]", constraints.get(2).toString());
+        assertEquals("entry[a=2] subset exit[if(i == 0)]", constraints.get(3).toString());
+        assertEquals("exit[if(i == 0)] subset entry[if(i == 0)]", constraints.get(4).toString());
+        assertEquals("entry[if(i == 0)] subset exit[i < a]", constraints.get(5).toString());
+        assertEquals("exit[for( i < a)] subset entry[for( i < a)]", constraints.get(6).toString());
+        assertEquals("exit[int i=0] subset entry[int i=0]", constraints.get(7).toString());
+        assertEquals("entry[int i=0] subset exit[for( i < a)]", constraints.get(8).toString());
+        assertEquals("exit[i < a] subset entry[i < a]", constraints.get(9).toString());
+        assertEquals("entry[i < a] subset exit[int i=0]", constraints.get(10).toString());
+        assertEquals("exit[i++] subset entry[i++]", constraints.get(11).toString());
+        assertEquals("entry[i++] subset exit[a=1]", constraints.get(12).toString());
+        assertEquals("entry[i++] subset exit[a=2]", constraints.get(13).toString());
+        assertEquals("entry[i < a] subset exit[i++]", constraints.get(14).toString());
+        assertEquals("exit[a=3] subset entry[a=3] \\ [(i < a)]", constraints.get(15).toString());
+        assertEquals("entry[a=3] subset exit[i < a]", constraints.get(16).toString());
+
+
     }
 
 }
