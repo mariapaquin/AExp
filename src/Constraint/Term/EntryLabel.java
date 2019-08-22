@@ -49,6 +49,10 @@ public class EntryLabel extends NodeLabel {
 			nodeExpr = "for(" + ((EnhancedForStatement) node).getParameter() + ")";
 		}
 
+		if (node instanceof DoStatement) {
+			nodeExpr = "do(" + ((DoStatement) node).getExpression()+ ")";
+		}
+
 		String ret = "entry[" + nodeExpr + "]";
 		if (!expressionList.isEmpty()) {
 			for (int i = 0; i < expressionList.size(); i++) {

@@ -675,4 +675,79 @@ public class TestCFG {
 //        }
     }
 
+    @Test
+    public void testDoWhile(){
+        File file = new File("./tests/DoWhile.java");
+        String source = null;
+        try {
+            source = new String(Files.readAllBytes(file.toPath()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ASTParser parser = ASTParser.newParser(AST.JLS3);
+        parser.setSource(source.toCharArray());
+        parser.setKind(ASTParser.K_COMPILATION_UNIT);
+
+        CompilationUnit cu = (CompilationUnit) parser.createAST(null);
+
+        ExpressionVisitor exprVisitor = new ExpressionVisitor();
+        cu.accept(exprVisitor);
+        List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
+
+        MethodVisitor methodVisitor = new MethodVisitor(ae);
+        cu.accept(methodVisitor);
+
+        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+
+        assertEquals(constraints.size(), 10);
+
+        assertEquals("exit[a=0] subset entry[a=0] \\ [(a < 10)]", constraints.get(0).toString());
+        assertEquals("exit[a++] subset entry[a++]", constraints.get(1).toString());
+        assertEquals("entry[a++] subset exit[do(a < 10)]", constraints.get(2).toString());
+        assertEquals("entry[a++] subset exit[a < 10]", constraints.get(3).toString());
+        assertEquals("exit[do(a < 10)] subset entry[do(a < 10)]", constraints.get(4).toString());
+        assertEquals("entry[do(a < 10)] subset exit[a=0]", constraints.get(5).toString());
+        assertEquals("exit[a < 10] subset entry[a < 10]", constraints.get(6).toString());
+        assertEquals("entry[a < 10] subset exit[a++]", constraints.get(7).toString());
+        assertEquals("exit[System.out.println(a)] subset entry[System.out.println(a)]", constraints.get(8).toString());
+        assertEquals("entry[System.out.println(a)] subset exit[a < 10]", constraints.get(9).toString());
+
+//        for(int i = 0; i < constraints.size(); i++){
+//            System.out.println((i+1) + " " + constraints.get(i));
+//        }
+    }
+
+    @Test
+    public void testEmptyDoWhile(){
+        File file = new File("./tests/EmptyDoWhile.java");
+        String source = null;
+        try {
+            source = new String(Files.readAllBytes(file.toPath()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ASTParser parser = ASTParser.newParser(AST.JLS3);
+        parser.setSource(source.toCharArray());
+        parser.setKind(ASTParser.K_COMPILATION_UNIT);
+
+        CompilationUnit cu = (CompilationUnit) parser.createAST(null);
+
+        ExpressionVisitor exprVisitor = new ExpressionVisitor();
+        cu.accept(exprVisitor);
+        List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
+
+        MethodVisitor methodVisitor = new MethodVisitor(ae);
+        cu.accept(methodVisitor);
+
+        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+
+        assertEquals(constraints.size(), 5);
+
+        assertEquals("exit[do(a < 10)] subset entry[do(a < 10)]", constraints.get(0).toString());
+        assertEquals("exit[a < 10] subset entry[a < 10]", constraints.get(1).toString());
+        assertEquals("entry[a < 10] subset exit[do(a < 10)]", constraints.get(2).toString());
+        assertEquals("exit[System.out.println(a)] subset entry[System.out.println(a)]", constraints.get(3).toString());
+        assertEquals("entry[System.out.println(a)] subset exit[a < 10]", constraints.get(4).toString());
+    }
+
 }

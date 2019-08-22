@@ -40,6 +40,10 @@ public class ExitLabel extends NodeLabel {
 			nodeExpr = "for(" + ((EnhancedForStatement) node).getParameter() + ")";
 		}
 
+		if (node instanceof DoStatement) {
+			nodeExpr = "do(" + ((DoStatement) node).getExpression()+ ")";
+		}
+
 		return "exit[" + nodeExpr + "]";
 	}
 	

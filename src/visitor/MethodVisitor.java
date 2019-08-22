@@ -84,6 +84,71 @@ public class MethodVisitor extends ASTVisitor {
         }
 
         @Override
+        public boolean visit(DoStatement node){
+            ConstraintTerm entry = variableFactory.createEntryLabel(node);
+            ConstraintTerm exit = variableFactory.createExitLabel(node);
+
+            List<Constraint> result = new ArrayList<Constraint>();
+
+            result.add(newSubsetConstraint(exit, entry));
+
+            if(!exitStmts.isEmpty()){
+                for (ASTNode stmt : exitStmts) {
+                    ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
+                    result.add(newSubsetConstraint(entry, prevExit));
+                }
+            }
+
+            exitStmts.clear();
+            exitStmts.add(node);
+
+            Expression whileExpr = node.getExpression();
+
+            ConstraintTerm whileExprEntry = variableFactory.createEntryLabel(whileExpr);
+            ConstraintTerm whileExprExit = variableFactory.createExitLabel(whileExpr);
+
+            result.add(newSubsetConstraint(whileExprExit, whileExprEntry));
+
+            exitStmts.add(whileExpr);
+
+            Statement body = node.getBody();
+            List<ASTNode> bodyExitStmts = new ArrayList<>();
+
+            if(body instanceof Block && ((Block) body).statements().size() == 0) {
+                result.add(newSubsetConstraint(whileExprEntry, exit));
+
+            } else {
+                BlockVisitor visitor = new BlockVisitor(body, exitStmts);
+                body.accept(visitor);
+                bodyExitStmts = visitor.getExitStmts();
+
+                if (bodyExitStmts.equals((exitStmts))) {
+                    bodyExitStmts.clear();
+                }
+            }
+
+            exitStmts.clear();
+
+            for (ASTNode stmt : bodyExitStmts) {
+                exitStmts.add(stmt);
+            }
+
+            if(!exitStmts.isEmpty()){
+                for (ASTNode stmt : exitStmts) {
+                    ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
+                    result.add(newSubsetConstraint(whileExprEntry, prevExit));
+                }
+            }
+
+            exitStmts.clear();
+            exitStmts.add(whileExpr);
+
+            constraints.addAll(result);
+
+            return false;
+        }
+
+        @Override
         public boolean visit(EnhancedForStatement node) {
             ConstraintTerm entry = variableFactory.createEntryLabel(node);
             ConstraintTerm exit = variableFactory.createExitLabel(node);
@@ -104,7 +169,6 @@ public class MethodVisitor extends ASTVisitor {
 
             Statement body = node.getBody();
             List<ASTNode> bodyExitStmts = new ArrayList<>();
-
 
             // could body ever be null?
             if(body != null ) {
@@ -322,6 +386,37 @@ public class MethodVisitor extends ASTVisitor {
             constraints.addAll(result);
         }
 
+        @Override
+        public boolean visit(PostfixExpression node) {
+            if (!(node.getParent() instanceof ExpressionStatement)) {
+                return false;
+            }
+            variableFactory.createEntryLabel(node);
+            variableFactory.createExitLabel(node);
+            return true;
+        }
+
+        @Override
+        public void endVisit(PostfixExpression node) {
+            List<Constraint> result = new ArrayList<Constraint>();
+
+            ConstraintTerm entry = variableFactory.createEntryLabel(node);
+            ConstraintTerm exit = variableFactory.createExitLabel(node);
+
+            result.add(newSubsetConstraint(exit, entry));
+
+            if(!exitStmts.isEmpty()){
+                for (ASTNode stmt : exitStmts) {
+                    ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
+                    result.add(newSubsetConstraint(entry, prevExit));
+                }
+            }
+
+            exitStmts.clear();
+            exitStmts.add(node);
+
+            constraints.addAll(result);
+        }
 
         @Override
         public boolean visit(VariableDeclarationStatement node) {
