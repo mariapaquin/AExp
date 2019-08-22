@@ -197,7 +197,6 @@ public class TestCFG {
         assertEquals("exit[a=b + 2] subset entry[a=b + 2] \\ [] U (b + 2)", constraints.get(7).toString());
         assertEquals("entry[a=b + 2] subset exit[b=0]", constraints.get(8).toString());
         assertEquals("entry[a=b + 2] subset exit[b=1]", constraints.get(9).toString());
-
     }
 
     @Test
@@ -234,7 +233,6 @@ public class TestCFG {
         assertEquals("exit[b=3] subset entry[b=3] \\ []", constraints.get(5).toString());
         assertEquals("entry[b=3] subset exit[b=1]", constraints.get(6).toString());
         assertEquals("entry[b=3] subset exit[b=2]", constraints.get(7).toString());
-
     }
 
     @Test
@@ -356,6 +354,41 @@ public class TestCFG {
         assertEquals("exit[b=3] subset entry[b=3] \\ [(b == 1)]", constraints.get(6).toString());
         assertEquals("entry[b=3] subset exit[while(b == 1)]", constraints.get(7).toString());
         assertEquals("entry[b=3] subset exit[b=2]", constraints.get(8).toString());
+    }
+
+    @Test
+    public void testEmptyWhile(){
+        File file = new File("./tests/EmptyWhile.java");
+        String source = null;
+        try {
+            source = new String(Files.readAllBytes(file.toPath()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ASTParser parser = ASTParser.newParser(AST.JLS3);
+        parser.setSource(source.toCharArray());
+        parser.setKind(ASTParser.K_COMPILATION_UNIT);
+
+        CompilationUnit cu = (CompilationUnit) parser.createAST(null);
+
+        ExpressionVisitor exprVisitor = new ExpressionVisitor();
+        cu.accept(exprVisitor);
+        List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
+
+        MethodVisitor methodVisitor = new MethodVisitor(ae);
+        cu.accept(methodVisitor);
+
+        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+
+        assertEquals(constraints.size(), 3);
+
+        assertEquals("exit[while(b == 1)] subset entry[while(b == 1)]", constraints.get(0).toString());
+        assertEquals("exit[b=3] subset entry[b=3] \\ [(b == 1)]", constraints.get(1).toString());
+        assertEquals("entry[b=3] subset exit[while(b == 1)]", constraints.get(2).toString());
+
+//        for(int i = 0; i < constraints.size(); i++){
+//            System.out.println((i+1) + " " + constraints.get(i));
+//        }
     }
 
     @Test
@@ -485,6 +518,48 @@ public class TestCFG {
     }
 
     @Test
+    public void testEmptyFor(){
+        File file = new File("./tests/EmptyFor.java");
+        String source = null;
+        try {
+            source = new String(Files.readAllBytes(file.toPath()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ASTParser parser = ASTParser.newParser(AST.JLS3);
+        parser.setSource(source.toCharArray());
+        parser.setKind(ASTParser.K_COMPILATION_UNIT);
+
+        CompilationUnit cu = (CompilationUnit) parser.createAST(null);
+
+        ExpressionVisitor exprVisitor = new ExpressionVisitor();
+        cu.accept(exprVisitor);
+        List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
+
+        MethodVisitor methodVisitor = new MethodVisitor(ae);
+        cu.accept(methodVisitor);
+
+        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+
+        assertEquals("exit[for( i < a)] subset entry[for( i < a)]", constraints.get(0).toString());
+        assertEquals("exit[int i=0] subset entry[int i=0]", constraints.get(1).toString());
+        assertEquals("entry[int i=0] subset exit[for( i < a)]", constraints.get(2).toString());
+        assertEquals("exit[i < a] subset entry[i < a]", constraints.get(3).toString());
+        assertEquals("entry[i < a] subset exit[int i=0]", constraints.get(4).toString());
+        assertEquals("exit[i++] subset entry[i++]", constraints.get(5).toString());
+        assertEquals("entry[i++] subset exit[i < a]", constraints.get(6).toString());
+        assertEquals("entry[i < a] subset exit[i++]", constraints.get(7).toString());
+        assertEquals("exit[a=2] subset entry[a=2] \\ [(i < a)]", constraints.get(8).toString());
+        assertEquals("entry[a=2] subset exit[i < a]", constraints.get(9).toString());
+
+        assertEquals(constraints.size(), 10);
+
+//        for(int i = 0; i < constraints.size(); i++){
+//            System.out.println((i+1) + " " + constraints.get(i));
+//        }
+    }
+
+    @Test
     public void testForIfElse(){
         File file = new File("./tests/ForIfElse.java");
         String source = null;
@@ -559,6 +634,41 @@ public class TestCFG {
         assertEquals("exit[System.out.println(c)] subset entry[System.out.println(c)]", constraints.get(5).toString());
         assertEquals("entry[System.out.println(c)] subset exit[for(String str)]", constraints.get(6).toString());
         assertEquals("entry[System.out.println(c)] subset exit[System.out.println(b)]", constraints.get(7).toString());
+
+//        for(int i = 0; i < constraints.size(); i++){
+//            System.out.println((i+1) + " " + constraints.get(i));
+//        }
+    }
+
+    @Test
+    public void testEmptyEnhancedFor(){
+        File file = new File("./tests/EmptyEnhancedFor.java");
+        String source = null;
+        try {
+            source = new String(Files.readAllBytes(file.toPath()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ASTParser parser = ASTParser.newParser(AST.JLS3);
+        parser.setSource(source.toCharArray());
+        parser.setKind(ASTParser.K_COMPILATION_UNIT);
+
+        CompilationUnit cu = (CompilationUnit) parser.createAST(null);
+
+        ExpressionVisitor exprVisitor = new ExpressionVisitor();
+        cu.accept(exprVisitor);
+        List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
+
+        MethodVisitor methodVisitor = new MethodVisitor(ae);
+        cu.accept(methodVisitor);
+
+        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+
+        assertEquals(constraints.size(), 3);
+
+        assertEquals("exit[for(String str)] subset entry[for(String str)]", constraints.get(0).toString());
+        assertEquals("exit[System.out.println(c)] subset entry[System.out.println(c)]", constraints.get(1).toString());
+        assertEquals("entry[System.out.println(c)] subset exit[for(String str)]", constraints.get(2).toString());
 
 //        for(int i = 0; i < constraints.size(); i++){
 //            System.out.println((i+1) + " " + constraints.get(i));

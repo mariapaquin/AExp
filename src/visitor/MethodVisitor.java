@@ -105,11 +105,17 @@ public class MethodVisitor extends ASTVisitor {
             Statement body = node.getBody();
             List<ASTNode> bodyExitStmts = new ArrayList<>();
 
+
             // could body ever be null?
-            if(body != null ){
+            if(body != null ) {
                 BlockVisitor visitor = new BlockVisitor(body, exitStmts);
                 body.accept(visitor);
                 bodyExitStmts = visitor.getExitStmts();
+
+                if (bodyExitStmts.equals((exitStmts))) {
+                    // empty while body
+                    bodyExitStmts.clear();
+                }
             }
 
             for (ASTNode stmt : bodyExitStmts) {
@@ -387,6 +393,11 @@ public class MethodVisitor extends ASTVisitor {
             body.accept(visitor);
 
             bodyExit = visitor.getExitStmts();
+
+            if (bodyExit.equals((exitStmts))) {
+                // empty while body
+                bodyExit.clear();
+            }
 
             if(!bodyExit.isEmpty()){
                 for (ASTNode stmt : bodyExit) {
