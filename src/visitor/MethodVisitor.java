@@ -289,7 +289,6 @@ public class MethodVisitor extends ASTVisitor {
 
             result.add(newSubsetConstraint(variableFactory.createEntryLabel(cond), updateExit));
 
-
             // (5) Before returning, set prev to prev list of condition
             exitStmts.clear();
             exitStmts.add(cond);
