@@ -1,6 +1,5 @@
 package Constraint;
 
-import Constraint.Operator.SubsetOperator;
 import Constraint.Term.ConstraintTerm;
 
 /**

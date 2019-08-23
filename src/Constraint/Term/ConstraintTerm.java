@@ -1,7 +1,9 @@
 package Constraint.Term;
 
+import Constraint.ExpressionLiteral;
 import Solving.AvailableExpressionSet;
-import java.util.Set;
+
+import java.util.List;
 
 /**
  * Represents a node in the constraint graph.
@@ -10,6 +12,9 @@ import java.util.Set;
 public abstract class ConstraintTerm {
 
     public AvailableExpressionSet availableExpressionSet;
+
+
+    private boolean isInitial;
 
     public interface TermProcessor {
         void processTerm(ConstraintTerm term);
@@ -23,11 +28,19 @@ public abstract class ConstraintTerm {
         availableExpressionSet = ds2;
     }
 
-    public void initializeDefinitionSet(Set<String> variables){
+    public void initializeDefinitionSet(List<ExpressionLiteral> variables){
 
     }
 
     public void processTerms(TermProcessor processor) {
         processor.processTerm(this);
+    }
+
+    public boolean isInitial() {
+        return isInitial;
+    }
+
+    public void setInitial(boolean initial) {
+        isInitial = initial;
     }
 }

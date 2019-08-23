@@ -2,22 +2,20 @@ package Solving;
 
 import Constraint.Constraint;
 import Constraint.Term.*;
+import Constraint.ExpressionLiteral;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class ConstraintSolver {
 
     private boolean change;
-    private ConstraintGraph graph;
-    private HashSet<Constraint> constraints;
-    private Set<String> variables;
+    public ConstraintGraph graph;
+    private ArrayList<Constraint> constraints;
+    private List<ExpressionLiteral> expressionList;
 
-    public ConstraintSolver(HashSet<Constraint> constraints, Set<String> variables) {
+    public ConstraintSolver(ArrayList<Constraint> constraints, List<ExpressionLiteral> expressionList) {
         this.constraints = constraints;
-        this.variables = variables;
+        this.expressionList = expressionList;
     }
 
     public void buildConstraintGraph() {
@@ -25,9 +23,9 @@ public class ConstraintSolver {
         graph.initialize();
     }
 
-    public void initializeDefinitionSet() {
+    public void initializeAESet() {
         for (ConstraintTerm term : graph.getAllTerms()) {
-            term.initializeDefinitionSet(variables);
+            term.initializeDefinitionSet(expressionList);
         }
     }
 
@@ -96,25 +94,25 @@ public class ConstraintSolver {
 
     private boolean changed(HashMap<String, List<ExpressionLiteral>> prevMap, HashMap<String, List<ExpressionLiteral>> newMap) {
 
-        for (String var : newMap.keySet()) {
-            List<ExpressionLiteral> l1 = prevMap.get(var);
-            List<ExpressionLiteral> l2 = newMap.get(var);
-
-            if (l1 == null || l2 == null) {
-                return true;
-            }
-            for (ExpressionLiteral def : l2) {
-                if (!l1.contains(def)) {
-                    return true;
-                }
-            }
-
-            for (ExpressionLiteral def : l1) {
-                if (!l2.contains(def)) {
-                    return true;
-                }
-            }
-        }
+//        for (String var : newMap.keySet()) {
+//            List<ExpressionLiteral> l1 = prevMap.get(var);
+//            List<ExpressionLiteral> l2 = newMap.get(var);
+//
+//            if (l1 == null || l2 == null) {
+//                return true;
+//            }
+//            for (ExpressionLiteral def : l2) {
+//                if (!l1.contains(def)) {
+//                    return true;
+//                }
+//            }
+//
+//            for (ExpressionLiteral def : l1) {
+//                if (!l2.contains(def)) {
+//                    return true;
+//                }
+//            }
+//        }
 
         return false;
     }

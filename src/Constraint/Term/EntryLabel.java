@@ -1,5 +1,6 @@
 package Constraint.Term;
 
+import Constraint.ExpressionLiteral;
 import org.eclipse.jdt.core.dom.*;
 
 import java.util.ArrayList;
@@ -51,6 +52,10 @@ public class EntryLabel extends NodeLabel {
 
 		if (node instanceof DoStatement) {
 			nodeExpr = "do(" + ((DoStatement) node).getExpression()+ ")";
+		}
+
+		if (node instanceof MethodDeclaration) {
+			nodeExpr = "init";
 		}
 
 		String ret = "entry[" + nodeExpr + "]";

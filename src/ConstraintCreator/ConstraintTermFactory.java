@@ -2,6 +2,7 @@ package ConstraintCreator;
 
 import java.util.HashMap;
 
+import Constraint.ExpressionLiteral;
 import Constraint.Term.*;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Expression;

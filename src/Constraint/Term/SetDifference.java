@@ -1,5 +1,7 @@
 package Constraint.Term;
 
+import Constraint.ExpressionLiteral;
+
 import java.util.List;
 
 /**

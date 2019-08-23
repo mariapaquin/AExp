@@ -1,6 +1,6 @@
 package visitor;
 
-import Constraint.Term.ExpressionLiteral;
+import Constraint.ExpressionLiteral;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.SimpleName;

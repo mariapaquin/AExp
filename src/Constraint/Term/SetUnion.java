@@ -1,6 +1,6 @@
 package Constraint.Term;
 
-import Constraint.Constraint;
+import Constraint.ExpressionLiteral;
 
 import java.util.List;
 

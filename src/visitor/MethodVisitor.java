@@ -1,9 +1,9 @@
 package visitor;
 
 import Constraint.Constraint;
-import Constraint.Operator.SubsetOperator;
+import Constraint.ExpressionLiteral;
+import Constraint.SubsetOperator;
 import Constraint.Term.ConstraintTerm;
-import Constraint.Term.ExpressionLiteral;
 import Constraint.Term.SetDifference;
 import Constraint.Term.SetUnion;
 import ConstraintCreator.ConstraintTermFactory;
@@ -25,17 +25,19 @@ public class MethodVisitor extends ASTVisitor {
 
     @Override
     public boolean visit(MethodDeclaration node) {
-        BlockVisitor visitor = new BlockVisitor(node, new ArrayList<>());
+        ConstraintTerm exit = variableFactory.createExitLabel(node);
+        exit.setInitial(true);
+        List<ASTNode> exitStmts = new ArrayList<>();
+        exitStmts.add(node);
+        BlockVisitor visitor = new BlockVisitor(node, exitStmts);
         node.accept(visitor);
         return false;
     }
 
     public class BlockVisitor extends ASTVisitor {
-        private ASTNode blockNode;
         private List<ASTNode> exitStmts;
 
         public BlockVisitor(ASTNode node, List<ASTNode> blockPrev) {
-            blockNode = node;
             exitStmts = new ArrayList<>();
             for (ASTNode p : blockPrev) {
                 exitStmts.add(p);

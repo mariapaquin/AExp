@@ -1,16 +1,14 @@
-package Constraint.Term;
+package Constraint;
 
-import Solving.AvailableExpressionSet;
 import org.eclipse.jdt.core.dom.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Will keep track of variables used in expression.
  */
-public class ExpressionLiteral extends ConstraintTerm {
+public class ExpressionLiteral {
 
     private Expression node;
     private List<String> varsUsed;

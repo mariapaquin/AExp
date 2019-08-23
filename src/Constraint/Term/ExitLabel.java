@@ -44,6 +44,10 @@ public class ExitLabel extends NodeLabel {
 			nodeExpr = "do(" + ((DoStatement) node).getExpression()+ ")";
 		}
 
+		if (node instanceof MethodDeclaration) {
+			nodeExpr = "init";
+		}
+
 		return "exit[" + nodeExpr + "]";
 	}
 	
