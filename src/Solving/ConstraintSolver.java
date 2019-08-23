@@ -25,7 +25,11 @@ public class ConstraintSolver {
 
     public void initializeAESet() {
         for (ConstraintTerm term : graph.getAllTerms()) {
-            term.initializeDefinitionSet(expressionList);
+            if (term.isInitial()) {
+                term.initializeAESet(expressionList);
+            } else {
+                term.initializeAESet(new ArrayList<>());
+            }
         }
     }
 
@@ -78,7 +82,7 @@ public class ConstraintSolver {
 //
 //            AvailableExpressionSet union = rhsEst.unionWith(lhsEst);
 //
-//            rhs.updateDefinitionSet(union);
+//            rhs.updateAESet(union);
 //
 //            if (changed(prev, rhs.getAvailableExpressionSet().getVarMap())) {
 //                System.out.println("set was changed");

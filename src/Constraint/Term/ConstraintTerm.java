@@ -13,7 +13,6 @@ public abstract class ConstraintTerm {
 
     public AvailableExpressionSet availableExpressionSet;
 
-
     private boolean isInitial;
 
     public interface TermProcessor {
@@ -24,11 +23,11 @@ public abstract class ConstraintTerm {
         return availableExpressionSet;
     }
 
-    public void updateDefinitionSet(AvailableExpressionSet ds2) {
+    public void updateAESet(AvailableExpressionSet ds2) {
         availableExpressionSet = ds2;
     }
 
-    public void initializeDefinitionSet(List<ExpressionLiteral> variables){
+    public void initializeAESet(List<ExpressionLiteral> variables){
 
     }
 

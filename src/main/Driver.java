@@ -51,7 +51,7 @@ public class Driver {
 
         solver.initializeAESet();
 
-//        solver.processWorkList();
+        solver.processWorkList();
 
     }
 
