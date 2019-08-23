@@ -58,6 +58,16 @@ public class MethodVisitor extends ASTVisitor {
             ConstraintTerm entry = variableFactory.createEntryLabel(node);
             ConstraintTerm exit = variableFactory.createExitLabel(node);
 
+            if(!exitStmts.isEmpty()){
+                for (ASTNode stmt : exitStmts) {
+                    ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
+                    result.add(newSubsetConstraint(entry, prevExit));
+                }
+            }
+
+            exitStmts.clear();
+            exitStmts.add(node);
+
             String lhs = node.getLeftHandSide().toString();
             List<ExpressionLiteral>  exprToSubtract = getExpressionsInvolving(lhs);
             SetDifference setDifference = getSetDifference(entry, exprToSubtract);
@@ -72,16 +82,6 @@ public class MethodVisitor extends ASTVisitor {
                 result.add(newSubsetConstraint(exit, setDifference));
             }
 
-            if(!exitStmts.isEmpty()){
-                for (ASTNode stmt : exitStmts) {
-                    ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
-                    result.add(newSubsetConstraint(entry, prevExit));
-                }
-            }
-
-            exitStmts.clear();
-            exitStmts.add(node);
-
             constraints.addAll(result);
         }
 
@@ -92,14 +92,17 @@ public class MethodVisitor extends ASTVisitor {
 
             List<Constraint> result = new ArrayList<Constraint>();
 
-            result.add(newSubsetConstraint(exit, entry));
-
             if(!exitStmts.isEmpty()){
                 for (ASTNode stmt : exitStmts) {
                     ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
                     result.add(newSubsetConstraint(entry, prevExit));
                 }
             }
+
+            result.add(newSubsetConstraint(exit, entry));
+
+            constraints.addAll(result);
+            result = new ArrayList<Constraint>();
 
             exitStmts.clear();
             exitStmts.add(node);
@@ -109,7 +112,6 @@ public class MethodVisitor extends ASTVisitor {
             ConstraintTerm whileExprEntry = variableFactory.createEntryLabel(whileExpr);
             ConstraintTerm whileExprExit = variableFactory.createExitLabel(whileExpr);
 
-            result.add(newSubsetConstraint(whileExprExit, whileExprEntry));
 
             exitStmts.add(whileExpr);
 
@@ -129,6 +131,7 @@ public class MethodVisitor extends ASTVisitor {
                 }
             }
 
+
             exitStmts.clear();
 
             for (ASTNode stmt : bodyExitStmts) {
@@ -141,6 +144,8 @@ public class MethodVisitor extends ASTVisitor {
                     result.add(newSubsetConstraint(whileExprEntry, prevExit));
                 }
             }
+
+            result.add(newSubsetConstraint(whileExprExit, whileExprEntry));
 
             exitStmts.clear();
             exitStmts.add(whileExpr);
@@ -157,14 +162,16 @@ public class MethodVisitor extends ASTVisitor {
 
             List<Constraint> result = new ArrayList<Constraint>();
 
-            result.add(newSubsetConstraint(exit, entry));
-
             if(!exitStmts.isEmpty()){
                 for (ASTNode stmt : exitStmts) {
                     ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
                     result.add(newSubsetConstraint(entry, prevExit));
                 }
             }
+
+            result.add(newSubsetConstraint(exit, entry));
+
+            constraints.addAll(result);
 
             exitStmts.clear();
             exitStmts.add(node);
@@ -188,8 +195,6 @@ public class MethodVisitor extends ASTVisitor {
                 exitStmts.add(stmt);
             }
 
-            constraints.addAll(result);
-
             return false;
         }
 
@@ -203,14 +208,17 @@ public class MethodVisitor extends ASTVisitor {
 
             List<Constraint> result = new ArrayList<Constraint>();
 
-            result.add(newSubsetConstraint(exit, entry));
-
             if(!exitStmts.isEmpty()){
                 for (ASTNode stmt : exitStmts) {
                     ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
                     result.add(newSubsetConstraint(entry, prevExit));
                 }
             }
+
+            result.add(newSubsetConstraint(exit, entry));
+
+            constraints.addAll(result);
+            result = new ArrayList<Constraint>();
 
             exitStmts.clear();
             exitStmts.add(node);
@@ -219,12 +227,17 @@ public class MethodVisitor extends ASTVisitor {
             Expression init = (Expression) node.initializers().get(0);
             ConstraintTerm initEntry = variableFactory.createEntryLabel(init);
             ConstraintTerm initExit = variableFactory.createExitLabel(init);
+
+            for (ASTNode stmt : exitStmts) {
+                ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
+                result.add(newSubsetConstraint(initEntry, prevExit));
+            }
+
             result.add(newSubsetConstraint(initExit, initEntry));
 
-                for (ASTNode stmt : exitStmts) {
-                    ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
-                    result.add(newSubsetConstraint(initEntry, prevExit));
-                }
+
+            constraints.addAll(result);
+            result = new ArrayList<Constraint>();
 
             exitStmts.clear();
             exitStmts.add(init);
@@ -249,12 +262,15 @@ public class MethodVisitor extends ASTVisitor {
                     variableFactory.setEntryLabel(cond, setUnion);
                 }
             }
-                result.add(newSubsetConstraint(condExit, variableFactory.createEntryLabel(cond)));
-
             for (ASTNode stmt : exitStmts) {
                 ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
                 result.add(newSubsetConstraint(condEntry, prevExit));
             }
+
+            result.add(newSubsetConstraint(condExit, variableFactory.createEntryLabel(cond)));
+
+            constraints.addAll(result);
+            result = new ArrayList<Constraint>();
 
             exitStmts.clear();
             exitStmts.add(cond);
@@ -280,14 +296,14 @@ public class MethodVisitor extends ASTVisitor {
             ConstraintTerm updateEntry = variableFactory.createEntryLabel(update);
             ConstraintTerm updateExit = variableFactory.createExitLabel(update);
 
-            result.add(newSubsetConstraint(updateExit, updateEntry));
-
             if(!exitStmts.isEmpty()){
                 for (ASTNode stmt : exitStmts) {
                     ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
                     result.add(newSubsetConstraint(updateEntry, prevExit));
                 }
             }
+
+            result.add(newSubsetConstraint(updateExit, updateEntry));
 
             result.add(newSubsetConstraint(variableFactory.createEntryLabel(cond), updateExit));
 
@@ -307,14 +323,16 @@ public class MethodVisitor extends ASTVisitor {
 
             List<Constraint> result = new ArrayList<Constraint>();
 
-            result.add(newSubsetConstraint(exit, entry));
-
             if(!exitStmts.isEmpty()){
                 for (ASTNode stmt : exitStmts) {
                     ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
                     result.add(newSubsetConstraint(entry, prevExit));
                 }
             }
+
+            result.add(newSubsetConstraint(exit, entry));
+
+            constraints.addAll(result);
 
             exitStmts.clear();
             exitStmts.add(node);
@@ -350,7 +368,6 @@ public class MethodVisitor extends ASTVisitor {
                 exitStmts.add(stmt);
             }
 
-            constraints.addAll(result);
             return false;
         }
 
@@ -372,14 +389,15 @@ public class MethodVisitor extends ASTVisitor {
             ConstraintTerm entry = variableFactory.createEntryLabel(node);
             ConstraintTerm exit = variableFactory.createExitLabel(node);
 
-            result.add(newSubsetConstraint(exit, entry));
-
             if(!exitStmts.isEmpty()){
                 for (ASTNode stmt : exitStmts) {
                     ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
                     result.add(newSubsetConstraint(entry, prevExit));
                 }
             }
+
+            result.add(newSubsetConstraint(exit, entry));
+
 
             exitStmts.clear();
             exitStmts.add(node);
@@ -404,14 +422,14 @@ public class MethodVisitor extends ASTVisitor {
             ConstraintTerm entry = variableFactory.createEntryLabel(node);
             ConstraintTerm exit = variableFactory.createExitLabel(node);
 
-            result.add(newSubsetConstraint(exit, entry));
-
             if(!exitStmts.isEmpty()){
                 for (ASTNode stmt : exitStmts) {
                     ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
                     result.add(newSubsetConstraint(entry, prevExit));
                 }
             }
+
+            result.add(newSubsetConstraint(exit, entry));
 
             exitStmts.clear();
             exitStmts.add(node);
@@ -433,6 +451,14 @@ public class MethodVisitor extends ASTVisitor {
             ConstraintTerm entry = variableFactory.createEntryLabel(node);
             ConstraintTerm exit = variableFactory.createExitLabel(node);
 
+            if(!exitStmts.isEmpty()){
+                for (ASTNode stmt : exitStmts) {
+                    ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
+                    result.add(newSubsetConstraint(entry, prevExit));
+
+                }
+            }
+
             VariableDeclarationFragment fragment = ((List<VariableDeclarationFragment>) node.fragments()).get(0);
             String lhs = fragment.getName().getIdentifier();
             List<ExpressionLiteral>  exprToSubtract = getExpressionsInvolving(lhs);
@@ -446,14 +472,6 @@ public class MethodVisitor extends ASTVisitor {
             } else {
                 variableFactory.setEntryLabel(node, setDifference);
                 result.add(newSubsetConstraint(exit, setDifference));
-            }
-
-            if(!exitStmts.isEmpty()){
-                for (ASTNode stmt : exitStmts) {
-                    ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
-                    result.add(newSubsetConstraint(entry, prevExit));
-
-                }
             }
 
             exitStmts.clear();
@@ -470,14 +488,16 @@ public class MethodVisitor extends ASTVisitor {
 
             List<Constraint> result = new ArrayList<Constraint>();
 
-            result.add(newSubsetConstraint(exit, entry));
-
             if(!exitStmts.isEmpty()){
                 for (ASTNode stmt : exitStmts) {
                     ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
                     result.add(newSubsetConstraint(entry, prevExit));
                 }
             }
+
+            result.add(newSubsetConstraint(exit, entry));
+            constraints.addAll(result);
+            result = new ArrayList<Constraint>();
 
             exitStmts.clear();
             exitStmts.add(node);

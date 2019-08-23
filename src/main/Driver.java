@@ -42,6 +42,7 @@ public class Driver {
         for (Constraint constraint : constraints) {
             System.out.println(++i + ") " + constraint);
         }
+
         System.out.println();
 
         System.out.println(" ------------  \n| Constraint |\n| Solutions  |\n ------------  ");
