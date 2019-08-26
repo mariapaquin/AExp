@@ -2,6 +2,7 @@ package Constraint.Term;
 
 import Constraint.ExpressionLiteral;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,25 +12,37 @@ import java.util.List;
  */
 public class SetDifference extends ConstraintTerm {
 
-    private ConstraintTerm entryTerm;
-    private List<ExpressionLiteral> expressionList;
+    private EntryLabel entryTerm;
+    private List<ExpressionLiteral> expressionsToSubtract;
 
-    public SetDifference(ConstraintTerm entryTerm, List<ExpressionLiteral> expressionList) {
+    public SetDifference(EntryLabel entryTerm, List<ExpressionLiteral> expressionsToSubtract) {
+        super();
         this.entryTerm = entryTerm;
-        this.expressionList = expressionList;
+        this.expressionsToSubtract = expressionsToSubtract;
     }
 
-    public ConstraintTerm getEntryTerm() {
-        return entryTerm;
+    public void updateAE(List<ExpressionLiteral> expressions) {
+        entryTerm.updateAE(expressions);
     }
 
-    public List<ExpressionLiteral> getExpr() {
-        return expressionList;
+
+    public List<ExpressionLiteral>  getAvailableExpressions() {
+        return getListSubtracting(expressionsToSubtract);
     }
 
     @Override
     public String toString() {
-        return entryTerm + " \\ " + expressionList;
+        return entryTerm + " \\ " + expressionsToSubtract;
     }
 
+    private List<ExpressionLiteral> getListSubtracting(List<ExpressionLiteral> exprsToSubtract) {
+        List<ExpressionLiteral> expressions = new ArrayList();
+
+        for (ExpressionLiteral e : entryTerm.getAvailableExpressions()) {
+            if (!exprsToSubtract.contains(e)) {
+                expressions.add(e);
+            }
+        }
+        return expressions;
+    }
 }

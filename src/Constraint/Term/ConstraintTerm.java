@@ -3,6 +3,7 @@ package Constraint.Term;
 import Constraint.ExpressionLiteral;
 import Solving.AvailableExpressionSet;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,36 +11,18 @@ import java.util.List;
  * 
  */
 public abstract class ConstraintTerm {
+    protected List<ExpressionLiteral> availableExpressions;
 
-    public AvailableExpressionSet availableExpressionSet;
+    public abstract List<ExpressionLiteral> getAvailableExpressions();
 
-    private boolean isInitial;
+    public abstract void updateAE(List<ExpressionLiteral> expressions);
 
     public interface TermProcessor {
         void processTerm(ConstraintTerm term);
-    }
-
-    public AvailableExpressionSet getAvailableExpressionSet() {
-        return availableExpressionSet;
-    }
-
-    public void updateAESet(AvailableExpressionSet ds2) {
-        availableExpressionSet = ds2;
-    }
-
-    public void initializeAESet(List<ExpressionLiteral> variables){
-
     }
 
     public void processTerms(TermProcessor processor) {
         processor.processTerm(this);
     }
 
-    public boolean isInitial() {
-        return isInitial;
-    }
-
-    public void setInitial(boolean initial) {
-        isInitial = initial;
-    }
 }

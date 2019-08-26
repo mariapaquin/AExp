@@ -1,6 +1,7 @@
 package Constraint.Term;
 
 import Constraint.ExpressionLiteral;
+import Solving.AvailableExpressionSet;
 import org.eclipse.jdt.core.dom.*;
 
 import java.util.ArrayList;
@@ -21,7 +22,6 @@ public class EntryLabel extends NodeLabel {
 	public void addExpression(ExpressionLiteral e) {
 		expressionList.add(e);
 	}
-
 
 	public String toString() {
 		String nodeExpr = node.toString();

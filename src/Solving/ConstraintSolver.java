@@ -25,10 +25,12 @@ public class ConstraintSolver {
 
     public void initializeAESet() {
         for (ConstraintTerm term : graph.getAllTerms()) {
-            if (term.isInitial()) {
-                term.initializeAESet(expressionList);
-            } else {
-                term.initializeAESet(new ArrayList<>());
+            if (term instanceof NodeLabel) {
+                if (((NodeLabel) term).isInitial()) {
+                    ((NodeLabel) term).initializeAE(new ArrayList<ExpressionLiteral>());
+                } else {
+                    ((NodeLabel) term).initializeAE(expressionList);
+                }
             }
         }
     }
@@ -46,54 +48,72 @@ public class ConstraintSolver {
                 System.out.println("Constraint.Term:" + t);
                 int h = 0;
                 for (Constraint c : graph.getConstraintsInvolving(t)) {
-                    System.out.println(++h + ": checking Constraint " + c + "...");
-                    satisfyConstraint(c);
+                     System.out.println(++h + ": checking Constraint " + c + "...");
+                     satisfyConstraint(c);
                 }
                 System.out.println("\n");
             }
-
         }
 
         System.out.println();
 
-        for (int j = 0; j < workList.size(); j++) {
-            ConstraintTerm t = workList.get(j);
-            System.out.println(t + "\n--------------\n" + t.getAvailableExpressionSet());
-            System.out.println();
-        }
+//        for (int j = 0; j < workList.size(); j++) {
+//            ConstraintTerm t = workList.get(j);
+//            System.out.println(t + "\n--------------\n" + t.getAvailableExpressionSet());
+//            System.out.println();
+//        }
     }
 
     private void satisfyConstraint(Constraint constraint) {
         ConstraintTerm lhs = constraint.getLhs();
         ConstraintTerm rhs = constraint.getRhs();
 
-        AvailableExpressionSet lhsEst = lhs.getAvailableExpressionSet();
-        AvailableExpressionSet rhsEst = rhs.getAvailableExpressionSet();
+        List<ExpressionLiteral> lhsAE = lhs.getAvailableExpressions();
+        List<ExpressionLiteral> rhsAE = rhs.getAvailableExpressions();
 
-//        if (!rhsEst.containsAll(lhsEst)) {
-//            System.out.println(lhs.getAvailableExpressionSet() + " is not in " + rhs.getAvailableExpressionSet());
-//            System.out.println("Performing union operation...");
-//
-//            // copy the previous definition set for change detection
-//            HashMap<String, List<ExpressionLiteral>> prev = new HashMap<>();
-//            for (String var : rhsEst.getVariables()) {
-//                prev.put(var, rhsEst.get(var));
-//            }
-//
-//            AvailableExpressionSet union = rhsEst.unionWith(lhsEst);
-//
-//            rhs.updateAESet(union);
-//
-//            if (changed(prev, rhs.getAvailableExpressionSet().getVarMap())) {
-//                System.out.println("set was changed");
-//                change = true;
-//            }
-//            System.out.println(lhs.getAvailableExpressionSet() + " is now in " + rhs.getAvailableExpressionSet());
-//
-//        } else {
-//            System.out.println(lhsEst + " is in " + rhsEst);
-//            System.out.println("Constraint already satisfied.");
-//        }
+        if (!rhsAE.containsAll(lhsAE)) {
+            System.out.println(lhsAE + " is not in " + rhsAE);
+            System.out.println("Performing intersection operation...");
+
+//          copy the previous expression list for change detection
+            AvailableExpressionSet prev = new AvailableExpressionSet();
+            for (ExpressionLiteral e: rhsAE) {
+                prev.add(e);
+            }
+
+            List<ExpressionLiteral> intersection = intersect(lhsAE, rhsAE);
+
+            lhs.updateAE(intersection);
+
+//////            if (changed(prev, rhs.getAvailableExpressionSet().getVarMap())) {
+//////                System.out.println("set was changed");
+//////                change = true;
+//////            }
+
+            System.out.println(lhs.getAvailableExpressions()
+                    + " is now in " + rhs.getAvailableExpressions());
+
+        } else {
+            System.out.println(lhsAE + " is already in " + rhsAE);
+        }
+    }
+
+    private List<ExpressionLiteral> intersect(List<ExpressionLiteral> lhsAE, List<ExpressionLiteral> rhsAE) {
+        List<ExpressionLiteral> expressions = new ArrayList();
+
+        for (ExpressionLiteral e: lhsAE) {
+            boolean inIntersection = false;
+            for (ExpressionLiteral e2: rhsAE) {
+                if(e.equals(e2)){
+                    inIntersection = true;
+                }
+            }
+            if (inIntersection) {
+                expressions.add(e);
+            }
+        }
+
+        return expressions;
     }
 
     private boolean changed(HashMap<String, List<ExpressionLiteral>> prevMap, HashMap<String, List<ExpressionLiteral>> newMap) {

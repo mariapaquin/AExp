@@ -33,4 +33,9 @@ public class ExpressionLiteral {
     public Expression getNode() {
         return node;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return toString().equals(obj.toString());
+    }
 }
