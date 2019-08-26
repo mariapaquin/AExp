@@ -9,7 +9,7 @@ import java.util.*;
 public class ConstraintSolver {
 
     private boolean change;
-    public ConstraintGraph graph;
+    private ConstraintGraph graph;
     private ArrayList<Constraint> constraints;
     private List<ExpressionLiteral> expressionList;
 
@@ -27,9 +27,9 @@ public class ConstraintSolver {
         for (ConstraintTerm term : graph.getAllTerms()) {
             if (term instanceof NodeLabel) {
                 if (((NodeLabel) term).isInitial()) {
-                    ((NodeLabel) term).initializeAE(new ArrayList<ExpressionLiteral>());
+                    term.setAvailableExpressions(new ArrayList<>());
                 } else {
-                    ((NodeLabel) term).initializeAE(expressionList);
+                    term.setAvailableExpressions(expressionList);
                 }
             }
         }
@@ -83,7 +83,7 @@ public class ConstraintSolver {
 
             List<ExpressionLiteral> intersection = intersect(lhsAE, rhsAE);
 
-            lhs.updateAE(intersection);
+            lhs.setAvailableExpressions(intersection);
 
             if (changed(prev, lhs.getAvailableExpressions())) {
                 System.out.println("LHS was changed");

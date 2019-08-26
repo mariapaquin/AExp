@@ -15,24 +15,15 @@ public class NodeLabel extends ConstraintTerm {
 	protected boolean isInitial;
 
 	public NodeLabel(ASTNode node) {
-		super();
 		this.node = node;
-	}
-
-	public void updateAE(List<ExpressionLiteral> expressions) {
-		availableExpressions = expressions;
-	}
-
-	public void initializeAE(List<ExpressionLiteral> expressions){
-		availableExpressions = expressions;
 	}
 
 	public List<ExpressionLiteral> getAvailableExpressions() {
 		return availableExpressions;
 	}
 
-	public void setAvailableExpressions(List<ExpressionLiteral> availableExpressions) {
-		this.availableExpressions = availableExpressions;
+	public void setAvailableExpressions(List<ExpressionLiteral> expressions) {
+		availableExpressions = expressions;
 	}
 
 	public boolean isInitial() {

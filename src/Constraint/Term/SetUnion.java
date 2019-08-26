@@ -30,14 +30,13 @@ public class SetUnion extends ConstraintTerm {
         this.setDifference = null;
     }
 
-    public void updateAE(List<ExpressionLiteral> expressions) {
+    public void setAvailableExpressions(List<ExpressionLiteral> expressions) {
         if (entryTerm != null) {
-            entryTerm.updateAE(expressions);
+            entryTerm.setAvailableExpressions(expressions);
         } else{
-            setDifference.updateAE(expressions);
+            setDifference.setAvailableExpressions(expressions);
         }
     }
-
 
     public List<ExpressionLiteral> getAvailableExpressions() {
         if (entryTerm != null) {

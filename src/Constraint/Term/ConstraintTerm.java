@@ -9,11 +9,10 @@ import java.util.List;
  * 
  */
 public abstract class ConstraintTerm {
-    protected List<ExpressionLiteral> availableExpressions;
+    public List<ExpressionLiteral> availableExpressions;
 
     public abstract List<ExpressionLiteral> getAvailableExpressions();
-
-    public abstract void updateAE(List<ExpressionLiteral> expressions);
+    public abstract void setAvailableExpressions(List<ExpressionLiteral> expressions);
 
     public interface TermProcessor {
         void processTerm(ConstraintTerm term);

@@ -3,23 +3,15 @@ package Constraint.Term;
 import Constraint.ExpressionLiteral;
 import org.eclipse.jdt.core.dom.*;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * RD_entry[n]
  *
  */
 public class EntryLabel extends NodeLabel {
-	private List<ExpressionLiteral> expressionList;
 
 	public EntryLabel(ASTNode node) {
 		super(node);
-		expressionList = new ArrayList<>();
-	}
-
-	public void addExpression(ExpressionLiteral e) {
-		expressionList.add(e);
 	}
 
 	public String toString() {
@@ -58,11 +50,7 @@ public class EntryLabel extends NodeLabel {
 		}
 
 		String ret = "entry[" + nodeExpr + "]";
-		if (!expressionList.isEmpty()) {
-			for (int i = 0; i < expressionList.size(); i++) {
-				ret += " U " + expressionList.get(i);
-			}
-		}
+
 		return ret;
 	}
 }

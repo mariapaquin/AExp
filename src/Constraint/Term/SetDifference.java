@@ -16,23 +16,16 @@ public class SetDifference extends ConstraintTerm {
     private List<ExpressionLiteral> expressionsToSubtract;
 
     public SetDifference(EntryLabel entryTerm, List<ExpressionLiteral> expressionsToSubtract) {
-        super();
         this.entryTerm = entryTerm;
         this.expressionsToSubtract = expressionsToSubtract;
     }
 
-    public void updateAE(List<ExpressionLiteral> expressions) {
-        entryTerm.updateAE(expressions);
+    public void setAvailableExpressions(List<ExpressionLiteral> expressions) {
+        entryTerm.setAvailableExpressions(expressions);
     }
-
 
     public List<ExpressionLiteral>  getAvailableExpressions() {
         return getListSubtracting(expressionsToSubtract);
-    }
-
-    @Override
-    public String toString() {
-        return entryTerm + " \\ " + expressionsToSubtract;
     }
 
     private List<ExpressionLiteral> getListSubtracting(List<ExpressionLiteral> exprsToSubtract) {
@@ -44,5 +37,10 @@ public class SetDifference extends ConstraintTerm {
             }
         }
         return expressions;
+    }
+
+    @Override
+    public String toString() {
+        return entryTerm + " \\ " + expressionsToSubtract;
     }
 }
