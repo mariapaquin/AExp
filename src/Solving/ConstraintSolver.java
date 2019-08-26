@@ -57,11 +57,11 @@ public class ConstraintSolver {
 
         System.out.println();
 
-//        for (int j = 0; j < workList.size(); j++) {
-//            ConstraintTerm t = workList.get(j);
-//            System.out.println(t + "\n--------------\n" + t.getAvailableExpressionSet());
-//            System.out.println();
-//        }
+        for (int j = 0; j < workList.size(); j++) {
+            ConstraintTerm t = workList.get(j);
+            System.out.println(t + "\n--------------\n" + t.getAvailableExpressions());
+            System.out.println();
+        }
     }
 
     private void satisfyConstraint(Constraint constraint) {
@@ -76,7 +76,7 @@ public class ConstraintSolver {
             System.out.println("Performing intersection operation...");
 
 //          copy the previous expression list for change detection
-            AvailableExpressionSet prev = new AvailableExpressionSet();
+            List<ExpressionLiteral> prev = new ArrayList<>();
             for (ExpressionLiteral e: rhsAE) {
                 prev.add(e);
             }
@@ -85,10 +85,10 @@ public class ConstraintSolver {
 
             lhs.updateAE(intersection);
 
-//////            if (changed(prev, rhs.getAvailableExpressionSet().getVarMap())) {
-//////                System.out.println("set was changed");
-//////                change = true;
-//////            }
+            if (changed(prev, lhs.getAvailableExpressions())) {
+                System.out.println("LHS was changed");
+                change = true;
+            }
 
             System.out.println(lhs.getAvailableExpressions()
                     + " is now in " + rhs.getAvailableExpressions());
@@ -116,27 +116,23 @@ public class ConstraintSolver {
         return expressions;
     }
 
-    private boolean changed(HashMap<String, List<ExpressionLiteral>> prevMap, HashMap<String, List<ExpressionLiteral>> newMap) {
+    private boolean changed(List<ExpressionLiteral> prevList, List<ExpressionLiteral> newList) {
+        List<String> prevListString = new ArrayList<>();
+        List<String> newListString = new ArrayList<>();
 
-//        for (String var : newMap.keySet()) {
-//            List<ExpressionLiteral> l1 = prevMap.get(var);
-//            List<ExpressionLiteral> l2 = newMap.get(var);
-//
-//            if (l1 == null || l2 == null) {
-//                return true;
-//            }
-//            for (ExpressionLiteral def : l2) {
-//                if (!l1.contains(def)) {
-//                    return true;
-//                }
-//            }
-//
-//            for (ExpressionLiteral def : l1) {
-//                if (!l2.contains(def)) {
-//                    return true;
-//                }
-//            }
-//        }
+        for (ExpressionLiteral e : prevList) {
+            prevListString.add(e.toString());
+        }
+
+        for (ExpressionLiteral e2 : newList) {
+            newListString.add(e2.toString());
+        }
+
+        for (String s: prevListString) {
+            if (!newListString.contains(s)) {
+                return true;
+            }
+        }
 
         return false;
     }

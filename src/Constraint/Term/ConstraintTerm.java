@@ -1,9 +1,7 @@
 package Constraint.Term;
 
 import Constraint.ExpressionLiteral;
-import Solving.AvailableExpressionSet;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

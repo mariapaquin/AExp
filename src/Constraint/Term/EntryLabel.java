@@ -1,7 +1,6 @@
 package Constraint.Term;
 
 import Constraint.ExpressionLiteral;
-import Solving.AvailableExpressionSet;
 import org.eclipse.jdt.core.dom.*;
 
 import java.util.ArrayList;
