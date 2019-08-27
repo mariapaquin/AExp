@@ -27,15 +27,34 @@ public class MethodVisitor extends ASTVisitor {
         ((ExitLabel) exit).setInitial(true);
         List<ASTNode> exitStmts = new ArrayList<>();
         exitStmts.add(node);
-        BlockVisitor visitor = new BlockVisitor(node, exitStmts);
+        BlockVisitor visitor = new BlockVisitor(exitStmts);
         node.accept(visitor);
         return false;
+    }
+
+    public class InfixVisitor extends ASTVisitor {
+        private List<ExpressionLiteral> exprList;
+
+        public InfixVisitor() {
+            exprList = new ArrayList<>();
+        }
+        @Override
+        public boolean visit(InfixExpression node){
+            ExpressionLiteral e = variableFactory.createExpressionLiteral(node);
+            exprList.add(e);
+            return false;
+        }
+
+        public List<ExpressionLiteral> getExprList() {
+            return exprList;
+        }
+
     }
 
     public class BlockVisitor extends ASTVisitor {
         private List<ASTNode> exitStmts;
 
-        public BlockVisitor(ASTNode node, List<ASTNode> blockPrev) {
+        public BlockVisitor(List<ASTNode> blockPrev) {
             exitStmts = new ArrayList<>();
             for (ASTNode p : blockPrev) {
                 exitStmts.add(p);
@@ -66,12 +85,13 @@ public class MethodVisitor extends ASTVisitor {
             exitStmts.clear();
             exitStmts.add(node);
 
-            List<ExpressionLiteral> exprList = new ArrayList<>();
+            //*******************//
+            //   possible infix  //
+            //*******************//
+            InfixVisitor infixVisitor = new InfixVisitor();
 
-            if (node.getRightHandSide() instanceof InfixExpression) {
-                ExpressionLiteral newExpr = variableFactory.createExpressionLiteral(node.getRightHandSide());
-                exprList.add(newExpr);
-            }
+            node.getRightHandSide().accept(infixVisitor);
+            List<ExpressionLiteral> exprList = infixVisitor.getExprList();
 
             SetUnion setUnion = getSetUnion((EntryLabel) entry, exprList);
             variableFactory.setEntryLabel(node, setUnion);
@@ -121,6 +141,17 @@ public class MethodVisitor extends ASTVisitor {
             ConstraintTerm condEntry = variableFactory.createEntryLabel(cond);
             ConstraintTerm condExit = variableFactory.createExitLabel(cond);
 
+            //*******************//
+            //   possible infix  //
+            //*******************//
+            InfixVisitor infixVisitor = new InfixVisitor();
+
+            cond.accept(infixVisitor);
+            List<ExpressionLiteral> exprList = infixVisitor.getExprList();
+
+            ConstraintTerm setUnion = getSetUnion((EntryLabel) condEntry, exprList);
+            variableFactory.setEntryLabel(cond, setUnion);
+
             exitStmts.add(cond);
 
             //************//
@@ -130,10 +161,10 @@ public class MethodVisitor extends ASTVisitor {
             List<ASTNode> bodyExitStmts = new ArrayList<>();
 
             if(body instanceof Block && ((Block) body).statements().size() == 0) {
-                result.add(newSubsetConstraint(condEntry, exit));
+                result.add(newSubsetConstraint(variableFactory.createEntryLabel(cond), exit));
 
             } else {
-                BlockVisitor visitor = new BlockVisitor(body, exitStmts);
+                BlockVisitor visitor = new BlockVisitor(exitStmts);
                 body.accept(visitor);
                 bodyExitStmts = visitor.getExitStmts();
 
@@ -141,7 +172,7 @@ public class MethodVisitor extends ASTVisitor {
                     bodyExitStmts.clear();
                 }
             }
-            
+
             exitStmts.clear();
 
             for (ASTNode stmt : bodyExitStmts) {
@@ -151,11 +182,11 @@ public class MethodVisitor extends ASTVisitor {
             if(!exitStmts.isEmpty()){
                 for (ASTNode stmt : exitStmts) {
                     ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
-                    result.add(newSubsetConstraint(condEntry, prevExit));
+                    result.add(newSubsetConstraint(variableFactory.createEntryLabel(cond), prevExit));
                 }
             }
 
-            result.add(newSubsetConstraint(condExit, condEntry));
+            result.add(newSubsetConstraint(condExit, variableFactory.createEntryLabel(cond)));
 
             exitStmts.clear();
             exitStmts.add(cond);
@@ -195,7 +226,7 @@ public class MethodVisitor extends ASTVisitor {
             //************//
             Statement body = node.getBody();
 
-            BlockVisitor visitor = new BlockVisitor(body, exitStmts);
+            BlockVisitor visitor = new BlockVisitor(exitStmts);
             body.accept(visitor);
 
             List<ASTNode>  bodyExitStmts = visitor.getExitStmts();
@@ -270,28 +301,20 @@ public class MethodVisitor extends ASTVisitor {
             ConstraintTerm condEntry = variableFactory.createEntryLabel(cond);
             ConstraintTerm condExit = variableFactory.createExitLabel(cond);
 
-            if (cond instanceof InfixExpression) {
-                if (((InfixExpression) cond).getLeftOperand() instanceof InfixExpression) {
-                    ExpressionLiteral newExpr = variableFactory.createExpressionLiteral(
-                            ((InfixExpression) cond).getLeftOperand());
-                    List<ExpressionLiteral> exprList = new ArrayList<ExpressionLiteral>();
-                    exprList.add(newExpr);
-                    ConstraintTerm setUnion = getSetUnion((EntryLabel) condEntry, exprList);
-                    variableFactory.setEntryLabel(cond, setUnion);
-                    // TODO: Can only be lhs or rhs? We are replacing init entry both, not adding to.
-                } else if (((InfixExpression) cond).getRightOperand() instanceof InfixExpression) {
-                    ExpressionLiteral newExpr = variableFactory.createExpressionLiteral(
-                            ((InfixExpression) cond).getRightOperand());
-                    List<ExpressionLiteral> exprList = new ArrayList<ExpressionLiteral>();
-                    exprList.add(newExpr);
-                    ConstraintTerm setUnion = getSetUnion((EntryLabel) condEntry, exprList);
-                    variableFactory.setEntryLabel(cond, setUnion);
-                }
-            }
+            //*******************//
+            //   possible infix  //
+            //*******************//
+            InfixVisitor infixVisitor = new InfixVisitor();
+
+            cond.accept(infixVisitor);
+            List<ExpressionLiteral> exprList = infixVisitor.getExprList();
+
+            ConstraintTerm setUnion = getSetUnion((EntryLabel) condEntry, exprList);
+            variableFactory.setEntryLabel(cond, setUnion);
 
             for (ASTNode stmt : exitStmts) {
                 ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
-                result.add(newSubsetConstraint(condEntry, prevExit));
+                result.add(newSubsetConstraint(variableFactory.createEntryLabel(cond), prevExit));
             }
 
             result.add(newSubsetConstraint(condExit, variableFactory.createEntryLabel(cond)));
@@ -309,7 +332,7 @@ public class MethodVisitor extends ASTVisitor {
             //***********//
             Statement body = node.getBody();
 
-            BlockVisitor visitor = new BlockVisitor(body, exitStmts);
+            BlockVisitor visitor = new BlockVisitor(exitStmts);
             body.accept(visitor);
 
             List<ASTNode> bodyExitStmts = visitor.getExitStmts();
@@ -376,14 +399,23 @@ public class MethodVisitor extends ASTVisitor {
             ConstraintTerm condEntry = variableFactory.createEntryLabel(cond);
             ConstraintTerm condExit = variableFactory.createExitLabel(cond);
 
-            if(!exitStmts.isEmpty()){
-                for (ASTNode stmt : exitStmts) {
-                    ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
-                    result.add(newSubsetConstraint(condEntry, prevExit));
-                }
+            //*******************//
+            //   possible infix  //
+            //*******************//
+            InfixVisitor infixVisitor = new InfixVisitor();
+
+            cond.accept(infixVisitor);
+            List<ExpressionLiteral> exprList = infixVisitor.getExprList();
+
+            ConstraintTerm setUnion = getSetUnion((EntryLabel) condEntry, exprList);
+            variableFactory.setEntryLabel(cond, setUnion);
+
+            for (ASTNode stmt : exitStmts) {
+                ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
+                result.add(newSubsetConstraint(variableFactory.createEntryLabel(cond), prevExit));
             }
 
-            result.add(newSubsetConstraint(condExit, condEntry));
+            result.add(newSubsetConstraint(condExit, variableFactory.createEntryLabel(cond)));
 
             exitStmts.clear();
             exitStmts.add(cond);
@@ -397,7 +429,7 @@ public class MethodVisitor extends ASTVisitor {
             Statement thenBlock = node.getThenStatement();
             Statement elseBlock = node.getElseStatement();
 
-            BlockVisitor visitor = new BlockVisitor(thenBlock, exitStmts);
+            BlockVisitor visitor = new BlockVisitor(exitStmts);
             thenBlock.accept(visitor);
 
             List<ASTNode> thenBlockExit = visitor.getExitStmts();
@@ -409,7 +441,7 @@ public class MethodVisitor extends ASTVisitor {
             }
 
             if(elseBlock != null){
-                BlockVisitor elseVisitor = new BlockVisitor(elseBlock, exitStmts);
+                BlockVisitor elseVisitor = new BlockVisitor(exitStmts);
                 elseBlock.accept(elseVisitor);
 
                 elseBlockExit = elseVisitor.getExitStmts();
@@ -428,6 +460,7 @@ public class MethodVisitor extends ASTVisitor {
 
             return false;
         }
+
 
         @Override
         public boolean visit(MethodInvocation node) {
@@ -516,14 +549,16 @@ public class MethodVisitor extends ASTVisitor {
                 }
             }
 
-            VariableDeclarationFragment fragment = ((List<VariableDeclarationFragment>) node.fragments()).get(0);
+            VariableDeclarationFragment fragment = ((List<VariableDeclarationFragment>)
+                    node.fragments()).get(0);
 
-            List<ExpressionLiteral> exprList = new ArrayList<ExpressionLiteral>();
+            //*******************//
+            //   possible infix  //
+            //*******************//
+            InfixVisitor infixVisitor = new InfixVisitor();
 
-            if (fragment.getInitializer() instanceof InfixExpression) {
-                ExpressionLiteral newExpr = variableFactory.createExpressionLiteral(fragment.getInitializer());
-                exprList.add(newExpr);
-            }
+            fragment.getInitializer().accept(infixVisitor);
+            List<ExpressionLiteral> exprList = infixVisitor.getExprList();
 
             SetUnion setUnion = getSetUnion((EntryLabel) entry, exprList);
 
@@ -570,14 +605,25 @@ public class MethodVisitor extends ASTVisitor {
             ConstraintTerm condEntry = variableFactory.createEntryLabel(cond);
             ConstraintTerm condExit = variableFactory.createExitLabel(cond);
 
+            //*******************//
+            //   possible infix  //
+            //*******************//
+            InfixVisitor infixVisitor = new InfixVisitor();
+
+            cond.accept(infixVisitor);
+            List<ExpressionLiteral> exprList = infixVisitor.getExprList();
+
+            ConstraintTerm setUnion = getSetUnion((EntryLabel) condEntry, exprList);
+            variableFactory.setEntryLabel(cond, setUnion);
+
             if(!exitStmts.isEmpty()){
                 for (ASTNode stmt : exitStmts) {
                     ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
-                    result.add(newSubsetConstraint(condEntry, prevExit));
+                    result.add(newSubsetConstraint(variableFactory.createEntryLabel(cond), prevExit));
                 }
             }
 
-            result.add(newSubsetConstraint(condExit, condEntry));
+            result.add(newSubsetConstraint(condExit, variableFactory.createEntryLabel(cond)));
 
             exitStmts.clear();
             exitStmts.add(cond);
@@ -591,7 +637,7 @@ public class MethodVisitor extends ASTVisitor {
             //**************//
             Statement body = node.getBody();
 
-            BlockVisitor visitor = new BlockVisitor(body, exitStmts);
+            BlockVisitor visitor = new BlockVisitor(exitStmts);
             body.accept(visitor);
 
             List<ASTNode> bodyExit = visitor.getExitStmts();
@@ -610,6 +656,7 @@ public class MethodVisitor extends ASTVisitor {
 
             return false;
         }
+
 
 
         public Constraint newSubsetConstraint(ConstraintTerm l, ConstraintTerm r) {

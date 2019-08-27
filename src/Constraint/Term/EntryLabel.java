@@ -1,6 +1,5 @@
 package Constraint.Term;
 
-import Constraint.ExpressionLiteral;
 import org.eclipse.jdt.core.dom.*;
 
 
