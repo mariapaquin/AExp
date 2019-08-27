@@ -2,6 +2,7 @@ package visitor;
 
 import Constraint.ExpressionLiteral;
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.SimpleName;
 
@@ -22,6 +23,12 @@ public class ExpressionVisitor extends ASTVisitor {
 
     @Override
     public boolean visit(InfixExpression node) {
+        Expression lhs = node.getLeftOperand();
+        Expression rhs = node.getRightOperand();
+
+        if (!(lhs instanceof SimpleName) || !(rhs instanceof SimpleName)) {
+            return false;
+        }
         ExpressionLiteral expressionLiteral = new ExpressionLiteral(node);
 
         List<String> varsUsed = getVarsUsed(node);
@@ -36,7 +43,7 @@ public class ExpressionVisitor extends ASTVisitor {
         if(!existingExpr) {
             availableExpressions.add(expressionLiteral);
         }
-        return true;
+        return false;
     }
 
     private List<String> getVarsUsed(InfixExpression node) {

@@ -1,7 +1,7 @@
 public class DoWhile {
 
     public void m(int a) {
-        a = 0;
+        a = a+a;
         do {
             a++;
         } while (a < 10);

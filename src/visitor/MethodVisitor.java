@@ -40,6 +40,13 @@ public class MethodVisitor extends ASTVisitor {
         }
         @Override
         public boolean visit(InfixExpression node){
+            Expression lhs = node.getLeftOperand();
+            Expression rhs = node.getRightOperand();
+
+            if (!(lhs instanceof SimpleName) || !(rhs instanceof SimpleName)) {
+                return false;
+            }
+
             ExpressionLiteral e = variableFactory.createExpressionLiteral(node);
             exprList.add(e);
             return false;
