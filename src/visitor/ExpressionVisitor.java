@@ -27,7 +27,15 @@ public class ExpressionVisitor extends ASTVisitor {
         List<String> varsUsed = getVarsUsed(node);
         expressionLiteral.setVarsUsed(varsUsed);
 
-        availableExpressions.add(expressionLiteral);
+        boolean existingExpr = false;
+        for (ExpressionLiteral e : availableExpressions) {
+            if (e.getNode().toString().equals(node.toString())) {
+                existingExpr = true;
+            }
+        }
+        if(!existingExpr) {
+            availableExpressions.add(expressionLiteral);
+        }
         return true;
     }
 

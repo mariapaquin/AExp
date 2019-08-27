@@ -66,21 +66,21 @@ public class MethodVisitor extends ASTVisitor {
             exitStmts.clear();
             exitStmts.add(node);
 
-            String lhs = node.getLeftHandSide().toString();
-            List<ExpressionLiteral>  exprToSubtract = getExpressionsInvolving(lhs);
-            SetDifference setDifference = getSetDifference((EntryLabel) entry, exprToSubtract);
+            List<ExpressionLiteral> exprList = new ArrayList();
 
             if (node.getRightHandSide() instanceof InfixExpression) {
                 ExpressionLiteral newExpr = variableFactory.createExpressionLiteral(node.getRightHandSide());
-                List<ExpressionLiteral> exprList = new ArrayList();
                 exprList.add(newExpr);
-                ConstraintTerm setUnion = getSetUnion(setDifference, exprList);
-                variableFactory.setEntryLabel(node, setUnion);
-                result.add(newSubsetConstraint(exit, setUnion));
-            } else {
-                variableFactory.setEntryLabel(node, setDifference);
-                result.add(newSubsetConstraint(exit, setDifference));
             }
+            SetUnion setUnion = getSetUnion((EntryLabel) entry, exprList);
+            variableFactory.setEntryLabel(node, setUnion);
+
+            String lhs = node.getLeftHandSide().toString();
+            List<ExpressionLiteral>  exprToSubtract = getExpressionsInvolving(lhs);
+            SetDifference setDifference = getSetDifference(setUnion, exprToSubtract);
+
+            variableFactory.setEntryLabel(node, setDifference);
+            result.add(newSubsetConstraint(exit, setDifference));
 
             constraints.addAll(result);
         }
@@ -463,22 +463,40 @@ public class MethodVisitor extends ASTVisitor {
                 }
             }
 
-            VariableDeclarationFragment fragment = ((List<VariableDeclarationFragment>) node.fragments()).get(0);
-            String lhs = fragment.getName().getIdentifier();
+/*            List<ExpressionLiteral> exprList = new ArrayList();
+
+            if (node.getRightHandSide() instanceof InfixExpression) {
+                ExpressionLiteral newExpr = variableFactory.createExpressionLiteral(node.getRightHandSide());
+                exprList.add(newExpr);
+            }
+            SetUnion setUnion = getSetUnion((EntryLabel) entry, exprList);
+
+            String lhs = node.getLeftHandSide().toString();
             List<ExpressionLiteral>  exprToSubtract = getExpressionsInvolving(lhs);
-            SetDifference setDifference = getSetDifference((EntryLabel)entry, exprToSubtract);
+            SetDifference setDifference = getSetDifference(setUnion, exprToSubtract);
+
+            result.add(newSubsetConstraint(exit, setDifference));
+            variableFactory.setEntryLabel(node, setDifference);
+            result.add(newSubsetConstraint(exit, setDifference));*/
+
+
+            VariableDeclarationFragment fragment = ((List<VariableDeclarationFragment>) node.fragments()).get(0);
+
+            List<ExpressionLiteral> exprList = new ArrayList<ExpressionLiteral>();
 
             if (fragment.getInitializer() instanceof InfixExpression) {
                 ExpressionLiteral newExpr = variableFactory.createExpressionLiteral(fragment.getInitializer());
-                List<ExpressionLiteral> exprList = new ArrayList<ExpressionLiteral>();
                 exprList.add(newExpr);
-                ConstraintTerm setUnion = getSetUnion(setDifference, exprList);
-                variableFactory.setEntryLabel(node, setUnion);
-                result.add(newSubsetConstraint(exit, setUnion));
-            } else {
-                variableFactory.setEntryLabel(node, setDifference);
-                result.add(newSubsetConstraint(exit, setDifference));
             }
+
+            SetUnion setUnion = getSetUnion((EntryLabel) entry, exprList);
+
+            String lhs = fragment.getName().getIdentifier();
+            List<ExpressionLiteral>  exprToSubtract = getExpressionsInvolving(lhs);
+            SetDifference setDifference = getSetDifference(setUnion, exprToSubtract);
+
+            variableFactory.setEntryLabel(node, setDifference);
+            result.add(newSubsetConstraint(exit, setDifference));
 
             exitStmts.clear();
             exitStmts.add(node);
@@ -543,15 +561,11 @@ public class MethodVisitor extends ASTVisitor {
             return new Constraint(l, new SubsetOperator(), r);
         }
 
-        public SetUnion getSetUnion(SetDifference t1, List<ExpressionLiteral> t2) {
-            return new SetUnion(t1, t2);
-        }
-
         public SetUnion getSetUnion(EntryLabel t1, List<ExpressionLiteral>  t2) {
             return new SetUnion(t1, t2);
         }
 
-        public SetDifference getSetDifference(EntryLabel t1,  List<ExpressionLiteral>  t2) {
+        public SetDifference getSetDifference(SetUnion t1,  List<ExpressionLiteral>  t2) {
             return new SetDifference(t1, t2);
         }
 

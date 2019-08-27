@@ -8,47 +8,33 @@ import java.util.List;
 /**
  * [1] x = a + 1;
  *
- * ([1] entry \ { ( x + y ) } ) U { ( a + 1 ) }
+ * ([1] entry U { ( a + 1 ) }
  */
 public class SetUnion extends ConstraintTerm {
 
-    private SetDifference setDifference;
     private EntryLabel entryTerm;
     private List<ExpressionLiteral> exprToAdd;
-
-    public SetUnion(SetDifference setDifference, List<ExpressionLiteral> exprToAdd) {
-        super();
-        this.setDifference = setDifference;
-        this.exprToAdd = exprToAdd;
-        this.entryTerm = null;
-    }
 
     public SetUnion(EntryLabel entryTerm, List<ExpressionLiteral> exprToAdd) {
         super();
         this.entryTerm = entryTerm;
         this.exprToAdd = exprToAdd;
-        this.setDifference = null;
     }
 
     public void setAvailableExpressions(List<ExpressionLiteral> expressions) {
-        if (entryTerm != null) {
-            entryTerm.setAvailableExpressions(expressions);
-        } else{
-            setDifference.setAvailableExpressions(expressions);
-        }
+        entryTerm.setAvailableExpressions(expressions);
+
     }
 
     public List<ExpressionLiteral> getAvailableExpressions() {
-        if (entryTerm != null) {
-            return getListContaining(entryTerm, exprToAdd);
-        }
-        return getListContaining(setDifference, exprToAdd);
+        return getListContaining(exprToAdd);
+
     }
 
-    private List<ExpressionLiteral> getListContaining(ConstraintTerm term, List<ExpressionLiteral> exprsToAdd) {
+    private List<ExpressionLiteral> getListContaining(List<ExpressionLiteral> exprsToAdd) {
         List<ExpressionLiteral> expressions = new ArrayList();
 
-        for (ExpressionLiteral e: term.getAvailableExpressions()) {
+        for (ExpressionLiteral e: entryTerm.getAvailableExpressions()) {
             expressions.add(e);
         }
 
@@ -61,7 +47,7 @@ public class SetUnion extends ConstraintTerm {
     }
     @Override
     public String toString() {
-        return setDifference + " U " + exprToAdd;
+        return entryTerm + " U " + exprToAdd;
     }
 
 }
