@@ -18,7 +18,7 @@ public class Driver {
 
     public static void main(String[] args) throws IOException {
 
-        File file = new File("./tests/StatementSequence.java");
+        File file = new File("./tests/AE/StatementSequence.java");
         String source = new String(Files.readAllBytes(file.toPath()));
         ASTParser parser = ASTParser.newParser(AST.JLS3);
         parser.setSource(source.toCharArray());
