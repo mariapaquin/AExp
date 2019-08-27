@@ -42,14 +42,23 @@ public class MethodVisitor extends ASTVisitor {
         public boolean visit(InfixExpression node){
             Expression lhs = node.getLeftOperand();
             Expression rhs = node.getRightOperand();
+            InfixExpression.Operator op = node.getOperator();
 
             if (!(lhs instanceof SimpleName) || !(rhs instanceof SimpleName)) {
-                return false;
+                return true;
+            }
+
+            if((op != InfixExpression.Operator.TIMES) &&
+                    (op != InfixExpression.Operator.DIVIDE) &&
+                    (op != InfixExpression.Operator.REMAINDER)){
+
+                return true;
             }
 
             ExpressionLiteral e = variableFactory.createExpressionLiteral(node);
             exprList.add(e);
-            return false;
+
+            return true;
         }
 
         public List<ExpressionLiteral> getExprList() {
