@@ -66,12 +66,13 @@ public class MethodVisitor extends ASTVisitor {
             exitStmts.clear();
             exitStmts.add(node);
 
-            List<ExpressionLiteral> exprList = new ArrayList();
+            List<ExpressionLiteral> exprList = new ArrayList<>();
 
             if (node.getRightHandSide() instanceof InfixExpression) {
                 ExpressionLiteral newExpr = variableFactory.createExpressionLiteral(node.getRightHandSide());
                 exprList.add(newExpr);
             }
+
             SetUnion setUnion = getSetUnion((EntryLabel) entry, exprList);
             variableFactory.setEntryLabel(node, setUnion);
 
@@ -87,10 +88,13 @@ public class MethodVisitor extends ASTVisitor {
 
         @Override
         public boolean visit(DoStatement node){
+            //*****************//
+            //   do statement  //
+            //*****************//
+            List<Constraint> result = new ArrayList<Constraint>();
+
             ConstraintTerm entry = variableFactory.createEntryLabel(node);
             ConstraintTerm exit = variableFactory.createExitLabel(node);
-
-            List<Constraint> result = new ArrayList<Constraint>();
 
             if(!exitStmts.isEmpty()){
                 for (ASTNode stmt : exitStmts) {
@@ -101,25 +105,32 @@ public class MethodVisitor extends ASTVisitor {
 
             result.add(newSubsetConstraint(exit, entry));
 
-            constraints.addAll(result);
-            result = new ArrayList<Constraint>();
-
             exitStmts.clear();
             exitStmts.add(node);
 
-            Expression whileExpr = node.getExpression();
+            // so the constraints are added in the right order
+            constraints.addAll(result);
+            result = new ArrayList<Constraint>();
 
-            ConstraintTerm whileExprEntry = variableFactory.createEntryLabel(whileExpr);
-            ConstraintTerm whileExprExit = variableFactory.createExitLabel(whileExpr);
 
+            //***************//
+            //   condition   //
+            //***************//
+            Expression cond = node.getExpression();
 
-            exitStmts.add(whileExpr);
+            ConstraintTerm condEntry = variableFactory.createEntryLabel(cond);
+            ConstraintTerm condExit = variableFactory.createExitLabel(cond);
 
+            exitStmts.add(cond);
+
+            //************//
+            //    body    //
+            //************//
             Statement body = node.getBody();
             List<ASTNode> bodyExitStmts = new ArrayList<>();
 
             if(body instanceof Block && ((Block) body).statements().size() == 0) {
-                result.add(newSubsetConstraint(whileExprEntry, exit));
+                result.add(newSubsetConstraint(condEntry, exit));
 
             } else {
                 BlockVisitor visitor = new BlockVisitor(body, exitStmts);
@@ -130,8 +141,7 @@ public class MethodVisitor extends ASTVisitor {
                     bodyExitStmts.clear();
                 }
             }
-
-
+            
             exitStmts.clear();
 
             for (ASTNode stmt : bodyExitStmts) {
@@ -141,14 +151,14 @@ public class MethodVisitor extends ASTVisitor {
             if(!exitStmts.isEmpty()){
                 for (ASTNode stmt : exitStmts) {
                     ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
-                    result.add(newSubsetConstraint(whileExprEntry, prevExit));
+                    result.add(newSubsetConstraint(condEntry, prevExit));
                 }
             }
 
-            result.add(newSubsetConstraint(whileExprExit, whileExprEntry));
+            result.add(newSubsetConstraint(condExit, condEntry));
 
             exitStmts.clear();
-            exitStmts.add(whileExpr);
+            exitStmts.add(cond);
 
             constraints.addAll(result);
 
@@ -157,6 +167,9 @@ public class MethodVisitor extends ASTVisitor {
 
         @Override
         public boolean visit(EnhancedForStatement node) {
+            //*******************//
+            // foreach statement //
+            //*******************//
             ConstraintTerm entry = variableFactory.createEntryLabel(node);
             ConstraintTerm exit = variableFactory.createExitLabel(node);
 
@@ -171,24 +184,25 @@ public class MethodVisitor extends ASTVisitor {
 
             result.add(newSubsetConstraint(exit, entry));
 
-            constraints.addAll(result);
-
             exitStmts.clear();
             exitStmts.add(node);
 
+            // so the constraints are added in the right order
+            constraints.addAll(result);
+
+            //************//
+            //    body    //
+            //************//
             Statement body = node.getBody();
-            List<ASTNode> bodyExitStmts = new ArrayList<>();
 
-            // could body ever be null?
-            if(body != null ) {
-                BlockVisitor visitor = new BlockVisitor(body, exitStmts);
-                body.accept(visitor);
-                bodyExitStmts = visitor.getExitStmts();
+            BlockVisitor visitor = new BlockVisitor(body, exitStmts);
+            body.accept(visitor);
 
-                if (bodyExitStmts.equals((exitStmts))) {
-                    // empty while body
-                    bodyExitStmts.clear();
-                }
+            List<ASTNode>  bodyExitStmts = visitor.getExitStmts();
+
+            // empty while body
+            if (bodyExitStmts.equals((exitStmts))) {
+                bodyExitStmts.clear();
             }
 
             for (ASTNode stmt : bodyExitStmts) {
@@ -201,8 +215,9 @@ public class MethodVisitor extends ASTVisitor {
 
         @Override
         public boolean visit(ForStatement node){
-
-            // (0) generate constraints and set prev for loop
+            //*******************//
+            //   for statement   //
+            //*******************//
             ConstraintTerm entry = variableFactory.createEntryLabel(node);
             ConstraintTerm exit = variableFactory.createExitLabel(node);
 
@@ -217,14 +232,18 @@ public class MethodVisitor extends ASTVisitor {
 
             result.add(newSubsetConstraint(exit, entry));
 
-            constraints.addAll(result);
-            result = new ArrayList<Constraint>();
-
             exitStmts.clear();
             exitStmts.add(node);
 
-            // (1) generate constraints and set prev for initialization
+            // so the constraints are added in the right order
+            constraints.addAll(result);
+            result = new ArrayList<Constraint>();
+
+            //*******************//
+            //   initialization  //
+            //*******************//
             Expression init = (Expression) node.initializers().get(0);
+
             ConstraintTerm initEntry = variableFactory.createEntryLabel(init);
             ConstraintTerm initExit = variableFactory.createExitLabel(init);
 
@@ -235,16 +254,19 @@ public class MethodVisitor extends ASTVisitor {
 
             result.add(newSubsetConstraint(initExit, initEntry));
 
-
-            constraints.addAll(result);
-            result = new ArrayList<Constraint>();
-
             exitStmts.clear();
             exitStmts.add(init);
 
-            // (2) generate constraints and set prev for condition
-            // SAVE prev, this will be what we propagate at the end
+            // so the constraints are added in the right order
+            constraints.addAll(result);
+            result = new ArrayList<Constraint>();
+
+
+            //****************//
+            //   condition    //
+            //****************//
             Expression cond = node.getExpression();
+
             ConstraintTerm condEntry = variableFactory.createEntryLabel(cond);
             ConstraintTerm condExit = variableFactory.createExitLabel(cond);
 
@@ -266,6 +288,7 @@ public class MethodVisitor extends ASTVisitor {
                     variableFactory.setEntryLabel(cond, setUnion);
                 }
             }
+
             for (ASTNode stmt : exitStmts) {
                 ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
                 result.add(newSubsetConstraint(condEntry, prevExit));
@@ -273,13 +296,17 @@ public class MethodVisitor extends ASTVisitor {
 
             result.add(newSubsetConstraint(condExit, variableFactory.createEntryLabel(cond)));
 
-            constraints.addAll(result);
-            result = new ArrayList<Constraint>();
-
             exitStmts.clear();
             exitStmts.add(cond);
 
-            // (3) create body visitor. pass in and return prev
+            // so the constraints are added in the right order
+            constraints.addAll(result);
+            result = new ArrayList<Constraint>();
+
+
+            //***********//
+            //   body    //
+            //***********//
             Statement body = node.getBody();
 
             BlockVisitor visitor = new BlockVisitor(body, exitStmts);
@@ -292,9 +319,9 @@ public class MethodVisitor extends ASTVisitor {
                 exitStmts.add(stmt);
             }
 
-            // (4) generate constraints and set prev for update
-            // generate constraint for (condition subset update)
-
+            //*************//
+            //   update    //
+            //*************//
             Expression update = (Expression) node.updaters().get(0);
 
             ConstraintTerm updateEntry = variableFactory.createEntryLabel(update);
@@ -308,10 +335,9 @@ public class MethodVisitor extends ASTVisitor {
             }
 
             result.add(newSubsetConstraint(updateExit, updateEntry));
-
             result.add(newSubsetConstraint(variableFactory.createEntryLabel(cond), updateExit));
 
-            // (5) Before returning, set prev to prev list of condition
+            // condition will flow to the statement after the for loop
             exitStmts.clear();
             exitStmts.add(cond);
 
@@ -322,10 +348,13 @@ public class MethodVisitor extends ASTVisitor {
 
         @Override
         public boolean visit(IfStatement node) {
+            List<Constraint> result = new ArrayList<Constraint>();
+
+            //**************//
+            // if statement //
+            //**************//
             ConstraintTerm entry = variableFactory.createEntryLabel(node);
             ConstraintTerm exit = variableFactory.createExitLabel(node);
-
-            List<Constraint> result = new ArrayList<Constraint>();
 
             if(!exitStmts.isEmpty()){
                 for (ASTNode stmt : exitStmts) {
@@ -336,24 +365,47 @@ public class MethodVisitor extends ASTVisitor {
 
             result.add(newSubsetConstraint(exit, entry));
 
-            constraints.addAll(result);
-
             exitStmts.clear();
             exitStmts.add(node);
 
-            Statement thenBlock = node.getThenStatement();
-            List<ASTNode> thenBlockExit = new ArrayList<>();
+            //**************//
+            //  condition   //
+            //**************//
+            Expression cond = node.getExpression();
 
+            ConstraintTerm condEntry = variableFactory.createEntryLabel(cond);
+            ConstraintTerm condExit = variableFactory.createExitLabel(cond);
+
+            if(!exitStmts.isEmpty()){
+                for (ASTNode stmt : exitStmts) {
+                    ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
+                    result.add(newSubsetConstraint(condEntry, prevExit));
+                }
+            }
+
+            result.add(newSubsetConstraint(condExit, condEntry));
+
+            exitStmts.clear();
+            exitStmts.add(cond);
+
+            // so the constraints get added in order.
+            constraints.addAll(result);
+
+            //**************//
+            //    body      //
+            //**************//
+            Statement thenBlock = node.getThenStatement();
             Statement elseBlock = node.getElseStatement();
-            List<ASTNode> elseBlockExit = new ArrayList<>();
 
             BlockVisitor visitor = new BlockVisitor(thenBlock, exitStmts);
             thenBlock.accept(visitor);
 
-            thenBlockExit = visitor.getExitStmts();
+            List<ASTNode> thenBlockExit = visitor.getExitStmts();
+            List<ASTNode> elseBlockExit = new ArrayList<>();
+
+            // then block was empty, nothing new added or deleted
             if (thenBlockExit.equals(exitStmts)) {
-                // then block was empty, nothing new added or deleted
-                exitStmts.clear();
+                thenBlockExit.clear();
             }
 
             if(elseBlock != null){
@@ -361,6 +413,8 @@ public class MethodVisitor extends ASTVisitor {
                 elseBlock.accept(elseVisitor);
 
                 elseBlockExit = elseVisitor.getExitStmts();
+
+                // control flow will go to 'then' or 'else' - we can remove the conditional
                 exitStmts.clear();
             }
 
@@ -401,7 +455,6 @@ public class MethodVisitor extends ASTVisitor {
             }
 
             result.add(newSubsetConstraint(exit, entry));
-
 
             exitStmts.clear();
             exitStmts.add(node);
@@ -463,23 +516,6 @@ public class MethodVisitor extends ASTVisitor {
                 }
             }
 
-/*            List<ExpressionLiteral> exprList = new ArrayList();
-
-            if (node.getRightHandSide() instanceof InfixExpression) {
-                ExpressionLiteral newExpr = variableFactory.createExpressionLiteral(node.getRightHandSide());
-                exprList.add(newExpr);
-            }
-            SetUnion setUnion = getSetUnion((EntryLabel) entry, exprList);
-
-            String lhs = node.getLeftHandSide().toString();
-            List<ExpressionLiteral>  exprToSubtract = getExpressionsInvolving(lhs);
-            SetDifference setDifference = getSetDifference(setUnion, exprToSubtract);
-
-            result.add(newSubsetConstraint(exit, setDifference));
-            variableFactory.setEntryLabel(node, setDifference);
-            result.add(newSubsetConstraint(exit, setDifference));*/
-
-
             VariableDeclarationFragment fragment = ((List<VariableDeclarationFragment>) node.fragments()).get(0);
 
             List<ExpressionLiteral> exprList = new ArrayList<ExpressionLiteral>();
@@ -506,11 +542,13 @@ public class MethodVisitor extends ASTVisitor {
 
         @Override
         public boolean visit(WhileStatement node) {
+            List<Constraint> result = new ArrayList<Constraint>();
 
+            //*******************//
+            //  while statement  //
+            //*******************//
             ConstraintTerm entry = variableFactory.createEntryLabel(node);
             ConstraintTerm exit = variableFactory.createExitLabel(node);
-
-            List<Constraint> result = new ArrayList<Constraint>();
 
             if(!exitStmts.isEmpty()){
                 for (ASTNode stmt : exitStmts) {
@@ -520,39 +558,56 @@ public class MethodVisitor extends ASTVisitor {
             }
 
             result.add(newSubsetConstraint(exit, entry));
-            constraints.addAll(result);
-            result = new ArrayList<Constraint>();
 
             exitStmts.clear();
             exitStmts.add(node);
 
+            //***************//
+            //  condition    //
+            //***************//
+            Expression cond = node.getExpression();
+
+            ConstraintTerm condEntry = variableFactory.createEntryLabel(cond);
+            ConstraintTerm condExit = variableFactory.createExitLabel(cond);
+
+            if(!exitStmts.isEmpty()){
+                for (ASTNode stmt : exitStmts) {
+                    ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
+                    result.add(newSubsetConstraint(condEntry, prevExit));
+                }
+            }
+
+            result.add(newSubsetConstraint(condExit, condEntry));
+
+            exitStmts.clear();
+            exitStmts.add(cond);
+
+            // so the constraints get added in order.
+            constraints.addAll(result);
+            result = new ArrayList<Constraint>();
+
+            //**************//
+            //    body      //
+            //**************//
             Statement body = node.getBody();
-            List<ASTNode> bodyExit = new ArrayList<>();
 
             BlockVisitor visitor = new BlockVisitor(body, exitStmts);
             body.accept(visitor);
 
-            bodyExit = visitor.getExitStmts();
+            List<ASTNode> bodyExit = visitor.getExitStmts();
 
+            // empty while body
             if (bodyExit.equals((exitStmts))) {
-                // empty while body
                 bodyExit.clear();
             }
 
-            if(!bodyExit.isEmpty()){
-                for (ASTNode stmt : bodyExit) {
-                    ConstraintTerm prevStmtExit = variableFactory.createExitLabel(stmt);
-                    result.add(newSubsetConstraint(entry, prevStmtExit));
-                }
-            }
-
             for (ASTNode stmt : bodyExit) {
-                exitStmts.add(stmt);
+                ConstraintTerm exitStmt = variableFactory.createExitLabel(stmt);
+                result.add(newSubsetConstraint(condEntry, exitStmt));
             }
 
             constraints.addAll(result);
 
-//            System.out.println("exit statements for while " + node.getExpression() + ": " + exitStmts);
             return false;
         }
 
