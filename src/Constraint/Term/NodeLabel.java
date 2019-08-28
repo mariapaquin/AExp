@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class NodeLabel extends ConstraintTerm {
 	protected ASTNode node;
-	protected boolean isInitial;
+//	protected boolean isInitial;
 
 	public NodeLabel(ASTNode node) {
 		this.node = node;
@@ -26,13 +26,13 @@ public class NodeLabel extends ConstraintTerm {
 		availableExpressions = expressions;
 	}
 
-	public boolean isInitial() {
-		return isInitial;
-	}
-
-	public void setInitial(boolean initial) {
-		isInitial = initial;
-	}
+//	public boolean isInitial() {
+//		return isInitial;
+//	}
+//
+//	public void setInitial(boolean initial) {
+//		isInitial = initial;
+//	}
 
 	public ASTNode getNode(){
 		return node;

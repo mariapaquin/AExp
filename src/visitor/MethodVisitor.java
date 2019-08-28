@@ -503,7 +503,18 @@ public class MethodVisitor extends ASTVisitor {
                 }
             }
 
-            result.add(newSubsetConstraint(exit, entry));
+            //*******************//
+            //   possible infix  //
+            //*******************//
+            InfixVisitor infixVisitor = new InfixVisitor();
+
+            node.accept(infixVisitor);
+            List<ExpressionLiteral> exprList = infixVisitor.getExprList();
+
+            ConstraintTerm setUnion = getSetUnion((EntryLabel) entry, exprList);
+            variableFactory.setEntryLabel(node, setUnion);
+
+            result.add(newSubsetConstraint(exit, variableFactory.createEntryLabel(node)));
 
             exitStmts.clear();
             exitStmts.add(node);

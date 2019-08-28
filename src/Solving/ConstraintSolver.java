@@ -25,13 +25,11 @@ public class ConstraintSolver {
 
     public void initializeAESet() {
         for (ConstraintTerm term : graph.getAllTerms()) {
-            if (term instanceof NodeLabel) {
-                if (((NodeLabel) term).isInitial()) {
+                if (term.isInitial()) {
                     term.setAvailableExpressions(new ArrayList<>());
                 } else {
                     term.setAvailableExpressions(expressionList);
                 }
-            }
         }
     }
 

@@ -18,7 +18,7 @@ public class Driver {
 
     public static void main(String[] args) throws IOException {
 
-        File file = new File("./tests/DoWhile.java");
+        File file = new File("./tests/EmptyFor.java");
         String source = new String(Files.readAllBytes(file.toPath()));
         ASTParser parser = ASTParser.newParser(AST.JLS3);
         parser.setSource(source.toCharArray());
@@ -48,11 +48,11 @@ public class Driver {
         System.out.println(" ------------  \n| Constraint |\n| Solutions  |\n ------------  ");
         ConstraintSolver solver = new ConstraintSolver(constraints, ae);
 
-//        solver.buildConstraintGraph();
-//
-//        solver.initializeAESet();
-//
-//        solver.processWorkList();
+        solver.buildConstraintGraph();
+
+        solver.initializeAESet();
+
+        solver.processWorkList();
 
     }
 }
