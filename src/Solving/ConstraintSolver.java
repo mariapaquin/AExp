@@ -13,7 +13,7 @@ public class ConstraintSolver {
     private ConstraintGraph graph;
     private ArrayList<Constraint> constraints;
     private List<ExpressionLiteral> expressionList;
-    private HashMap<ASTNode, List<ExpressionLiteral>> entryMap;
+    private HashMap<ASTNode, List<String>> entryMap;
 
 
     public ConstraintSolver(ArrayList<Constraint> constraints, List<ExpressionLiteral> expressionList) {
@@ -151,11 +151,11 @@ public class ConstraintSolver {
                 t = ((SetDifference) t).getEntryTerm();
             }
             ASTNode node = t.getNode();
-            entryMap.put(node, t.getAvailableExpressions());
+            entryMap.put(node, t.getAvailableExpressionsAsString());
         }
     }
 
-    public HashMap<ASTNode, List<ExpressionLiteral>> getEntryMap() {
+    public HashMap<ASTNode, List<String>> getEntryMap() {
         return entryMap;
     }
 

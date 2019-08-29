@@ -6,6 +6,7 @@ import Solving.ConstraintSolver;
 import org.eclipse.jdt.core.dom.*;
 import visitor.ExpressionVisitor;
 import visitor.AEVisitor;
+import visitor.RewriteExprVisitor;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,7 +57,7 @@ public class Driver {
 
         solver.buildEntryMap();
 
-        HashMap<ASTNode, List<ExpressionLiteral>>  entryMap = solver.getEntryMap();
+        HashMap<ASTNode, List<String>>  entryMap = solver.getEntryMap();
         Set set = (Set) entryMap.entrySet();
         Iterator iterator = set.iterator();
 
@@ -64,6 +65,9 @@ public class Driver {
             Map.Entry mapEntry = (Map.Entry) iterator.next();
             System.out.println("Key : " + mapEntry.getKey() + "Value : " + mapEntry.getValue() + "\n");
         }
+
+        RewriteExprVisitor rewriteVisitor = new RewriteExprVisitor(ae, entryMap);
+        cu.accept(rewriteVisitor);
     }
 }
 

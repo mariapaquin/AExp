@@ -8,7 +8,6 @@ import ConstraintCreator.ConstraintTermFactory;
 import org.eclipse.jdt.core.dom.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**

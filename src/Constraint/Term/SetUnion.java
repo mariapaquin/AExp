@@ -33,9 +33,15 @@ public class SetUnion extends ConstraintTerm {
         return entryTerm.getNode();
     }
 
+    @Override
     public List<ExpressionLiteral> getAvailableExpressions() {
         return getListContaining(exprToAdd);
 
+    }
+
+    @Override
+    public List<String> getAvailableExpressionsAsString() {
+        return entryTerm.getAvailableExpressionsAsString();
     }
 
     private List<ExpressionLiteral> getListContaining(List<ExpressionLiteral> exprsToAdd) {

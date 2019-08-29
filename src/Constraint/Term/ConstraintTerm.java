@@ -11,6 +11,7 @@ public abstract class ConstraintTerm {
     protected ASTNode node;
 
     public abstract List<ExpressionLiteral> getAvailableExpressions();
+    public abstract List<String> getAvailableExpressionsAsString();
     public abstract void setAvailableExpressions(List<ExpressionLiteral> expressions);
     public abstract ASTNode getNode();
 

@@ -21,6 +21,7 @@ public class SetDifference extends ConstraintTerm {
         this.expressionsToSubtract = expressionsToSubtract;
     }
 
+    @Override
     public void setAvailableExpressions(List<ExpressionLiteral> expressions) {
         setUnion.setAvailableExpressions(expressions);
     }
@@ -30,8 +31,14 @@ public class SetDifference extends ConstraintTerm {
         return setUnion.getNode();
     }
 
+    @Override
     public List<ExpressionLiteral>  getAvailableExpressions() {
         return getListSubtracting(expressionsToSubtract);
+    }
+
+    @Override
+    public List<String> getAvailableExpressionsAsString() {
+        return setUnion.getAvailableExpressionsAsString();
     }
 
     private List<ExpressionLiteral> getListSubtracting(List<ExpressionLiteral> exprsToSubtract) {
