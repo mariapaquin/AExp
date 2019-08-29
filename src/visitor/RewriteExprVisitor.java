@@ -4,7 +4,6 @@ import Constraint.ExpressionLiteral;
 import org.eclipse.jdt.core.dom.*;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -69,8 +68,6 @@ public class RewriteExprVisitor extends ASTVisitor {
             // put the variable declaration name in the exprToSymbNameMap
             // replace the node with the variable
         }
-
-
 
     }
 }
