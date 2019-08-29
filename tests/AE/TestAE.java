@@ -8,7 +8,7 @@ import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.junit.jupiter.api.Test;
 import visitor.ExpressionVisitor;
-import visitor.MethodVisitor;
+import visitor.AEVisitor;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,10 +39,10 @@ public class TestAE {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
         ConstraintSolver solver = new ConstraintSolver(constraints, ae);
 
         solver.buildConstraintGraph();
@@ -72,10 +72,10 @@ public class TestAE {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
         ConstraintSolver solver = new ConstraintSolver(constraints, ae);
 
         solver.buildConstraintGraph();
@@ -104,10 +104,10 @@ public class TestAE {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
         ConstraintSolver solver = new ConstraintSolver(constraints, ae);
 
         solver.buildConstraintGraph();
@@ -136,10 +136,10 @@ public class TestAE {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
         ConstraintSolver solver = new ConstraintSolver(constraints, ae);
 
         solver.buildConstraintGraph();
@@ -170,10 +170,10 @@ public class TestAE {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
         ConstraintSolver solver = new ConstraintSolver(constraints, ae);
 
         solver.buildConstraintGraph();
@@ -207,10 +207,10 @@ public class TestAE {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
         ConstraintSolver solver = new ConstraintSolver(constraints, ae);
 
         solver.buildConstraintGraph();
@@ -239,10 +239,10 @@ public class TestAE {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
         ConstraintSolver solver = new ConstraintSolver(constraints, ae);
 
         solver.buildConstraintGraph();
@@ -271,10 +271,10 @@ public class TestAE {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
         ConstraintSolver solver = new ConstraintSolver(constraints, ae);
 
         solver.buildConstraintGraph();
@@ -304,10 +304,10 @@ public class TestAE {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
         ConstraintSolver solver = new ConstraintSolver(constraints, ae);
 
         solver.buildConstraintGraph();
@@ -336,10 +336,10 @@ public class TestAE {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
         ConstraintSolver solver = new ConstraintSolver(constraints, ae);
 
         solver.buildConstraintGraph();
@@ -368,10 +368,10 @@ public class TestAE {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
         ConstraintSolver solver = new ConstraintSolver(constraints, ae);
 
         solver.buildConstraintGraph();
@@ -400,10 +400,10 @@ public class TestAE {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
         ConstraintSolver solver = new ConstraintSolver(constraints, ae);
 
         solver.buildConstraintGraph();
@@ -432,10 +432,10 @@ public class TestAE {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
         ConstraintSolver solver = new ConstraintSolver(constraints, ae);
 
         solver.buildConstraintGraph();
@@ -464,10 +464,10 @@ public class TestAE {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
         ConstraintSolver solver = new ConstraintSolver(constraints, ae);
 
         solver.buildConstraintGraph();
@@ -497,10 +497,10 @@ public class TestAE {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
         ConstraintSolver solver = new ConstraintSolver(constraints, ae);
 
         solver.buildConstraintGraph();
@@ -529,10 +529,10 @@ public class TestAE {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
         ConstraintSolver solver = new ConstraintSolver(constraints, ae);
 
         solver.buildConstraintGraph();
@@ -561,10 +561,10 @@ public class TestAE {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
         ConstraintSolver solver = new ConstraintSolver(constraints, ae);
 
         solver.buildConstraintGraph();
@@ -593,10 +593,10 @@ public class TestAE {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
         ConstraintSolver solver = new ConstraintSolver(constraints, ae);
 
         solver.buildConstraintGraph();
@@ -625,10 +625,10 @@ public class TestAE {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
         ConstraintSolver solver = new ConstraintSolver(constraints, ae);
 
         solver.buildConstraintGraph();
@@ -657,10 +657,10 @@ public class TestAE {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
         ConstraintSolver solver = new ConstraintSolver(constraints, ae);
 
         solver.buildConstraintGraph();

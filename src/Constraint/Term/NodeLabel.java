@@ -11,7 +11,6 @@ import java.util.List;
  *
  */
 public class NodeLabel extends ConstraintTerm {
-	protected ASTNode node;
 //	protected boolean isInitial;
 
 	public NodeLabel(ASTNode node) {

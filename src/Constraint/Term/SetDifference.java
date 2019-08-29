@@ -1,6 +1,7 @@
 package Constraint.Term;
 
 import Constraint.ExpressionLiteral;
+import org.eclipse.jdt.core.dom.ASTNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,11 @@ public class SetDifference extends ConstraintTerm {
         setUnion.setAvailableExpressions(expressions);
     }
 
+    @Override
+    public ASTNode getNode() {
+        return setUnion.getNode();
+    }
+
     public List<ExpressionLiteral>  getAvailableExpressions() {
         return getListSubtracting(expressionsToSubtract);
     }
@@ -37,6 +43,10 @@ public class SetDifference extends ConstraintTerm {
             }
         }
         return expressions;
+    }
+
+    public EntryLabel getEntryTerm(){
+        return setUnion.getEntryTerm();
     }
 
     @Override

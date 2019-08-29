@@ -5,7 +5,7 @@ import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.junit.jupiter.api.Test;
 import visitor.ExpressionVisitor;
-import visitor.MethodVisitor;
+import visitor.AEVisitor;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,10 +36,10 @@ public class TestCFG {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
 
 //        for(int i = 0; i < constraints.size(); i++){
 //            System.out.println((i+1) + " " + constraints.get(i));
@@ -73,10 +73,10 @@ public class TestCFG {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
 
 //        for(int i = 0; i < constraints.size(); i++){
 //            System.out.println((i+1) + " " + constraints.get(i));
@@ -114,10 +114,10 @@ public class TestCFG {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
 
 //        for(int i = 0; i < constraints.size(); i++){
 //            System.out.println((i+1) + " " + constraints.get(i));
@@ -153,10 +153,10 @@ public class TestCFG {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
 //        for(int i = 0; i < constraints.size(); i++){
 //            System.out.println((i+1) + " " + constraints.get(i));
 //        }
@@ -189,10 +189,10 @@ public class TestCFG {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
 
         assertEquals(constraints.size(), 7);
 
@@ -229,10 +229,10 @@ public class TestCFG {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
 //        for(int i = 0; i < constraints.size(); i++){
 //            System.out.println((i+1) + " " + constraints.get(i));
 //        }
@@ -270,10 +270,10 @@ public class TestCFG {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
 //        for(int i = 0; i < constraints.size(); i++){
 //            System.out.println((i+1) + " " + constraints.get(i));
 //        }
@@ -309,10 +309,10 @@ public class TestCFG {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
 //        for(int i = 0; i < constraints.size(); i++){
 //            System.out.println((i+1) + " " + constraints.get(i));
 //        }
@@ -354,10 +354,10 @@ public class TestCFG {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
 //        for(int i = 0; i < constraints.size(); i++){
 //            System.out.println((i+1) + " " + constraints.get(i));
 //        }
@@ -398,10 +398,10 @@ public class TestCFG {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
 //        for(int i = 0; i < constraints.size(); i++){
 //            System.out.println((i+1) + " " + constraints.get(i));
 //        }
@@ -438,10 +438,10 @@ public class TestCFG {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
 //        for(int i = 0; i < constraints.size(); i++){
 //            System.out.println((i+1) + " " + constraints.get(i));
 //        }
@@ -472,10 +472,10 @@ public class TestCFG {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
 
         assertEquals(constraints.size(), 15);
 //        for(int i = 0; i < constraints.size(); i++){
@@ -517,10 +517,10 @@ public class TestCFG {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
 //        for(int i = 0; i < constraints.size(); i++){
 //            System.out.println((i+1) + " " + constraints.get(i));
 //        }
@@ -560,10 +560,10 @@ public class TestCFG {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
 
 //        for(int i = 0; i < constraints.size(); i++){
 //            System.out.println((i+1) + " " + constraints.get(i));
@@ -606,10 +606,10 @@ public class TestCFG {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
 
 //        for(int i = 0; i < constraints.size(); i++){
 //            System.out.println((i+1) + " " + constraints.get(i));
@@ -649,10 +649,10 @@ public class TestCFG {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
 
 //        for(int i = 0; i < constraints.size(); i++){
 //            System.out.println((i+1) + " " + constraints.get(i));
@@ -699,10 +699,10 @@ public class TestCFG {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
 
 //        for(int i = 0; i < constraints.size(); i++){
 //            System.out.println((i+1) + " " + constraints.get(i));
@@ -744,10 +744,10 @@ public class TestCFG {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
 //        for(int i = 0; i < constraints.size(); i++){
 //            System.out.println((i+1) + " " + constraints.get(i));
 //        }
@@ -782,10 +782,10 @@ public class TestCFG {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
 
         assertEquals(constraints.size(), 11);
 //        for(int i = 0; i < constraints.size(); i++){
@@ -828,10 +828,10 @@ public class TestCFG {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor AEVisitor = new AEVisitor(ae);
+        cu.accept(AEVisitor);
 
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = AEVisitor.getConstraints();
 //        for(int i = 0; i < constraints.size(); i++){
 //            System.out.println((i+1) + " " + constraints.get(i));
 //        }

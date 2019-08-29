@@ -8,6 +8,7 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Expression;
 
 public class ConstraintTermFactory {
+
     private HashMap<ASTNode, ConstraintTerm> termMapEntry;
     private HashMap<ASTNode, ConstraintTerm> termMapExit;
 
@@ -44,4 +45,7 @@ public class ConstraintTermFactory {
         termMapEntry.put(node, term);
     }
 
+    public HashMap<ASTNode, ConstraintTerm> getTermMapEntry() {
+        return termMapEntry;
+    }
 }

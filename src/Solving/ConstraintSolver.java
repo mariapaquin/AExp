@@ -3,6 +3,7 @@ package Solving;
 import Constraint.Constraint;
 import Constraint.Term.*;
 import Constraint.ExpressionLiteral;
+import org.eclipse.jdt.core.dom.ASTNode;
 
 import java.util.*;
 
@@ -12,10 +13,14 @@ public class ConstraintSolver {
     private ConstraintGraph graph;
     private ArrayList<Constraint> constraints;
     private List<ExpressionLiteral> expressionList;
+    private HashMap<ASTNode, List<ExpressionLiteral>> entryMap;
+
 
     public ConstraintSolver(ArrayList<Constraint> constraints, List<ExpressionLiteral> expressionList) {
         this.constraints = constraints;
         this.expressionList = expressionList;
+        this.entryMap = new HashMap<>();
+
     }
 
     public void buildConstraintGraph() {
@@ -53,13 +58,13 @@ public class ConstraintSolver {
             }
         }
 
-        System.out.println();
-
-        for (int j = 0; j < workList.size(); j++) {
-            ConstraintTerm t = workList.get(j);
-            System.out.println(t + "\n--------------\n" + t.getAvailableExpressions());
-            System.out.println();
-        }
+//        System.out.println();
+//
+//        for (int j = 0; j < workList.size(); j++) {
+//            ConstraintTerm t = workList.get(j);
+//            System.out.println(t + "\n--------------\n" + t.getAvailableExpressions());
+//            System.out.println();
+//        }
     }
 
     private void satisfyConstraint(Constraint constraint) {
@@ -133,6 +138,25 @@ public class ConstraintSolver {
         }
 
         return false;
+    }
+
+    public void buildEntryMap() {
+        List<ConstraintTerm> workList = graph.getAllTerms();
+
+        for (int j = 0; j < workList.size(); j++) {
+            ConstraintTerm t = workList.get(j);
+            if(t instanceof SetUnion){
+                t = ((SetUnion) t).getEntryTerm();
+            } else if (t instanceof SetDifference) {
+                t = ((SetDifference) t).getEntryTerm();
+            }
+            ASTNode node = t.getNode();
+            entryMap.put(node, t.getAvailableExpressions());
+        }
+    }
+
+    public HashMap<ASTNode, List<ExpressionLiteral>> getEntryMap() {
+        return entryMap;
     }
 
 }

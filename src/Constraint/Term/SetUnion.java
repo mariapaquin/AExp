@@ -1,6 +1,7 @@
 package Constraint.Term;
 
 import Constraint.ExpressionLiteral;
+import org.eclipse.jdt.core.dom.ASTNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
  * ([1] entry U { ( a + 1 ) }
  */
 public class SetUnion extends ConstraintTerm {
+
 
     private EntryLabel entryTerm;
     private List<ExpressionLiteral> exprToAdd;
@@ -24,6 +26,11 @@ public class SetUnion extends ConstraintTerm {
     public void setAvailableExpressions(List<ExpressionLiteral> expressions) {
         entryTerm.setAvailableExpressions(expressions);
 
+    }
+
+    @Override
+    public ASTNode getNode() {
+        return entryTerm.getNode();
     }
 
     public List<ExpressionLiteral> getAvailableExpressions() {
@@ -45,6 +52,11 @@ public class SetUnion extends ConstraintTerm {
         }
         return expressions;
     }
+
+    public EntryLabel getEntryTerm() {
+        return entryTerm;
+    }
+
     @Override
     public String toString() {
         return entryTerm + " U " + exprToAdd;

@@ -5,14 +5,12 @@ import Constraint.ExpressionLiteral;
 import Solving.ConstraintSolver;
 import org.eclipse.jdt.core.dom.*;
 import visitor.ExpressionVisitor;
-import visitor.MethodVisitor;
+import visitor.AEVisitor;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
-
+import java.util.*;
 
 public class Driver {
 
@@ -32,11 +30,13 @@ public class Driver {
         cu.accept(exprVisitor);
         List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
-        MethodVisitor methodVisitor = new MethodVisitor(ae);
-        cu.accept(methodVisitor);
+        AEVisitor aeVisitor = new AEVisitor(ae);
+        cu.accept(aeVisitor);
+
+        // TODO: Need to use the same cu for rewriting.
 
         System.out.println(" ------------- \n| Constraints |\n ------------- ");
-        ArrayList<Constraint> constraints = methodVisitor.getConstraints();
+        ArrayList<Constraint> constraints = aeVisitor.getConstraints();
 
         int i = 0;
         for (Constraint constraint : constraints) {
@@ -54,5 +54,16 @@ public class Driver {
 
         solver.processWorkList();
 
+        solver.buildEntryMap();
+
+        HashMap<ASTNode, List<ExpressionLiteral>>  entryMap = solver.getEntryMap();
+        Set set = (Set) entryMap.entrySet();
+        Iterator iterator = set.iterator();
+
+        while (iterator.hasNext()) {
+            Map.Entry mapEntry = (Map.Entry) iterator.next();
+            System.out.println("Key : " + mapEntry.getKey() + "Value : " + mapEntry.getValue() + "\n");
+        }
     }
 }
+

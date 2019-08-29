@@ -8,14 +8,20 @@ import ConstraintCreator.ConstraintTermFactory;
 import org.eclipse.jdt.core.dom.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-public class MethodVisitor extends ASTVisitor {
+/**
+ * This visitor creates a map from statement nodes to entry labels
+ * (contain the information of what expressions are available
+ * upon entry to the statement).
+ */
+public class AEVisitor extends ASTVisitor {
     private ArrayList<Constraint> constraints;
     private ConstraintTermFactory variableFactory;
     private List<ExpressionLiteral> availableExpressions;
 
-    public MethodVisitor(List<ExpressionLiteral> availableExpressions) {
+    public AEVisitor(List<ExpressionLiteral> availableExpressions) {
         this.availableExpressions = availableExpressions;
         variableFactory = new ConstraintTermFactory();
         constraints  = new ArrayList<>();
@@ -24,7 +30,7 @@ public class MethodVisitor extends ASTVisitor {
     @Override
     public boolean visit(MethodDeclaration node) {
         ConstraintTerm exit = variableFactory.createExitLabel(node);
-        ((ExitLabel) exit).setInitial(true);
+        exit.setInitial(true);
         List<ASTNode> exitStmts = new ArrayList<>();
         exitStmts.add(node);
         BlockVisitor visitor = new BlockVisitor(exitStmts);
@@ -38,6 +44,7 @@ public class MethodVisitor extends ASTVisitor {
         public InfixVisitor() {
             exprList = new ArrayList<>();
         }
+
         @Override
         public boolean visit(InfixExpression node){
             Expression lhs = node.getLeftOperand();
@@ -727,4 +734,5 @@ public class MethodVisitor extends ASTVisitor {
         public ArrayList<Constraint> getConstraints() {
             return constraints;
         }
+
 }
