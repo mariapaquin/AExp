@@ -39,17 +39,17 @@ public class ConstraintSolver {
         change = true;
         while (change) {
             change = false;
-            System.out.println("Starting iteration " + ++iteration
-                    + "\n--------------------");
+//            System.out.println("Starting iteration " + ++iteration
+//                    + "\n--------------------");
             for (int j = 0; j < workList.size(); j++) {
                 ConstraintTerm t = workList.get(j);
-                System.out.println("Constraint.Term:" + t);
+//                System.out.println("Constraint.Term:" + t);
                 int h = 0;
                 for (Constraint c : graph.getConstraintsInvolving(t)) {
-                     System.out.println(++h + ": checking Constraint " + c + "...");
+//                     System.out.println(++h + ": checking Constraint " + c + "...");
                      satisfyConstraint(c);
                 }
-                System.out.println("\n");
+//                System.out.println("\n");
             }
         }
 
@@ -70,8 +70,8 @@ public class ConstraintSolver {
         List<ExpressionLiteral> rhsAE = rhs.getAvailableExpressions();
 
         if (!rhsAE.containsAll(lhsAE)) {
-            System.out.println(lhsAE + " is not in " + rhsAE);
-            System.out.println("Performing intersection operation...");
+//            System.out.println(lhsAE + " is not in " + rhsAE);
+//            System.out.println("Performing intersection operation...");
 
 //          copy the previous expression list for change detection
             List<ExpressionLiteral> prev = new ArrayList<>();
@@ -84,15 +84,15 @@ public class ConstraintSolver {
             lhs.setAvailableExpressions(intersection);
 
             if (changed(prev, lhs.getAvailableExpressions())) {
-                System.out.println("LHS was changed");
+//                System.out.println("LHS was changed");
                 change = true;
             }
 
-            System.out.println(lhs.getAvailableExpressions()
-                    + " is now in " + rhs.getAvailableExpressions());
+//            System.out.println(lhs.getAvailableExpressions()
+//                    + " is now in " + rhs.getAvailableExpressions());
 
         } else {
-            System.out.println(lhsAE + " is already in " + rhsAE);
+//            System.out.println(lhsAE + " is already in " + rhsAE);
         }
     }
 

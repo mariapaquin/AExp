@@ -88,8 +88,10 @@ public class MethodVisitor extends ASTVisitor {
         public void endVisit(Assignment node) {
             List<Constraint> result = new ArrayList<Constraint>();
 
-            ConstraintTerm entry = variableFactory.createEntryLabel(node);
-            ConstraintTerm exit = variableFactory.createExitLabel(node);
+            ASTNode parent = node.getParent();
+
+            ConstraintTerm entry = variableFactory.createEntryLabel(parent);
+            ConstraintTerm exit = variableFactory.createExitLabel(parent);
 
             if(!exitStmts.isEmpty()){
                 for (ASTNode stmt : exitStmts) {
@@ -99,7 +101,7 @@ public class MethodVisitor extends ASTVisitor {
             }
 
             exitStmts.clear();
-            exitStmts.add(node);
+            exitStmts.add(parent);
 
             //*******************//
             //   possible infix  //
@@ -110,13 +112,13 @@ public class MethodVisitor extends ASTVisitor {
             List<ExpressionLiteral> exprList = infixVisitor.getExprList();
 
             SetUnion setUnion = getSetUnion((EntryLabel) entry, exprList);
-            variableFactory.setEntryLabel(node, setUnion);
+            variableFactory.setEntryLabel(parent, setUnion);
 
             String lhs = node.getLeftHandSide().toString();
             List<ExpressionLiteral>  exprToSubtract = getExpressionsInvolving(lhs);
             SetDifference setDifference = getSetDifference(setUnion, exprToSubtract);
 
-            variableFactory.setEntryLabel(node, setDifference);
+            variableFactory.setEntryLabel(parent, setDifference);
             result.add(newSubsetConstraint(exit, setDifference));
 
             constraints.addAll(result);
@@ -257,6 +259,11 @@ public class MethodVisitor extends ASTVisitor {
             }
 
             return false;
+        }
+
+        @Override
+        public boolean visit(ExpressionStatement node){
+            return true;
         }
 
 
@@ -484,8 +491,10 @@ public class MethodVisitor extends ASTVisitor {
                 return false;
             }
 
-            variableFactory.createEntryLabel(node);
-            variableFactory.createExitLabel(node);
+            ASTNode parent = node.getParent();
+
+            variableFactory.createEntryLabel(parent);
+            variableFactory.createExitLabel(parent);
             return true;
         }
 
@@ -493,8 +502,10 @@ public class MethodVisitor extends ASTVisitor {
         public void endVisit(MethodInvocation node) {
             List<Constraint> result = new ArrayList<Constraint>();
 
-            ConstraintTerm entry = variableFactory.createEntryLabel(node);
-            ConstraintTerm exit = variableFactory.createExitLabel(node);
+            ASTNode parent = node.getParent();
+
+            ConstraintTerm entry = variableFactory.createEntryLabel(parent);
+            ConstraintTerm exit = variableFactory.createExitLabel(parent);
 
             if(!exitStmts.isEmpty()){
                 for (ASTNode stmt : exitStmts) {
@@ -512,12 +523,12 @@ public class MethodVisitor extends ASTVisitor {
             List<ExpressionLiteral> exprList = infixVisitor.getExprList();
 
             ConstraintTerm setUnion = getSetUnion((EntryLabel) entry, exprList);
-            variableFactory.setEntryLabel(node, setUnion);
+            variableFactory.setEntryLabel(parent, setUnion);
 
-            result.add(newSubsetConstraint(exit, variableFactory.createEntryLabel(node)));
+            result.add(newSubsetConstraint(exit, variableFactory.createEntryLabel(parent)));
 
             exitStmts.clear();
-            exitStmts.add(node);
+            exitStmts.add(parent);
 
             constraints.addAll(result);
         }
