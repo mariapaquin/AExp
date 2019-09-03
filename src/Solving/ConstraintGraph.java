@@ -6,13 +6,13 @@ import Constraint.Term.ConstraintTerm;
 import java.util.*;
 
 public class ConstraintGraph {
-    private HashSet<Constraint> constraints;
+    private ArrayList<Constraint> constraints;
     private ArrayList<ConstraintTerm> allTerms;
     private HashMap<ConstraintTerm, List<Constraint>> edgeMap;
 
-    public ConstraintGraph(HashSet<Constraint> constraints) {
+    public ConstraintGraph(ArrayList<Constraint> constraints) {
         this.constraints = constraints;
-        allTerms = new ArrayList<ConstraintTerm>();
+        allTerms = new ArrayList<>();
         edgeMap = new HashMap<ConstraintTerm, List<Constraint>>();
     }
 
@@ -32,7 +32,7 @@ public class ConstraintGraph {
         return edgeMap.get(term);
     }
 
-    public HashSet<Constraint> getConstraints() {
+    public ArrayList<Constraint> getConstraints() {
         return constraints;
     }
 

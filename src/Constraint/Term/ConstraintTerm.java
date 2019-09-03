@@ -1,33 +1,35 @@
 package Constraint.Term;
 
-import Solving.AvailableExpressionSet;
-import java.util.Set;
+import Constraint.ExpressionLiteral;
+import org.eclipse.jdt.core.dom.ASTNode;
 
-/**
- * Represents a node in the constraint graph.
- * 
- */
+import java.util.List;
+
 public abstract class ConstraintTerm {
+    public List<ExpressionLiteral> availableExpressions;
+    public boolean isInitial;
+    protected ASTNode node;
 
-    public AvailableExpressionSet availableExpressionSet;
+    public abstract List<ExpressionLiteral> getAvailableExpressions();
+    public abstract List<String> getAvailableExpressionsAsString();
+    public abstract void setAvailableExpressions(List<ExpressionLiteral> expressions);
+    public abstract ASTNode getNode();
+
+    public boolean isInitial() {
+        return isInitial;
+    }
+
+    public void setInitial(boolean initial) {
+        isInitial = initial;
+    }
+
 
     public interface TermProcessor {
         void processTerm(ConstraintTerm term);
     }
 
-    public AvailableExpressionSet getAvailableExpressionSet() {
-        return availableExpressionSet;
-    }
-
-    public void updateDefinitionSet(AvailableExpressionSet ds2) {
-        availableExpressionSet = ds2;
-    }
-
-    public void initializeDefinitionSet(Set<String> variables){
-
-    }
-
     public void processTerms(TermProcessor processor) {
         processor.processTerm(this);
     }
+
 }

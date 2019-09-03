@@ -25,15 +25,27 @@ public class ExitLabel extends NodeLabel {
 		}
 
 		if (node instanceof IfStatement) {
-			nodeExpr = ((IfStatement) node).getExpression().toString();
+			nodeExpr = "if(" + ((IfStatement) node).getExpression().toString() + ")";
 		}
 
 		if (node instanceof WhileStatement) {
-			nodeExpr = ((WhileStatement) node).getExpression().toString();
+			nodeExpr = "while(" + ((WhileStatement) node).getExpression().toString() + ")";
 		}
 
 		if (node instanceof ForStatement) {
-			nodeExpr = ((ForStatement) node).getExpression() .toString();
+			nodeExpr = "for( " + ((ForStatement) node).getExpression() .toString() + ")";
+		}
+
+		if (node instanceof EnhancedForStatement) {
+			nodeExpr = "for(" + ((EnhancedForStatement) node).getParameter() + ")";
+		}
+
+		if (node instanceof DoStatement) {
+			nodeExpr = "do(" + ((DoStatement) node).getExpression()+ ")";
+		}
+
+		if (node instanceof MethodDeclaration) {
+			nodeExpr = "init";
 		}
 
 		return "exit[" + nodeExpr + "]";

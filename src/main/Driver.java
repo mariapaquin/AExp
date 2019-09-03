@@ -1,40 +1,43 @@
 package main;
 
 import Constraint.Constraint;
-import ConstraintCreator.ConstraintCreator;
+import Constraint.ExpressionLiteral;
 import Solving.ConstraintSolver;
 import org.eclipse.jdt.core.dom.*;
-import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
-import visitor.ConstraintVisitor;
+import visitor.ExpressionVisitor;
+import visitor.AEVisitor;
+import visitor.RewriteExprVisitor;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.HashSet;
-import java.util.Set;
-
+import java.util.*;
 
 public class Driver {
 
     public static void main(String[] args) throws IOException {
 
-        File file = new File("./src/tests/Test.java");
+        File file = new File("./tests/AE/StatementSequence.java");
         String source = new String(Files.readAllBytes(file.toPath()));
         ASTParser parser = ASTParser.newParser(AST.JLS3);
         parser.setSource(source.toCharArray());
         parser.setKind(ASTParser.K_COMPILATION_UNIT);
 
         CompilationUnit cu = (CompilationUnit) parser.createAST(null);
-        AST ast = cu.getAST();
-        ASTRewrite rewriter = ASTRewrite.create(ast);
 
         // TODO: Need to do this separately for each method
 
-        ConstraintVisitor visitor = new ConstraintVisitor(new ConstraintCreator());
-        cu.accept(visitor);
+        ExpressionVisitor exprVisitor = new ExpressionVisitor();
+        cu.accept(exprVisitor);
+        List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
+
+        AEVisitor aeVisitor = new AEVisitor(ae);
+        cu.accept(aeVisitor);
+
+        // TODO: Need to use the same cu for rewriting.
 
         System.out.println(" ------------- \n| Constraints |\n ------------- ");
-        HashSet<Constraint> constraints = visitor.getConstraints();
+        ArrayList<Constraint> constraints = aeVisitor.getConstraints();
 
         int i = 0;
         for (Constraint constraint : constraints) {
@@ -43,37 +46,28 @@ public class Driver {
 
         System.out.println();
 
-        // find local variables in the method
-        Set<String> variables = new HashSet<String>();
-
-        cu.accept(new ASTVisitor() {
-            @Override
-            public boolean visit(SimpleName node) {
-                if (node.getLocationInParent() == TypeDeclaration.NAME_PROPERTY ||
-                        node.getLocationInParent() == MethodDeclaration.NAME_PROPERTY ||
-                        node.getLocationInParent() == SingleVariableDeclaration.NAME_PROPERTY ||
-                        node.getLocationInParent() == QualifiedName.NAME_PROPERTY ||
-                        node.getLocationInParent() == QualifiedName.QUALIFIER_PROPERTY ||
-                        node.getLocationInParent() == PackageDeclaration.NAME_PROPERTY ||
-                        node.getLocationInParent() == SimpleType.NAME_PROPERTY ||
-                        node.getLocationInParent() == ImportDeclaration.NAME_PROPERTY ||
-                        node.getLocationInParent() == TypeParameter.NAME_PROPERTY) {
-                    return true;
-                }
-                variables.add(node.getIdentifier());
-                return true;
-            }
-        });
-
         System.out.println(" ------------  \n| Constraint |\n| Solutions  |\n ------------  ");
-        ConstraintSolver solver = new ConstraintSolver(constraints, variables);
+        ConstraintSolver solver = new ConstraintSolver(constraints, ae);
 
-//        solver.buildConstraintGraph();
-//
-//        solver.initializeDefinitionSet();
-//
-//        solver.processWorkList();
+        solver.buildConstraintGraph();
 
+        solver.initializeAESet();
+
+        solver.processWorkList();
+
+        solver.buildEntryMap();
+
+        HashMap<ASTNode, List<String>>  entryMap = solver.getEntryMap();
+        Set set = (Set) entryMap.entrySet();
+        Iterator iterator = set.iterator();
+
+        while (iterator.hasNext()) {
+            Map.Entry mapEntry = (Map.Entry) iterator.next();
+            System.out.println("Key : " + mapEntry.getKey() + "Value : " + mapEntry.getValue() + "\n");
+        }
+
+        RewriteExprVisitor rewriteVisitor = new RewriteExprVisitor(ae, entryMap);
+        cu.accept(rewriteVisitor);
     }
-
 }
+

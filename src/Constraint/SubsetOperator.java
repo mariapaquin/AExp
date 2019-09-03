@@ -1,10 +1,8 @@
-package Constraint.Operator;
+package Constraint;
 
 public class SubsetOperator {
 
     public String toString(){
-
         return "subset";
     }
-
 }

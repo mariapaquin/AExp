@@ -2,23 +2,23 @@ package ConstraintCreator;
 
 import java.util.HashMap;
 
+import Constraint.ExpressionLiteral;
 import Constraint.Term.*;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Expression;
 
 public class ConstraintTermFactory {
-    private HashMap<ASTNode, EntryLabel> termMapEntry;
-    private HashMap<ASTNode, EntryUnionAE> termMapUnion;
-    private HashMap<ASTNode, ExitLabel> termMapExit;
+
+    private HashMap<ASTNode, ConstraintTerm> termMapEntry;
+    private HashMap<ASTNode, ConstraintTerm> termMapExit;
 
     public ConstraintTermFactory() {
         termMapEntry = new HashMap<>();
         termMapExit = new HashMap<>();
-        termMapUnion = new HashMap<>();
     }
 
-    public EntryLabel createEntryLabel(ASTNode node) {
-        EntryLabel t = termMapEntry.get(node);
+    public ConstraintTerm createEntryLabel(ASTNode node) {
+        ConstraintTerm t = termMapEntry.get(node);
         if (t == null) {
             t = new EntryLabel((node));
             termMapEntry.put(node, t);
@@ -27,22 +27,11 @@ public class ConstraintTermFactory {
         return t;
     }
 
-    public ExitLabel createExitLabel(ASTNode node) {
-        ExitLabel t = termMapExit.get(node);
+    public ConstraintTerm createExitLabel(ASTNode node) {
+        ConstraintTerm t = termMapExit.get(node);
         if (t == null) {
             t = new ExitLabel(node);
             termMapExit.put(node, t);
-        }
-        return t;
-    }
-
-
-    public EntryUnionAE createEntryUnionLabel(ASTNode node) {
-        EntryUnionAE t = termMapUnion.get(node);
-        if (t == null) {
-            EntryLabel entry = termMapEntry.get(node);
-            t = new EntryUnionAE(entry);
-            termMapUnion.put(node, t);
         }
         return t;
     }
@@ -52,13 +41,11 @@ public class ConstraintTermFactory {
         return def;
     }
 
-
-    public EntryLabel getEntryLabel(ASTNode node) {
-        return termMapEntry.get(node);
+    public void setEntryLabel(ASTNode node, ConstraintTerm term) {
+        termMapEntry.put(node, term);
     }
 
-    public ExitLabel getExitLabel(ASTNode node) {
-        return termMapExit.get(node);
+    public HashMap<ASTNode, ConstraintTerm> getTermMapEntry() {
+        return termMapEntry;
     }
-
 }
