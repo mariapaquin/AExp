@@ -6,33 +6,50 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NodeLabel extends ConstraintTerm {
+public class NodeLabel {
+    public List<ExpressionLiteral> exprList;
+    protected ASTNode node;
 
-	public NodeLabel(ASTNode node) {
-		this.node = node;
-	}
+    public NodeLabel(ASTNode node, List<ExpressionLiteral> exprList) {
+        this.node = node;
+        this.exprList = exprList;
+    }
 
-	@Override
-	public List<ExpressionLiteral> getAvailableExpressions() {
-		return availableExpressions;
-	}
+    public List<ExpressionLiteral> getExprList() {
+        return exprList;
+    }
 
-	@Override
-	public List<String> getAvailableExpressionsAsString() {
-		List<String> ret = new ArrayList<>();
-		for (ExpressionLiteral e : availableExpressions) {
-			ret.add(e.getNode().toString());
-		}
-		return ret;
-	}
 
-	@Override
-	public void setAvailableExpressions(List<ExpressionLiteral> expressions) {
-		availableExpressions = expressions;
-	}
+    public List<String> getAvailableExpressionsAsString() {
+        List<String> ret = new ArrayList<>();
+        for (ExpressionLiteral e : exprList) {
+            ret.add(e.getNode().toString());
+        }
+        return ret;
+    }
 
-	@Override
-	public ASTNode getNode(){
-		return node;
-	}
+    public void setExprList(List<ExpressionLiteral> expressions) {
+        exprList = expressions;
+    }
+
+    public ASTNode getNode(){
+        return node;
+    }
+
+    public void reassignExpr(ExpressionLiteral expr, String newVarName){
+        for (ExpressionLiteral e : exprList) {
+            if (e.equals(expr)) {
+                e.setSymbVarName(newVarName);
+            }
+        }
+    }
+
+    public interface TermProcessor {
+        void processTerm(NodeLabel term);
+    }
+
+    public void processTerms(TermProcessor processor) {
+        processor.processTerm(this);
+    }
+
 }

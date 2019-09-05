@@ -12,13 +12,11 @@ public class ConstraintSolver {
     private boolean change;
     private ConstraintGraph graph;
     private ArrayList<Constraint> constraints;
-    private List<ExpressionLiteral> expressionList;
     private HashMap<ASTNode, List<String>> entryMap;
 
 
-    public ConstraintSolver(ArrayList<Constraint> constraints, List<ExpressionLiteral> expressionList) {
+    public ConstraintSolver(ArrayList<Constraint> constraints) {
         this.constraints = constraints;
-        this.expressionList = expressionList;
         this.entryMap = new HashMap<>();
 
     }
@@ -28,18 +26,9 @@ public class ConstraintSolver {
         graph.initialize();
     }
 
-    public void initializeAESet() {
-        for (ConstraintTerm term : graph.getAllTerms()) {
-                if (term.isInitial()) {
-                    term.setAvailableExpressions(new ArrayList<>());
-                } else {
-                    term.setAvailableExpressions(expressionList);
-                }
-        }
-    }
 
     public void processWorkList() {
-        List<ConstraintTerm> workList = graph.getAllTerms();
+        List<NodeLabel> workList = graph.getAllTerms();
         int iteration = 0;
         change = true;
         while (change) {
@@ -47,7 +36,7 @@ public class ConstraintSolver {
 //            System.out.println("Starting iteration " + ++iteration
 //                    + "\n--------------------");
             for (int j = 0; j < workList.size(); j++) {
-                ConstraintTerm t = workList.get(j);
+                NodeLabel t = workList.get(j);
 //                System.out.println("Constraint.Term:" + t);
                 int h = 0;
                 for (Constraint c : graph.getConstraintsInvolving(t)) {
@@ -58,21 +47,21 @@ public class ConstraintSolver {
             }
         }
 
-//        System.out.println();
-//
-//        for (int j = 0; j < workList.size(); j++) {
-//            ConstraintTerm t = workList.get(j);
-//            System.out.println(t + "\n--------------\n" + t.getAvailableExpressions());
-//            System.out.println();
-//        }
+        System.out.println();
+
+        for (int j = 0; j < workList.size(); j++) {
+            NodeLabel t = workList.get(j);
+            System.out.println(t + "\n--------------\n" + t.getExprList());
+            System.out.println();
+        }
     }
 
     private void satisfyConstraint(Constraint constraint) {
-        ConstraintTerm lhs = constraint.getLhs();
-        ConstraintTerm rhs = constraint.getRhs();
+        NodeLabel lhs = constraint.getLhs();
+        NodeLabel rhs = constraint.getRhs();
 
-        List<ExpressionLiteral> lhsAE = lhs.getAvailableExpressions();
-        List<ExpressionLiteral> rhsAE = rhs.getAvailableExpressions();
+        List<ExpressionLiteral> lhsAE = lhs.getExprList();
+        List<ExpressionLiteral> rhsAE = rhs.getExprList();
 
         if (!rhsAE.containsAll(lhsAE)) {
 //            System.out.println(lhsAE + " is not in " + rhsAE);
@@ -86,15 +75,15 @@ public class ConstraintSolver {
 
             List<ExpressionLiteral> intersection = intersect(lhsAE, rhsAE);
 
-            lhs.setAvailableExpressions(intersection);
+            lhs.setExprList(intersection);
 
-            if (changed(prev, lhs.getAvailableExpressions())) {
+            if (changed(prev, lhs.getExprList())) {
 //                System.out.println("LHS was changed");
                 change = true;
             }
 
-//            System.out.println(lhs.getAvailableExpressions()
-//                    + " is now in " + rhs.getAvailableExpressions());
+//            System.out.println(lhs.getExprList()
+//                    + " is now in " + rhs.getExprList());
 
         } else {
 //            System.out.println(lhsAE + " is already in " + rhsAE);
@@ -141,15 +130,10 @@ public class ConstraintSolver {
     }
 
     public void buildEntryMap() {
-        List<ConstraintTerm> workList = graph.getAllTerms();
+        List<NodeLabel> workList = graph.getAllTerms();
 
         for (int j = 0; j < workList.size(); j++) {
-            ConstraintTerm t = workList.get(j);
-            if(t instanceof SetUnion){
-                t = ((SetUnion) t).getEntryTerm();
-            } else if (t instanceof SetDifference) {
-                t = ((SetDifference) t).getEntryTerm();
-            }
+            NodeLabel t = workList.get(j);
             ASTNode node = t.getNode();
             entryMap.put(node, t.getAvailableExpressionsAsString());
         }

@@ -11,9 +11,11 @@ import java.util.List;
 
 public class ExpressionVisitor extends ASTVisitor {
     private List<ExpressionLiteral> availableExpressions;
+    private int count;
 
     public ExpressionVisitor() {
         availableExpressions = new ArrayList<>();
+        count = 0;
     }
 
 
@@ -37,7 +39,7 @@ public class ExpressionVisitor extends ASTVisitor {
             return true;
         }
 
-        ExpressionLiteral expressionLiteral = new ExpressionLiteral(node);
+        ExpressionLiteral expressionLiteral = new ExpressionLiteral(node, ("S" + count++));
 
         List<String> varsUsed = getVarsUsed(node);
         expressionLiteral.setVarsUsed(varsUsed);

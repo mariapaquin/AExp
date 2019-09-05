@@ -27,12 +27,12 @@ public class Driver {
 
         // TODO: Need to do this separately for each method
 
-        ExpressionVisitor exprVisitor = new ExpressionVisitor();
-        cu.accept(exprVisitor);
-        List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
+//        ExpressionVisitor exprVisitor = new ExpressionVisitor();
+//        cu.accept(exprVisitor);
 
-        AEVisitor aeVisitor = new AEVisitor(ae);
+        AEVisitor aeVisitor = new AEVisitor();
         cu.accept(aeVisitor);
+        List<ExpressionLiteral> ae = aeVisitor.getAvailableExpressions();
 
         // TODO: Need to use the same cu for rewriting.
 
@@ -47,15 +47,13 @@ public class Driver {
         System.out.println();
 
         System.out.println(" ------------  \n| Constraint |\n| Solutions  |\n ------------  ");
-        ConstraintSolver solver = new ConstraintSolver(constraints, ae);
+        ConstraintSolver solver = new ConstraintSolver(constraints);
 
         solver.buildConstraintGraph();
 
-        solver.initializeAESet();
-
         solver.processWorkList();
 
-        solver.buildEntryMap();
+/*        solver.buildEntryMap();
 
         HashMap<ASTNode, List<String>>  entryMap = solver.getEntryMap();
         Set set = (Set) entryMap.entrySet();
@@ -67,7 +65,7 @@ public class Driver {
         }
 
         RewriteExprVisitor rewriteVisitor = new RewriteExprVisitor(ae, entryMap);
-        cu.accept(rewriteVisitor);
+        cu.accept(rewriteVisitor);*/
     }
 }
 

@@ -1,27 +1,27 @@
 package Constraint;
 
-import Constraint.Term.ConstraintTerm;
+import Constraint.Term.NodeLabel;
 
 /**
  * An edge in the constraint graph.
  */
 public class Constraint {
 
-    private ConstraintTerm lhs;
-    private ConstraintTerm rhs;
+    private NodeLabel lhs;
+    private NodeLabel rhs;
     private SubsetOperator op;
 
-    public Constraint(ConstraintTerm lhs, SubsetOperator op, ConstraintTerm rhs) {
+    public Constraint(NodeLabel lhs, SubsetOperator op, NodeLabel rhs) {
         this.lhs = lhs;
         this.rhs = rhs;
         this.op = op;
     }
 
-    public ConstraintTerm getLhs() {
+    public NodeLabel getLhs() {
         return lhs;
     }
 
-    public ConstraintTerm getRhs() {
+    public NodeLabel getRhs() {
         return rhs;
     }
 

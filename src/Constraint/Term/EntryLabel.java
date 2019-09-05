@@ -1,6 +1,9 @@
 package Constraint.Term;
 
+import Constraint.ExpressionLiteral;
 import org.eclipse.jdt.core.dom.*;
+
+import java.util.List;
 
 
 /**
@@ -9,8 +12,8 @@ import org.eclipse.jdt.core.dom.*;
  */
 public class EntryLabel extends NodeLabel {
 
-	public EntryLabel(ASTNode node) {
-		super(node);
+	public EntryLabel(ASTNode node, List<ExpressionLiteral> exprList) {
+		super(node, exprList);
 	}
 
 	public String toString() {
