@@ -39,7 +39,7 @@ public class ExpressionVisitor extends ASTVisitor {
             return true;
         }
 
-        ExpressionLiteral expressionLiteral = new ExpressionLiteral(node, ("S" + count++));
+        ExpressionLiteral expressionLiteral = new ExpressionLiteral(node, count++);
 
         List<String> varsUsed = getVarsUsed(node);
         expressionLiteral.setVarsUsed(varsUsed);

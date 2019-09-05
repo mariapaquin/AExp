@@ -24,7 +24,7 @@ public class ConstraintTermFactory {
         if (t == null) {
             List<ExpressionLiteral> newExprList = new ArrayList<>();
             for (ExpressionLiteral e : exprList) {
-                ExpressionLiteral newExpr = new ExpressionLiteral(e.getNode(), e.getSymbVarName());
+                ExpressionLiteral newExpr = new ExpressionLiteral(e.getNode(), e.getSymbVarNum());
                 newExprList.add(newExpr);
             }
             t = new EntryLabel(node, newExprList);
@@ -39,7 +39,7 @@ public class ConstraintTermFactory {
         if (t == null) {
             List<ExpressionLiteral> newExprList = new ArrayList<>();
             for (ExpressionLiteral e : exprList) {
-                ExpressionLiteral newExpr = new ExpressionLiteral(e.getNode(), e.getSymbVarName());
+                ExpressionLiteral newExpr = new ExpressionLiteral(e.getNode(), e.getSymbVarNum());
                 newExprList.add(newExpr);
             }
             t = new ExitLabel(node, newExprList);

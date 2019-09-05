@@ -69,7 +69,7 @@ public class ConstraintSolver {
         System.out.println("lhs is " + lhsAE + ", rhs is " + rhsAE);
 
         for (ExpressionLiteral e: lhsAE) {
-            ExpressionLiteral newExpr = new ExpressionLiteral(e.getNode(), e.getSymbVarName());
+            ExpressionLiteral newExpr = new ExpressionLiteral(e.getNode(), e.getSymbVarNum());
             prev.add(newExpr);
         }
 
@@ -77,17 +77,17 @@ public class ConstraintSolver {
         for (ExpressionLiteral lhs_e : lhsAE) {
             for (ExpressionLiteral rhs_e : rhsAE) {
                 if (lhs_e.equals(rhs_e)) {
-                    if (!(lhs_e.getSymbVarName().equals(rhs_e.getSymbVarName()))) {
-                        System.out.println(lhs_e.getSymbVarName() + " does not equal " + rhs_e.getSymbVarName());
-                        lhs.reassignExpr(lhs_e, ("S" + symbVarCount++));
-                        System.out.println("setting lhs name to " + lhs_e.getSymbVarName());
+                    if (lhs_e.getSymbVarNum() < rhs_e.getSymbVarNum()) {
+                        System.out.println(lhs_e.getSymbVarNum() + " does not equal " + rhs_e.getSymbVarNum());
+                        lhs.setSymbVarNum(lhs_e, symbVarCount++);
+                        System.out.println("setting lhs name to " + lhs_e.getSymbVarNum());
                     }
                 }
             }
         }
 
         if (changed(prev, lhs.getExprList())) {
-            System.out.println("set was changed.");
+            change = true;
        }
     }
 
@@ -96,7 +96,7 @@ public class ConstraintSolver {
         for (ExpressionLiteral e : prevList) {
             for (ExpressionLiteral e2 : newList) {
                 if (e.equals(e2)) {
-                    if (!(e.getSymbVarName().equals(e2.getSymbVarName()))) {
+                    if (e.getSymbVarNum() < e2.getSymbVarNum()) {
                         return true;
                     }
                 }

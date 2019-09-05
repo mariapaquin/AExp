@@ -36,10 +36,10 @@ public class NodeLabel {
         return node;
     }
 
-    public void reassignExpr(ExpressionLiteral expr, String newVarName){
+    public void setSymbVarNum(ExpressionLiteral expr, int varNum){
         for (ExpressionLiteral e : exprList) {
             if (e.equals(expr)) {
-                e.setSymbVarName(newVarName);
+                e.setSymbVarNum(varNum);
             }
         }
     }

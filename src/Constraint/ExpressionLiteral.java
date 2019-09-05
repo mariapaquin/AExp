@@ -10,13 +10,11 @@ public class ExpressionLiteral {
 
     private Expression node;
     private List<String> varsUsed;
+    private int symbVarNum;
 
-
-    private String symbVarName;
-
-    public ExpressionLiteral(Expression node, String symbVarName) {
+    public ExpressionLiteral(Expression node, int symbVarNum) {
         this.node = node;
-        this.symbVarName = symbVarName;
+        this.symbVarNum = symbVarNum;
         varsUsed = new ArrayList<>();
     }
 
@@ -29,19 +27,19 @@ public class ExpressionLiteral {
     }
 
     public String toString() {
-        return "(" + node + ") -> " + symbVarName;
+        return "(" + node + ") -> " + symbVarNum;
     }
 
     public Expression getNode() {
         return node;
     }
 
-    public String getSymbVarName() {
-        return symbVarName;
+    public int getSymbVarNum() {
+        return symbVarNum;
     }
 
-    public void setSymbVarName(String symbVarName) {
-        this.symbVarName = symbVarName;
+    public void setSymbVarNum(int symbVarNum) {
+        this.symbVarNum = symbVarNum;
     }
 
     @Override

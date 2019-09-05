@@ -67,7 +67,7 @@ public class AEVisitor extends ASTVisitor {
                 return true;
             }
 
-            ExpressionLiteral expressionLiteral = new ExpressionLiteral(node, ("S" + symbVarCount++));
+            ExpressionLiteral expressionLiteral = new ExpressionLiteral(node, symbVarCount++);
 
             List<String> varsUsed = getVarsUsed(node);
             expressionLiteral.setVarsUsed(varsUsed);
@@ -155,7 +155,7 @@ public class AEVisitor extends ASTVisitor {
 
             for (ExpressionLiteral e : exprToReassign) {
 //                System.out.println(symbVarCount);
-                exit.reassignExpr(e, ("S" + symbVarCount++));
+                exit.setSymbVarNum(e, symbVarCount++);
             }
 //            SetDifference setDifference = getSetDifference(setUnion, exprToSubtract);
 //
@@ -656,7 +656,7 @@ public class AEVisitor extends ASTVisitor {
             List<ExpressionLiteral>  exprToReassign = getExpressionsInvolving(lhs);
 
             for (ExpressionLiteral e : exprToReassign) {
-                exit.reassignExpr(e, ("S" + symbVarCount++));
+                exit.setSymbVarNum(e, symbVarCount++);
             }
 
             result.add(newSubsetConstraint(exit, entry));
