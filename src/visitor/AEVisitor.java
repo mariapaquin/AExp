@@ -45,6 +45,10 @@ public class AEVisitor extends ASTVisitor {
         return false;
     }
 
+    public int getSymbVarCount() {
+        return symbVarCount;
+    }
+
     public class ExpressionVisitor extends ASTVisitor {
 
         @Override

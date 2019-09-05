@@ -33,6 +33,7 @@ public class Driver {
         AEVisitor aeVisitor = new AEVisitor();
         cu.accept(aeVisitor);
         List<ExpressionLiteral> ae = aeVisitor.getAvailableExpressions();
+        int symbVarCount = aeVisitor.getSymbVarCount();
 
         // TODO: Need to use the same cu for rewriting.
 
@@ -42,12 +43,13 @@ public class Driver {
         int i = 0;
         for (Constraint constraint : constraints) {
             System.out.println(++i + ") " + constraint);
+            System.out.println(constraint.getLhs().getExprList() + " subset " + constraint.getRhs().getExprList());
         }
 
         System.out.println();
 
         System.out.println(" ------------  \n| Constraint |\n| Solutions  |\n ------------  ");
-        ConstraintSolver solver = new ConstraintSolver(constraints);
+        ConstraintSolver solver = new ConstraintSolver(constraints, symbVarCount);
 
         solver.buildConstraintGraph();
 

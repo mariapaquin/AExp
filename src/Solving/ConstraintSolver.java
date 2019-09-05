@@ -13,12 +13,13 @@ public class ConstraintSolver {
     private ConstraintGraph graph;
     private ArrayList<Constraint> constraints;
     private HashMap<ASTNode, List<String>> entryMap;
+    private int symbVarCount;
 
 
-    public ConstraintSolver(ArrayList<Constraint> constraints) {
+    public ConstraintSolver(ArrayList<Constraint> constraints, int symbVarCount) {
         this.constraints = constraints;
         this.entryMap = new HashMap<>();
-
+        this.symbVarCount = symbVarCount;
     }
 
     public void buildConstraintGraph() {
@@ -33,14 +34,14 @@ public class ConstraintSolver {
         change = true;
         while (change) {
             change = false;
-//            System.out.println("Starting iteration " + ++iteration
-//                    + "\n--------------------");
+            System.out.println("Starting iteration " + ++iteration
+                    + "\n--------------------");
             for (int j = 0; j < workList.size(); j++) {
                 NodeLabel t = workList.get(j);
-//                System.out.println("Constraint.Term:" + t);
+                System.out.println("Constraint.Term:" + t);
                 int h = 0;
                 for (Constraint c : graph.getConstraintsInvolving(t)) {
-//                     System.out.println(++h + ": checking Constraint " + c + "...");
+                     System.out.println(++h + ": checking Constraint " + c + "...");
                      satisfyConstraint(c);
                 }
 //                System.out.println("\n");
@@ -63,66 +64,42 @@ public class ConstraintSolver {
         List<ExpressionLiteral> lhsAE = lhs.getExprList();
         List<ExpressionLiteral> rhsAE = rhs.getExprList();
 
-        if (!rhsAE.containsAll(lhsAE)) {
-//            System.out.println(lhsAE + " is not in " + rhsAE);
-//            System.out.println("Performing intersection operation...");
+        List<ExpressionLiteral> prev = new ArrayList<>();
 
-//          copy the previous expression list for change detection
-            List<ExpressionLiteral> prev = new ArrayList<>();
-            for (ExpressionLiteral e: rhsAE) {
-                prev.add(e);
-            }
-
-            List<ExpressionLiteral> intersection = intersect(lhsAE, rhsAE);
-
-            lhs.setExprList(intersection);
-
-            if (changed(prev, lhs.getExprList())) {
-//                System.out.println("LHS was changed");
-                change = true;
-            }
-
-//            System.out.println(lhs.getExprList()
-//                    + " is now in " + rhs.getExprList());
-
-        } else {
-//            System.out.println(lhsAE + " is already in " + rhsAE);
-        }
-    }
-
-    private List<ExpressionLiteral> intersect(List<ExpressionLiteral> lhsAE, List<ExpressionLiteral> rhsAE) {
-        List<ExpressionLiteral> expressions = new ArrayList();
+        System.out.println("lhs is " + lhsAE + ", rhs is " + rhsAE);
 
         for (ExpressionLiteral e: lhsAE) {
-            boolean inIntersection = false;
-            for (ExpressionLiteral e2: rhsAE) {
-                if(e.equals(e2)){
-                    inIntersection = true;
+            ExpressionLiteral newExpr = new ExpressionLiteral(e.getNode(), e.getSymbVarName());
+            prev.add(newExpr);
+        }
+
+
+        for (ExpressionLiteral lhs_e : lhsAE) {
+            for (ExpressionLiteral rhs_e : rhsAE) {
+                if (lhs_e.equals(rhs_e)) {
+                    if (!(lhs_e.getSymbVarName().equals(rhs_e.getSymbVarName()))) {
+                        System.out.println(lhs_e.getSymbVarName() + " does not equal " + rhs_e.getSymbVarName());
+                        lhs.reassignExpr(lhs_e, ("S" + symbVarCount++));
+                        System.out.println("setting lhs name to " + lhs_e.getSymbVarName());
+                    }
                 }
             }
-            if (inIntersection) {
-                expressions.add(e);
-            }
         }
 
-        return expressions;
+        if (changed(prev, lhs.getExprList())) {
+            System.out.println("set was changed.");
+       }
     }
 
+
     private boolean changed(List<ExpressionLiteral> prevList, List<ExpressionLiteral> newList) {
-        List<String> prevListString = new ArrayList<>();
-        List<String> newListString = new ArrayList<>();
-
         for (ExpressionLiteral e : prevList) {
-            prevListString.add(e.toString());
-        }
-
-        for (ExpressionLiteral e2 : newList) {
-            newListString.add(e2.toString());
-        }
-
-        for (String s: prevListString) {
-            if (!newListString.contains(s)) {
-                return true;
+            for (ExpressionLiteral e2 : newList) {
+                if (e.equals(e2)) {
+                    if (!(e.getSymbVarName().equals(e2.getSymbVarName()))) {
+                        return true;
+                    }
+                }
             }
         }
 
