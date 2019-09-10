@@ -1,26 +1,29 @@
 package Solving;
 
 import Constraint.Constraint;
+import Constraint.Term.ConstraintTerm;
 import Constraint.Term.NodeLabel;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class ConstraintGraph {
     private ArrayList<Constraint> constraints;
-    private ArrayList<NodeLabel> allTerms;
-    private HashMap<NodeLabel, List<Constraint>> edgeMap;
+    private ArrayList<ConstraintTerm> allTerms;
+    private HashMap<ConstraintTerm, List<Constraint>> edgeMap;
 
     public ConstraintGraph(ArrayList<Constraint> constraints) {
         this.constraints = constraints;
         allTerms = new ArrayList<>();
-        edgeMap = new HashMap<NodeLabel, List<Constraint>>();
+        edgeMap = new HashMap<ConstraintTerm, List<Constraint>>();
     }
 
     public void initialize() {
         TermDecorator decorator = new TermDecorator();
         for (Constraint c : constraints) {
-            NodeLabel lhs = c.getLhs();
-            NodeLabel rhs = c.getRhs();
+            ConstraintTerm lhs = c.getLhs();
+            ConstraintTerm rhs = c.getRhs();
 
             decorator.setConstraint(c);
             lhs.processTerms(decorator);
@@ -28,31 +31,42 @@ public class ConstraintGraph {
         }
     }
 
-    public List<Constraint> getConstraintsInvolving(NodeLabel term) {
+    public List<Constraint> getConstraintsInvolving(ConstraintTerm term) {
         return edgeMap.get(term);
+    }
+
+    public List<Constraint> getConstraintsWithLHS(ConstraintTerm term) {
+        List<Constraint> allConstraintsWithTerm = edgeMap.get(term);
+        List<Constraint> constraintsWithTermOnLHS = new ArrayList<Constraint>();
+
+        for (Constraint c : allConstraintsWithTerm) {
+            if (c.getLhs().equals(term)) {
+                constraintsWithTermOnLHS.add(c);
+            }
+        }
+        return constraintsWithTermOnLHS;
     }
 
     public ArrayList<Constraint> getConstraints() {
         return constraints;
     }
 
-    public HashMap<NodeLabel, List<Constraint>> getEdgeMap() {
+    public HashMap<ConstraintTerm, List<Constraint>> getEdgeMap() {
         return edgeMap;
     }
 
-    public ArrayList<NodeLabel> getAllTerms() {
+    public ArrayList<ConstraintTerm> getAllTerms() {
         return allTerms;
     }
 
-    private class TermDecorator implements NodeLabel.TermProcessor {
+    private class TermDecorator implements ConstraintTerm.TermProcessor {
         private Constraint constraint;
 
         public void setConstraint(Constraint constraint) {
             this.constraint = constraint;
         }
 
-        public void processTerm(NodeLabel term) {
-//			System.out.println(term + " " + term.hashCode());
+        public void processTerm(ConstraintTerm term) {
             List<Constraint> c;
             if (edgeMap.containsKey(term)) {
                 c = edgeMap.get(term);
@@ -66,5 +80,6 @@ public class ConstraintGraph {
                 allTerms.add(term);
             }
         }
+
     }
 }

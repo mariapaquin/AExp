@@ -27,7 +27,7 @@ public class ExpressionLiteral {
     }
 
     public String toString() {
-        return "(" + node + ") -> " + symbVarNum;
+        return "(" + node + "): " + symbVarNum;
     }
 
     public Expression getNode() {

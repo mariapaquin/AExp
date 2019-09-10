@@ -1,5 +1,6 @@
 package Constraint;
 
+import Constraint.Term.ConstraintTerm;
 import Constraint.Term.NodeLabel;
 
 /**
@@ -7,25 +8,25 @@ import Constraint.Term.NodeLabel;
  */
 public class Constraint {
 
-    private NodeLabel lhs;
-    private NodeLabel rhs;
-    private SubsetOperator op;
+    private ConstraintTerm lhs;
+    private ConstraintTerm rhs;
+    private RelOperator op;
 
-    public Constraint(NodeLabel lhs, SubsetOperator op, NodeLabel rhs) {
+    public Constraint(ConstraintTerm lhs, RelOperator op, ConstraintTerm rhs) {
         this.lhs = lhs;
         this.rhs = rhs;
         this.op = op;
     }
 
-    public NodeLabel getLhs() {
+    public ConstraintTerm getLhs() {
         return lhs;
     }
 
-    public NodeLabel getRhs() {
+    public ConstraintTerm getRhs() {
         return rhs;
     }
 
-    public SubsetOperator getOp() {
+    public RelOperator getOp() {
         return op;
     }
 

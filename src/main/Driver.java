@@ -17,7 +17,7 @@ public class Driver {
 
     public static void main(String[] args) throws IOException {
 
-        File file = new File("./tests/AE/StatementSequence.java");
+        File file = new File("./tests/AE/While.java");
         String source = new String(Files.readAllBytes(file.toPath()));
         ASTParser parser = ASTParser.newParser(AST.JLS3);
         parser.setSource(source.toCharArray());
@@ -43,17 +43,17 @@ public class Driver {
         int i = 0;
         for (Constraint constraint : constraints) {
             System.out.println(++i + ") " + constraint);
-            System.out.println(constraint.getLhs().getExprList() + " subset " + constraint.getRhs().getExprList());
+            System.out.println(constraint.getLhs().getExprList() + " >= " + constraint.getRhs().getExprList());
         }
 
-        System.out.println();
+/*        System.out.println();
 
         System.out.println(" ------------  \n| Constraint |\n| Solutions  |\n ------------  ");
         ConstraintSolver solver = new ConstraintSolver(constraints, symbVarCount);
 
         solver.buildConstraintGraph();
 
-        solver.processWorkList();
+        solver.processWorkList();*/
 
 /*        solver.buildEntryMap();
 

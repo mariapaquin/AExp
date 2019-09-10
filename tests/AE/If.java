@@ -1,13 +1,12 @@
 package AE;
 
 public class If {
-    public void m(int a, int b, int c, int d) {
-        if (a>0) {
-            a = b*c + d;
-            a++;
+    public void m(int a, int b, int c) {
+        a = b*c;
+        if (true) {
+            b = b+1;
         }
-
-        a = b*c + a;
+        a = b*c;
     }
 
 }
