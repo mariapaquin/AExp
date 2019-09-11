@@ -704,7 +704,6 @@ public class AEVisitor extends ASTVisitor {
             NodeLabel condEntry = variableFactory.createEntryLabel(cond);
             NodeLabel condExit = variableFactory.createExitLabel(cond);
 
-
             result.add(newSubsetConstraint(condEntry, exit));
             result.add(newSubsetConstraint(condExit, condEntry));
 
@@ -730,15 +729,15 @@ public class AEVisitor extends ASTVisitor {
                 bodyExit.clear();
             }
 
-            if(exitStmts.size() > 1){
+            if(bodyExit.size() > 1){
                 MeetLabel meetLabel = new MeetLabel(availableExpressions);
-                for (ASTNode stmt : exitStmts) {
+                for (ASTNode stmt : bodyExit) {
                     NodeLabel prevExit = variableFactory.createExitLabel(stmt);
                     meetLabel.addNodeLabel(prevExit);
                 }
                 result.add(newSubsetConstraint(condEntry, meetLabel));
             } else {
-                for (ASTNode stmt : exitStmts) {
+                for (ASTNode stmt : bodyExit) {
                     NodeLabel prevExit = variableFactory.createExitLabel(stmt);
                     result.add(newSubsetConstraint(condEntry, prevExit));
                 }
@@ -746,6 +745,7 @@ public class AEVisitor extends ASTVisitor {
 
             constraints.addAll(result);
 
+            // exitStmts contains condition
             return false;
         }
 
