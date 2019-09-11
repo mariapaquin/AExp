@@ -17,7 +17,7 @@ public class Driver {
 
     public static void main(String[] args) throws IOException {
 
-        File file = new File("./tests/AE/While.java");
+        File file = new File("./tests/AE/If.java");
         String source = new String(Files.readAllBytes(file.toPath()));
         ASTParser parser = ASTParser.newParser(AST.JLS3);
         parser.setSource(source.toCharArray());
@@ -26,9 +26,6 @@ public class Driver {
         CompilationUnit cu = (CompilationUnit) parser.createAST(null);
 
         // TODO: Need to do this separately for each method
-
-//        ExpressionVisitor exprVisitor = new ExpressionVisitor();
-//        cu.accept(exprVisitor);
 
         AEVisitor aeVisitor = new AEVisitor();
         cu.accept(aeVisitor);
@@ -46,14 +43,14 @@ public class Driver {
             System.out.println(constraint.getLhs().getExprList() + " >= " + constraint.getRhs().getExprList());
         }
 
-/*        System.out.println();
+        System.out.println();
 
         System.out.println(" ------------  \n| Constraint |\n| Solutions  |\n ------------  ");
         ConstraintSolver solver = new ConstraintSolver(constraints, symbVarCount);
 
         solver.buildConstraintGraph();
 
-        solver.processWorkList();*/
+        solver.processWorkList();
 
 /*        solver.buildEntryMap();
 

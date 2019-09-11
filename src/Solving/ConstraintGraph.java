@@ -2,7 +2,6 @@ package Solving;
 
 import Constraint.Constraint;
 import Constraint.Term.ConstraintTerm;
-import Constraint.Term.NodeLabel;
 
 import java.util.ArrayList;
 import java.util.HashMap;

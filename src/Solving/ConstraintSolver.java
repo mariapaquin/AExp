@@ -30,6 +30,9 @@ public class ConstraintSolver {
 
     public void processWorkList() {
         List<ConstraintTerm> workList = graph.getAllTerms();
+
+        performMeet(workList);
+
         int iteration = 0;
         change = true;
         while (change) {
@@ -38,68 +41,53 @@ public class ConstraintSolver {
 //                    + "\n--------------------");
             for (int j = 0; j < workList.size(); j++) {
                 ConstraintTerm t = workList.get(j);
-                System.out.println("Constraint.Term:" + t);
+//                System.out.println("Constraint.Term:" + t);
                 int h = 0;
                 for (Constraint c : graph.getConstraintsInvolving(t)) {
-                    System.out.println(++h + ": checking Constraint " + c + "...");
+//                    System.out.println(++h + ": checking Constraint " + c + "...");
                     satisfyConstraint(c);
                 }
-                System.out.println("\n");
+//                System.out.println("\n");
             }
         }
 
+
         for (int j = 0; j < workList.size(); j++) {
             ConstraintTerm t = workList.get(j);
-            System.out.println("Constraint.Term:" + t);
-            List<Constraint> constraintsWithTermLHS = graph.getConstraintsWithLHS(t);
+            System.out.println(t + "\n-------------\n" + t.getExprList());
+            System.out.println();
+        }
 
-            System.out.println(constraintsWithTermLHS);
-            for (Constraint c1 : constraintsWithTermLHS) {
-                List<ExpressionLiteral> l1 = c1.getLhs().getExprList();
-                System.out.println("outer " + c1 + " = " + l1);
+    }
 
-                for (Constraint c2 : constraintsWithTermLHS) {
-                    List<ExpressionLiteral> l2 = c2.getLhs().getExprList();
-                    System.out.println("inner " + c2 + " = " + l2);
+    private void performMeet(List<ConstraintTerm> workList) {
+        for (ConstraintTerm constraintTerm : workList) {
 
-                    outer:
-                    for (ExpressionLiteral e : l1) {
-                        for (ExpressionLiteral e2 : l2) {
+            if(!(constraintTerm instanceof MeetLabel)){ continue; }
 
-                            if (e.equals(e2)) {
-                                if (e.getSymbVarNum() != e2.getSymbVarNum()) {
-                                    System.out.println("changing");
-                                    changeSymNum(constraintsWithTermLHS, e);
-                                    break outer;
-                                }
-                            }
-                        }
+            MeetLabel meetLabel = (MeetLabel) constraintTerm;
+            List<NodeLabel> nodes = meetLabel.getNodes();
+
+            expression:
+            for(ExpressionLiteral expr: nodes.get(0).getExprList()){
+                int symbVar = expr.getSymbVarNum();
+
+                for (NodeLabel nodeLabel : nodes) {
+                    ExpressionLiteral expr2 = nodeLabel.getExpr(expr);
+                    int symbVar2 = expr2.getSymbVarNum();
+
+                    if (symbVar != symbVar2) {
+                        changeSymNum(meetLabel, expr);
+                        break expression;
                     }
                 }
             }
-
-            System.out.println("\n");
-        }
-
-
-        for (int j = 0; j < workList.size(); j++) {
-            ConstraintTerm t = workList.get(j);
-            System.out.println(t + "\n--------------\n" + t.getExprList());
-            System.out.println();
         }
     }
 
-    private void changeSymNum(List<Constraint> constraints, ExpressionLiteral expr) {
-        symbVarCount++;
-
-        for (Constraint c : constraints) {
-            List<ExpressionLiteral> lhsExpr = c.getLhs().getExprList();
-            for (ExpressionLiteral e : lhsExpr) {
-                if (e.equals(expr)) {
-                    e.setSymbVarNum(symbVarCount);
-                }
-            }
-        }
+    private void changeSymNum(MeetLabel meetLabel, ExpressionLiteral expr){
+        ExpressionLiteral e = meetLabel.getExpr(expr);
+        e.setSymbVarNum(symbVarCount++);
     }
 
 
@@ -112,7 +100,7 @@ public class ConstraintSolver {
 
         List<ExpressionLiteral> prev = new ArrayList<>();
 
-        System.out.println("lhs is " + lhsAE + ", rhs is " + rhsAE);
+//      System.out.println("lhs is " + lhsAE + ", rhs is " + rhsAE);
 
         for (ExpressionLiteral e: lhsAE) {
             ExpressionLiteral newExpr = new ExpressionLiteral(e.getNode(), e.getSymbVarNum());
@@ -124,9 +112,9 @@ public class ConstraintSolver {
             for (ExpressionLiteral rhs_e : rhsAE) {
                 if (lhs_e.equals(rhs_e)) {
                     if (lhs_e.getSymbVarNum() < rhs_e.getSymbVarNum()) {
-                        System.out.println(lhs_e.getSymbVarNum() + " is not greater than/equal to " + rhs_e.getSymbVarNum());
+//                        System.out.println(lhs_e.getSymbVarNum() + " is not greater than/equal to " + rhs_e.getSymbVarNum());
                         lhs.setSymbVarNum(lhs_e, rhs_e.getSymbVarNum());
-                        System.out.println("setting lhs name to " + lhs_e.getSymbVarNum());
+//                        System.out.println("setting lhs name to " + lhs_e.getSymbVarNum());
                     }
                 }
             }
@@ -134,7 +122,7 @@ public class ConstraintSolver {
 
         if (changed(prev, lhs.getExprList())) {
             change = true;
-       }
+        }
     }
 
 

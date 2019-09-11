@@ -20,6 +20,16 @@ public class ConstraintTerm {
         }
     }
 
+    public ExpressionLiteral getExpr(ExpressionLiteral expr) {
+        for (ExpressionLiteral e : exprList) {
+            if (e.equals(expr)) {
+                return e;
+            }
+        }
+
+        return null;
+    }
+
     public List<ExpressionLiteral> getExprList() {
         return exprList;
     }

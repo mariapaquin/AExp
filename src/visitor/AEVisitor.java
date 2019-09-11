@@ -25,7 +25,7 @@ public class AEVisitor extends ASTVisitor {
         availableExpressions = new ArrayList<>();
         variableFactory = new ConstraintTermFactory();
         constraints  = new ArrayList<>();
-        symbVarCount = 1;
+        symbVarCount = 0;
     }
 
 
@@ -36,12 +36,7 @@ public class AEVisitor extends ASTVisitor {
 
         variableFactory.setExprList(availableExpressions);
 
-        NodeLabel exit = variableFactory.createExitLabel(node);
-
-        List<ASTNode> exitStmts = new ArrayList<>();
-        // don't need init label
-//        exitStmts.add(node);
-        BlockVisitor blockVisitor = new BlockVisitor(exitStmts);
+        BlockVisitor blockVisitor = new BlockVisitor(new ArrayList<>());
         node.accept(blockVisitor);
         return false;
     }

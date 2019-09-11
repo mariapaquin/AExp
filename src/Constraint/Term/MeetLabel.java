@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MeetLabel extends ConstraintTerm {
+
     List<NodeLabel> nodes;
 
     public MeetLabel(List<ExpressionLiteral> exprList) {
@@ -17,6 +18,10 @@ public class MeetLabel extends ConstraintTerm {
 
     public void addNodeLabel(NodeLabel prevExit) {
         nodes.add(prevExit);
+    }
+
+    public List<NodeLabel> getNodes() {
+        return nodes;
     }
 
     public String toString() {
