@@ -3,6 +3,7 @@ package visitor;
 import Constraint.ExpressionLiteral;
 import org.eclipse.jdt.core.dom.*;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
+import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 
 import java.util.HashMap;
 
@@ -10,6 +11,7 @@ public class RewriteExprVisitor extends ASTVisitor {
     private HashMap<ASTNode, HashMap<ExpressionLiteral, Integer>> entryMap;
     private ASTRewrite rewriter;
     private AST ast;
+    private MethodDeclaration methodDeclaration;
 
     public RewriteExprVisitor(HashMap<ASTNode, HashMap<ExpressionLiteral, Integer>> entryMap) {
         this.entryMap = entryMap;
@@ -19,6 +21,12 @@ public class RewriteExprVisitor extends ASTVisitor {
     public boolean visit(CompilationUnit node) {
         ast = node.getAST();
         rewriter = ASTRewrite.create(ast);
+        return true;
+    }
+
+    @Override
+    public boolean visit(MethodDeclaration node) {
+        methodDeclaration = node;
         return true;
     }
 
@@ -69,9 +77,21 @@ public class RewriteExprVisitor extends ASTVisitor {
                 SimpleName exprSymbVar = ast.newSimpleName(name);
                 rewriter.replace(node, exprSymbVar, null);
 
+                addVariableStatementDeclaration(varDeclaration);
+
             }
         }
 
+    }
+
+    private void addVariableStatementDeclaration(VariableDeclarationStatement varDeclaration) {
+
+        Block block = methodDeclaration.getBody();
+
+        if (block != null) { // not abstract
+            ListRewrite listRewrite = rewriter.getListRewrite(block, Block.STATEMENTS_PROPERTY);
+            listRewrite.insertFirst(varDeclaration, null);
+        }
     }
 
     public ASTRewrite getRewriter() {
