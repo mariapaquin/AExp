@@ -12,7 +12,7 @@ public class ConstraintSolver {
     private boolean change;
     private ConstraintGraph graph;
     private ArrayList<Constraint> constraints;
-    private HashMap<ASTNode, List<String>> entryMap;
+    private HashMap<ASTNode, HashMap<ExpressionLiteral, Integer>> entryMap;
     private int symbVarCount;
 
 
@@ -52,11 +52,11 @@ public class ConstraintSolver {
         }
 
 
-        for (int j = 0; j < workList.size(); j++) {
+/*        for (int j = 0; j < workList.size(); j++) {
             ConstraintTerm t = workList.get(j);
             System.out.println(t + "\n-------------\n" + t.getExprMap());
             System.out.println();
-        }
+        }*/
 
     }
 
@@ -141,12 +141,12 @@ public class ConstraintSolver {
             ConstraintTerm t = workList.get(j);
             if (t instanceof EntryLabel) {
                 ASTNode node = ((EntryLabel)t).getNode();
-                entryMap.put(node, t.getAvailableExpressionsAsString());
+                entryMap.put(node, t.getExprMap());
             }
         }
     }
 
-    public HashMap<ASTNode, List<String>> getEntryMap() {
+    public HashMap<ASTNode, HashMap<ExpressionLiteral, Integer>> getEntryMap() {
         return entryMap;
     }
 

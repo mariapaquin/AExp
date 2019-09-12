@@ -5,33 +5,19 @@ import org.eclipse.jdt.core.dom.*;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 
 import java.util.HashMap;
-import java.util.List;
 
 public class RewriteExprVisitor extends ASTVisitor {
-    private List<ExpressionLiteral> availableExpressions;
-    private HashMap<String, String> exprToSymbNameMap;
-    private HashMap<ASTNode, List<String>> entryMap;
+    private HashMap<ASTNode, HashMap<ExpressionLiteral, Integer>> entryMap;
     private ASTRewrite rewriter;
+    private AST ast;
 
-
-    public RewriteExprVisitor(List<ExpressionLiteral> availableExpressions,
-                              HashMap<ASTNode, List<String>> entryMap) {
-        this.availableExpressions = availableExpressions;
+    public RewriteExprVisitor(HashMap<ASTNode, HashMap<ExpressionLiteral, Integer>> entryMap) {
         this.entryMap = entryMap;
-        exprToSymbNameMap = new HashMap<>();
-        initializeMap();
-    }
-
-    private void initializeMap() {
-        for (ExpressionLiteral e : availableExpressions) {
-            String expr = e.getNode().toString();
-            exprToSymbNameMap.put(expr, "");
-        }
     }
 
     @Override
     public boolean visit(CompilationUnit node) {
-        AST ast = node.getAST();
+        ast = node.getAST();
         rewriter = ASTRewrite.create(ast);
         return true;
     }
@@ -46,8 +32,7 @@ public class RewriteExprVisitor extends ASTVisitor {
             return;
         }
 
-        // check lhs and rhs for variables. if one does not contain
-        // variables, return
+        // TODO : check lhs and rhs for variables.
 
         ASTNode parent = node.getParent();
 
@@ -55,19 +40,41 @@ public class RewriteExprVisitor extends ASTVisitor {
             parent = parent.getParent();
         }
 
-        List<String> expressions = entryMap.get(parent);
+        HashMap<ExpressionLiteral, Integer> nodeMap = entryMap.get(parent);
 
-        if (expressions.contains(node.toString())) {
-            // the expression is available.
-            // get the variable name from the exprToSymbNameMap
-            // replace node with a variable
-        } else{
-            // the expressions is not available.
-            // create a new variable declaration statement
-            // right before the parent statement
-            // put the variable declaration name in the exprToSymbNameMap
-            // replace the node with the variable
+        for (ExpressionLiteral exprLiteral : nodeMap.keySet()) {
+            Expression expr = exprLiteral.getNode();
+
+            if (expr.toString().equals(node.toString())) {
+
+                int symbVarNum = nodeMap.get(exprLiteral);
+                String name = "x" + symbVarNum;
+
+                MethodInvocation randMethodInvocation = ast.newMethodInvocation();
+                randMethodInvocation.setExpression(ast.newSimpleName("Debug"));
+                randMethodInvocation.setName(ast.newSimpleName("makeSymbolicInteger"));
+                StringLiteral str = ast.newStringLiteral();
+                str.setLiteralValue(name);
+                randMethodInvocation.arguments().add(str);
+
+                VariableDeclarationFragment fragment = ast.newVariableDeclarationFragment();
+                fragment.setName(ast.newSimpleName(name));
+                fragment.setInitializer(randMethodInvocation);
+
+                VariableDeclarationStatement varDeclaration = ast.newVariableDeclarationStatement(fragment);
+                varDeclaration.setType(ast.newPrimitiveType(PrimitiveType.INT));
+                // replace infix node with new expression (simple name).
+                System.out.println(varDeclaration);
+
+                SimpleName exprSymbVar = ast.newSimpleName(name);
+                rewriter.replace(node, exprSymbVar, null);
+
+            }
         }
 
+    }
+
+    public ASTRewrite getRewriter() {
+        return rewriter;
     }
 }

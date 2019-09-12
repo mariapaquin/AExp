@@ -4,9 +4,16 @@ import Constraint.Constraint;
 import Constraint.ExpressionLiteral;
 import Solving.ConstraintSolver;
 import org.eclipse.jdt.core.dom.*;
+import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.Document;
+import org.eclipse.text.edits.TextEdit;
 import visitor.AEVisitor;
+import visitor.RewriteExprVisitor;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
@@ -15,7 +22,7 @@ public class Driver {
 
     public static void main(String[] args) throws IOException {
 
-        File file = new File("./tests/AE/StatementSequence.java");
+        File file = new File("./tests/AE/If.java");
         String source = new String(Files.readAllBytes(file.toPath()));
         ASTParser parser = ASTParser.newParser(AST.JLS3);
         parser.setSource(source.toCharArray());
@@ -50,10 +57,9 @@ public class Driver {
 
         solver.processWorkList();
 
-/*        solver.buildEntryMap();
-
-        HashMap<ASTNode, List<String>>  entryMap = solver.getEntryMap();
-        Set set = (Set) entryMap.entrySet();
+       solver.buildEntryMap();
+        HashMap<ASTNode, HashMap<ExpressionLiteral, Integer>> entryMap = solver.getEntryMap();
+        Set set = entryMap.entrySet();
         Iterator iterator = set.iterator();
 
         while (iterator.hasNext()) {
@@ -61,8 +67,24 @@ public class Driver {
             System.out.println("Key : " + mapEntry.getKey() + "Value : " + mapEntry.getValue() + "\n");
         }
 
-        RewriteExprVisitor rewriteVisitor = new RewriteExprVisitor(ae, entryMap);
-        cu.accept(rewriteVisitor);*/
+
+        RewriteExprVisitor rewriteVisitor = new RewriteExprVisitor(entryMap);
+        cu.accept(rewriteVisitor);
+
+        ASTRewrite rewriter = rewriteVisitor.getRewriter();
+
+        Document document = new Document(source);
+        TextEdit edits = rewriter.rewriteAST(document, null);
+        try {
+            edits.apply(document);
+        } catch (BadLocationException e) {
+            e.printStackTrace();
+        }
+        BufferedWriter out = new BufferedWriter(new FileWriter(file));
+
+        out.write(document.get());
+        out.flush();
+        out.close();
     }
 }
 

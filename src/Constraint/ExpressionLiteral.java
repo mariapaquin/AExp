@@ -5,7 +5,6 @@ import org.eclipse.jdt.core.dom.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class ExpressionLiteral {
 
     private Expression node;
