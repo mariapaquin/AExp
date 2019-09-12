@@ -4,9 +4,7 @@ import Constraint.Constraint;
 import Constraint.ExpressionLiteral;
 import Solving.ConstraintSolver;
 import org.eclipse.jdt.core.dom.*;
-import visitor.ExpressionVisitor;
 import visitor.AEVisitor;
-import visitor.RewriteExprVisitor;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +15,7 @@ public class Driver {
 
     public static void main(String[] args) throws IOException {
 
-        File file = new File("./tests/ForIfElse.java");
+        File file = new File("./tests/AE/StatementSequence.java");
         String source = new String(Files.readAllBytes(file.toPath()));
         ASTParser parser = ASTParser.newParser(AST.JLS3);
         parser.setSource(source.toCharArray());
@@ -40,7 +38,7 @@ public class Driver {
         int i = 0;
         for (Constraint constraint : constraints) {
             System.out.println(++i + ") " + constraint);
-            System.out.println(constraint.getLhs().getExprList() + " >= " + constraint.getRhs().getExprList());
+            System.out.println(constraint.getLhs().getExprMap() + " >= " + constraint.getRhs().getExprMap());
         }
 
         System.out.println();

@@ -54,7 +54,7 @@ public class ConstraintSolver {
 
         for (int j = 0; j < workList.size(); j++) {
             ConstraintTerm t = workList.get(j);
-            System.out.println(t + "\n-------------\n" + t.getExprList());
+            System.out.println(t + "\n-------------\n" + t.getExprMap());
             System.out.println();
         }
 
@@ -69,7 +69,7 @@ public class ConstraintSolver {
             List<NodeLabel> nodes = meetLabel.getNodes();
 
             expression:
-            for(ExpressionLiteral expr: nodes.get(0).getExprList()){
+            for(ExpressionLiteral expr: nodes.get(0).getExprMap().keySet()){
                 int symbVar = expr.getSymbVarNum();
 
                 for (NodeLabel nodeLabel : nodes) {
@@ -77,7 +77,7 @@ public class ConstraintSolver {
                     int symbVar2 = expr2.getSymbVarNum();
 
                     if (symbVar != symbVar2) {
-                        changeSymNum(meetLabel, expr);
+                        meetLabel.setSymbVarNum(expr, symbVarCount++);
                         break expression;
                     }
                 }
@@ -85,18 +85,12 @@ public class ConstraintSolver {
         }
     }
 
-    private void changeSymNum(MeetLabel meetLabel, ExpressionLiteral expr){
-        ExpressionLiteral e = meetLabel.getExpr(expr);
-        e.setSymbVarNum(symbVarCount++);
-    }
-
-
     private void satisfyConstraint(Constraint constraint) {
         ConstraintTerm lhs = constraint.getLhs();
         ConstraintTerm rhs = constraint.getRhs();
 
-        List<ExpressionLiteral> lhsAE = lhs.getExprList();
-        List<ExpressionLiteral> rhsAE = rhs.getExprList();
+        Set<ExpressionLiteral> lhsAE = lhs.getExprMap().keySet();
+        Set<ExpressionLiteral> rhsAE = rhs.getExprMap().keySet();
 
         List<ExpressionLiteral> prev = new ArrayList<>();
 
@@ -120,13 +114,13 @@ public class ConstraintSolver {
             }
         }
 
-        if (changed(prev, lhs.getExprList())) {
+        if (changed(prev, lhs.getExprMap().keySet())) {
             change = true;
         }
     }
 
 
-    private boolean changed(List<ExpressionLiteral> prevList, List<ExpressionLiteral> newList) {
+    private boolean changed(List<ExpressionLiteral> prevList, Set<ExpressionLiteral> newList) {
         for (ExpressionLiteral e : prevList) {
             for (ExpressionLiteral e2 : newList) {
                 if (e.equals(e2)) {

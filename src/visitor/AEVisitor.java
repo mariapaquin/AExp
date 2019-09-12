@@ -202,7 +202,7 @@ public class AEVisitor extends ASTVisitor {
 /*            ExpressionVisitor infixVisitor = new ExpressionVisitor();
 
             cond.accept(infixVisitor);
-            List<ExpressionLiteral> exprList = infixVisitor.getExprList();
+            List<ExpressionLiteral> exprList = infixVisitor.getExprMap();
 
             NodeLabel setUnion = getSetUnion((EntryLabel) condEntry, exprList);
             variableFactory.setEntryLabel(cond, setUnion);
