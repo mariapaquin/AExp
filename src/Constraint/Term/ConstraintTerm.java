@@ -25,11 +25,6 @@ public class ConstraintTerm {
                 exprMap.put(e, varNum);
             }
         }
-/*        for (ExpressionLiteral e : exprList) {
-            if (e.equals(expr)) {
-                e.setSymbVarNum(varNum);
-            }
-        }*/
     }
 
     public ExpressionLiteral getExpr(ExpressionLiteral expr) {
@@ -38,13 +33,6 @@ public class ConstraintTerm {
                 return e;
             }
         }
-
-/*        for (ExpressionLiteral e : exprList) {
-            if (e.equals(expr)) {
-                return e;
-            }
-        }*/
-
         return null;
     }
 

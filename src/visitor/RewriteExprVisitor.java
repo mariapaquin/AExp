@@ -5,7 +5,6 @@ import org.eclipse.jdt.core.dom.*;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,10 +15,13 @@ public class RewriteExprVisitor extends ASTVisitor {
     private AST ast;
     private MethodDeclaration methodDeclaration;
     private List<String> symbVarsUsed;
+    private List<String> symbVarsUsedInLoop;
+
 
     public RewriteExprVisitor(HashMap<ASTNode, HashMap<ExpressionLiteral, Integer>> entryMap) {
         this.entryMap = entryMap;
         symbVarsUsed = new ArrayList<>();
+        symbVarsUsedInLoop = new ArrayList<>();
     }
 
     @Override
@@ -60,7 +62,6 @@ public class RewriteExprVisitor extends ASTVisitor {
 
     @Override
     public void endVisit(InfixExpression node) {
-
         ASTNode parent = node.getParent();
 
         while (!(parent instanceof Statement)) {
@@ -73,22 +74,122 @@ public class RewriteExprVisitor extends ASTVisitor {
             Expression expr = exprLiteral.getNode();
 
             if (expr.toString().equals(node.toString())) {
+                System.out.println(expr);
 
                 int symbVarNum = nodeMap.get(exprLiteral);
                 String name = "x" + symbVarNum;
 
-                System.out.println(node + " " + symbVarNum);
-
                 if (!symbVarsUsed.contains(name)) {
                     symbVarsUsed.add(name);
                 }
-
                 SimpleName exprSymbVar = ast.newSimpleName(name);
                 rewriter.replace(node, exprSymbVar, null);
-
             }
         }
+    }
 
+    @Override
+    public boolean visit(DoStatement node) {
+        ASTVisitor visitor= new ASTVisitor() {
+            @Override
+            public void endVisit(InfixExpression node) {
+                ASTNode parent = node.getParent();
+
+                while (!(parent instanceof Statement)) {
+                    parent = parent.getParent();
+                }
+
+                HashMap<ExpressionLiteral, Integer> nodeMap = entryMap.get(parent);
+
+                for (ExpressionLiteral exprLiteral : nodeMap.keySet()) {
+                    Expression expr = exprLiteral.getNode();
+
+                    if (expr.toString().equals(node.toString())) {
+
+                        int symbVarNum = nodeMap.get(exprLiteral);
+                        String name = "x" + symbVarNum;
+
+                        if (!symbVarsUsedInLoop.contains(name)) {
+                            symbVarsUsedInLoop.add(name);
+                        }
+                        SimpleName exprSymbVar = ast.newSimpleName(name);
+                        rewriter.replace(node, exprSymbVar, null);
+                    }
+                }
+            }
+        };
+        node.accept(visitor);
+        return false;
+    }
+
+    @Override
+    public boolean visit(ForStatement node) {
+        ASTVisitor visitor= new ASTVisitor() {
+            @Override
+            public void endVisit(InfixExpression node) {
+                ASTNode parent = node.getParent();
+
+                while (!(parent instanceof Statement)) {
+                    parent = parent.getParent();
+                }
+
+                HashMap<ExpressionLiteral, Integer> nodeMap = entryMap.get(parent);
+
+                for (ExpressionLiteral exprLiteral : nodeMap.keySet()) {
+                    Expression expr = exprLiteral.getNode();
+
+                    if (expr.toString().equals(node.toString())) {
+
+                        int symbVarNum = nodeMap.get(exprLiteral);
+                        String name = "x" + symbVarNum;
+
+                        if (!symbVarsUsedInLoop.contains(name)) {
+                            symbVarsUsedInLoop.add(name);
+                        }
+                        SimpleName exprSymbVar = ast.newSimpleName(name);
+                        rewriter.replace(node, exprSymbVar, null);
+
+
+                    }
+                }
+            }
+        };
+        node.accept(visitor);
+        return false;
+    }
+
+    @Override
+    public boolean visit(WhileStatement node) {
+        ASTVisitor visitor= new ASTVisitor() {
+            @Override
+            public void endVisit(InfixExpression node) {
+                ASTNode parent = node.getParent();
+
+                while (!(parent instanceof Statement)) {
+                    parent = parent.getParent();
+                }
+
+                HashMap<ExpressionLiteral, Integer> nodeMap = entryMap.get(parent);
+
+                for (ExpressionLiteral exprLiteral : nodeMap.keySet()) {
+                    Expression expr = exprLiteral.getNode();
+
+                    if (expr.toString().equals(node.toString())) {
+
+                        int symbVarNum = nodeMap.get(exprLiteral);
+                        String name = "x" + symbVarNum;
+
+                        if (!symbVarsUsedInLoop.contains(name)) {
+                            symbVarsUsedInLoop.add(name);
+                        }
+                        SimpleName exprSymbVar = ast.newSimpleName(name);
+                        rewriter.replace(node, exprSymbVar, null);
+                    }
+                }
+            }
+        };
+        node.accept(visitor);
+        return false;
     }
 
     private void addVariableStatementDeclaration(VariableDeclarationStatement varDeclaration) {
