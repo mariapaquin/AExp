@@ -60,15 +60,6 @@ public class RewriteExprVisitor extends ASTVisitor {
 
     @Override
     public void endVisit(InfixExpression node) {
-        InfixExpression.Operator op = node.getOperator();
-
-        if((op != InfixExpression.Operator.TIMES) &&
-                (op != InfixExpression.Operator.DIVIDE) &&
-                (op != InfixExpression.Operator.REMAINDER)){
-            return;
-        }
-
-        // TODO : check lhs and rhs for variables.
 
         ASTNode parent = node.getParent();
 
@@ -85,6 +76,8 @@ public class RewriteExprVisitor extends ASTVisitor {
 
                 int symbVarNum = nodeMap.get(exprLiteral);
                 String name = "x" + symbVarNum;
+
+                System.out.println(node + " " + symbVarNum);
 
                 if (!symbVarsUsed.contains(name)) {
                     symbVarsUsed.add(name);

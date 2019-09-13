@@ -9,6 +9,7 @@ import org.eclipse.jdt.core.dom.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SimpleTimeZone;
 
 /**
  * This visitor creates a map from statement nodes to entry labels
@@ -48,19 +49,19 @@ public class AEVisitor extends ASTVisitor {
     public class ExpressionVisitor extends ASTVisitor {
 
         @Override
-        public boolean visit(InfixExpression node) {
+        public void endVisit(InfixExpression node) {
             Expression lhs = node.getLeftOperand();
             Expression rhs = node.getRightOperand();
             InfixExpression.Operator op = node.getOperator();
 
-            if (!(lhs instanceof SimpleName) || !(rhs instanceof SimpleName)) {
-                return true;
-            }
-
             if((op != InfixExpression.Operator.TIMES) &&
                     (op != InfixExpression.Operator.DIVIDE) &&
                     (op != InfixExpression.Operator.REMAINDER)){
-                return true;
+                return;
+            }
+
+            if(!containsVariable(lhs) || !containsVariable(rhs)) {
+                return;
             }
 
             boolean existingExpr = false;
@@ -76,7 +77,20 @@ public class AEVisitor extends ASTVisitor {
                 expressionLiteral.setVarsUsed(varsUsed);
                 availableExpressions.add(expressionLiteral);
             }
-            return true;
+            return;
+        }
+
+        private boolean containsVariable(Expression expr) {
+            List<SimpleName> variables = new ArrayList<>();
+            ASTVisitor visitor= new ASTVisitor() {
+                @Override
+                public boolean visit(SimpleName name) {
+                    variables.add(name);
+                    return false;
+                }
+            };
+            expr.accept(visitor);
+            return (variables.size() > 0);
         }
 
         private List<String> getVarsUsed(InfixExpression node) {
