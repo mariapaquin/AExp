@@ -22,7 +22,7 @@ public class Driver {
 
     public static void main(String[] args) throws IOException {
 
-        File file = new File("./tests/AE/If.java");
+        File file = new File("./tests/For.java");
         String source = new String(Files.readAllBytes(file.toPath()));
         ASTParser parser = ASTParser.newParser(AST.JLS3);
         parser.setSource(source.toCharArray());
@@ -37,20 +37,17 @@ public class Driver {
         List<ExpressionLiteral> ae = aeVisitor.getAvailableExpressions();
         int symbVarCount = aeVisitor.getSymbVarCount();
 
-        // TODO: Need to use the same cu for rewriting.
 
-        System.out.println(" ------------- \n| Constraints |\n ------------- ");
+//        System.out.println(" ------------- \n| Constraints |\n ------------- ");
         ArrayList<Constraint> constraints = aeVisitor.getConstraints();
 
-        int i = 0;
+/*        int i = 0;
         for (Constraint constraint : constraints) {
             System.out.println(++i + ") " + constraint);
             System.out.println(constraint.getLhs().getExprMap() + " >= " + constraint.getRhs().getExprMap());
-        }
+        }*/
 
-        System.out.println();
-
-        System.out.println(" ------------  \n| Constraint |\n| Solutions  |\n ------------  ");
+//        System.out.println(" ------------  \n| Constraint |\n| Solutions  |\n ------------  ");
         ConstraintSolver solver = new ConstraintSolver(constraints, symbVarCount);
 
         solver.buildConstraintGraph();
@@ -62,10 +59,10 @@ public class Driver {
         Set set = entryMap.entrySet();
         Iterator iterator = set.iterator();
 
-        while (iterator.hasNext()) {
+/*        while (iterator.hasNext()) {
             Map.Entry mapEntry = (Map.Entry) iterator.next();
             System.out.println("Key : " + mapEntry.getKey() + "Value : " + mapEntry.getValue() + "\n");
-        }
+        }*/
 
 
         RewriteExprVisitor rewriteVisitor = new RewriteExprVisitor(entryMap);
@@ -80,11 +77,12 @@ public class Driver {
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
-        BufferedWriter out = new BufferedWriter(new FileWriter(file));
+        System.out.println(document.get());
+/*        BufferedWriter out = new BufferedWriter(new FileWriter(file));
 
         out.write(document.get());
         out.flush();
-        out.close();
+        out.close();*/
     }
 }
 

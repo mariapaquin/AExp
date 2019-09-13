@@ -5,16 +5,21 @@ import org.eclipse.jdt.core.dom.*;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class RewriteExprVisitor extends ASTVisitor {
     private HashMap<ASTNode, HashMap<ExpressionLiteral, Integer>> entryMap;
     private ASTRewrite rewriter;
     private AST ast;
     private MethodDeclaration methodDeclaration;
+    private List<String> symbVarsUsed;
 
     public RewriteExprVisitor(HashMap<ASTNode, HashMap<ExpressionLiteral, Integer>> entryMap) {
         this.entryMap = entryMap;
+        symbVarsUsed = new ArrayList<>();
     }
 
     @Override
@@ -28,6 +33,29 @@ public class RewriteExprVisitor extends ASTVisitor {
     public boolean visit(MethodDeclaration node) {
         methodDeclaration = node;
         return true;
+    }
+
+    @Override
+    public void endVisit(MethodDeclaration node) {
+        for (int i = symbVarsUsed.size() - 1; i >= 0; i--) {
+            String name = symbVarsUsed.get(i);
+
+            MethodInvocation randMethodInvocation = ast.newMethodInvocation();
+            randMethodInvocation.setExpression(ast.newSimpleName("Debug"));
+            randMethodInvocation.setName(ast.newSimpleName("makeSymbolicInteger"));
+            StringLiteral str = ast.newStringLiteral();
+            str.setLiteralValue(name);
+            randMethodInvocation.arguments().add(str);
+
+            VariableDeclarationFragment fragment = ast.newVariableDeclarationFragment();
+            fragment.setName(ast.newSimpleName(name));
+            fragment.setInitializer(randMethodInvocation);
+
+            VariableDeclarationStatement varDeclaration = ast.newVariableDeclarationStatement(fragment);
+            varDeclaration.setType(ast.newPrimitiveType(PrimitiveType.INT));
+
+            addVariableStatementDeclaration(varDeclaration);
+        }
     }
 
     @Override
@@ -58,26 +86,12 @@ public class RewriteExprVisitor extends ASTVisitor {
                 int symbVarNum = nodeMap.get(exprLiteral);
                 String name = "x" + symbVarNum;
 
-                MethodInvocation randMethodInvocation = ast.newMethodInvocation();
-                randMethodInvocation.setExpression(ast.newSimpleName("Debug"));
-                randMethodInvocation.setName(ast.newSimpleName("makeSymbolicInteger"));
-                StringLiteral str = ast.newStringLiteral();
-                str.setLiteralValue(name);
-                randMethodInvocation.arguments().add(str);
-
-                VariableDeclarationFragment fragment = ast.newVariableDeclarationFragment();
-                fragment.setName(ast.newSimpleName(name));
-                fragment.setInitializer(randMethodInvocation);
-
-                VariableDeclarationStatement varDeclaration = ast.newVariableDeclarationStatement(fragment);
-                varDeclaration.setType(ast.newPrimitiveType(PrimitiveType.INT));
-                // replace infix node with new expression (simple name).
-                System.out.println(varDeclaration);
+                if (!symbVarsUsed.contains(name)) {
+                    symbVarsUsed.add(name);
+                }
 
                 SimpleName exprSymbVar = ast.newSimpleName(name);
                 rewriter.replace(node, exprSymbVar, null);
-
-                addVariableStatementDeclaration(varDeclaration);
 
             }
         }
