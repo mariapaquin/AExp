@@ -12,7 +12,9 @@ expressions that are available *upon entry* to that statement.
 For example,
 
 a = b*c;
+
 b = a*d;
+
 c = b*c;
 
 produces the key value pairs:
