@@ -16,6 +16,7 @@ a = b*c;
 will be be transformed to
 
 int x0 = Debug.makeSymbolicInteger("x0");
+
 int x2 = Debug.makeSymbolicInteger("x2");
 
 a = x0;    
