@@ -1,8 +1,8 @@
 package visitor;
 
 import Constraint.Constraint;
-import Constraint.RelOperator;
 import Constraint.ExpressionLiteral;
+import Constraint.SubsetOperator;
 import Constraint.Term.*;
 import ConstraintCreator.ConstraintTermFactory;
 import org.eclipse.jdt.core.dom.*;
@@ -19,97 +19,59 @@ public class AEVisitor extends ASTVisitor {
     private ArrayList<Constraint> constraints;
     private ConstraintTermFactory variableFactory;
     private List<ExpressionLiteral> availableExpressions;
-    private int symbVarCount;
 
-    public AEVisitor() {
-        availableExpressions = new ArrayList<>();
+    public AEVisitor(List<ExpressionLiteral> availableExpressions) {
+        this.availableExpressions = availableExpressions;
         variableFactory = new ConstraintTermFactory();
         constraints  = new ArrayList<>();
-        symbVarCount = 0;
     }
-
 
     @Override
     public boolean visit(MethodDeclaration node) {
-        ExpressionVisitor exprVisitor = new ExpressionVisitor();
-        node.accept(exprVisitor);
-
-        variableFactory.setExprList(availableExpressions);
-
-        BlockVisitor blockVisitor = new BlockVisitor(new ArrayList<>());
-        node.accept(blockVisitor);
+        ConstraintTerm exit = variableFactory.createExitLabel(node);
+        exit.setInitial(true);
+        List<ASTNode> exitStmts = new ArrayList<>();
+        exitStmts.add(node);
+        BlockVisitor visitor = new BlockVisitor(exitStmts);
+        node.accept(visitor);
         return false;
     }
 
-    public int getSymbVarCount() {
-        return symbVarCount;
-    }
+    public class InfixVisitor extends ASTVisitor {
+        private List<ExpressionLiteral> exprList;
 
-    public class ExpressionVisitor extends ASTVisitor {
+        public InfixVisitor() {
+            exprList = new ArrayList<>();
+        }
 
         @Override
-        public void endVisit(InfixExpression node) {
+        public boolean visit(InfixExpression node){
             Expression lhs = node.getLeftOperand();
             Expression rhs = node.getRightOperand();
             InfixExpression.Operator op = node.getOperator();
 
+            if (!(lhs instanceof SimpleName) || !(rhs instanceof SimpleName)) {
+                return true;
+            }
+
             if((op != InfixExpression.Operator.TIMES) &&
                     (op != InfixExpression.Operator.DIVIDE) &&
                     (op != InfixExpression.Operator.REMAINDER)){
-                return;
+
+                return true;
             }
 
-            if(!containsVariable(lhs) || !containsVariable(rhs)) {
-                return;
-            }
+            ExpressionLiteral e = variableFactory.createExpressionLiteral(node);
+            exprList.add(e);
 
-            boolean existingExpr = false;
-            for (ExpressionLiteral e : availableExpressions) {
-                if (e.getNode().toString().equals(node.toString())) {
-                    existingExpr = true;
-                }
-            }
-
-            if(!existingExpr) {
-                ExpressionLiteral expressionLiteral = new ExpressionLiteral(node, symbVarCount++);
-                List<String> varsUsed = getVarsUsed(node);
-                expressionLiteral.setVarsUsed(varsUsed);
-                availableExpressions.add(expressionLiteral);
-            }
-            return;
+            return true;
         }
 
-        private boolean containsVariable(Expression expr) {
-            List<SimpleName> variables = new ArrayList<>();
-            ASTVisitor visitor= new ASTVisitor() {
-                @Override
-                public boolean visit(SimpleName name) {
-                    variables.add(name);
-                    return false;
-                }
-            };
-            expr.accept(visitor);
-            return (variables.size() > 0);
+        public List<ExpressionLiteral> getExprList() {
+            return exprList;
         }
 
-        private List<String> getVarsUsed(InfixExpression node) {
-            List<String> vars = new ArrayList<>();
-            ASTVisitor visitor= new ASTVisitor() {
-                @Override
-                public boolean visit(SimpleName name) {
-                    vars.add(name.getIdentifier());
-                    return false;
-                }
-            };
-            node.accept(visitor);
-            return vars;
-        }
     }
-
-    public List<ExpressionLiteral> getAvailableExpressions() {
-        return availableExpressions;
-    }
-
 
     public class BlockVisitor extends ASTVisitor {
         private List<ASTNode> exitStmts;
@@ -134,19 +96,12 @@ public class AEVisitor extends ASTVisitor {
 
             ASTNode parent = node.getParent();
 
-            NodeLabel entry = variableFactory.createEntryLabel(parent);
-            NodeLabel exit = variableFactory.createExitLabel(parent);
+            ConstraintTerm entry = variableFactory.createEntryLabel(parent);
+            ConstraintTerm exit = variableFactory.createExitLabel(parent);
 
-            if(exitStmts.size() > 1){
-                MeetLabel meetLabel = new MeetLabel(availableExpressions);
+            if(!exitStmts.isEmpty()){
                 for (ASTNode stmt : exitStmts) {
-                    NodeLabel prevExit = variableFactory.createExitLabel(stmt);
-                    meetLabel.addNodeLabel(prevExit);
-                }
-                    result.add(newSubsetConstraint(entry, meetLabel));
-            } else {
-                for (ASTNode stmt : exitStmts) {
-                    NodeLabel prevExit = variableFactory.createExitLabel(stmt);
+                    ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
                     result.add(newSubsetConstraint(entry, prevExit));
                 }
             }
@@ -154,14 +109,23 @@ public class AEVisitor extends ASTVisitor {
             exitStmts.clear();
             exitStmts.add(parent);
 
+            //*******************//
+            //   possible infix  //
+            //*******************//
+            InfixVisitor infixVisitor = new InfixVisitor();
+
+            node.getRightHandSide().accept(infixVisitor);
+            List<ExpressionLiteral> exprList = infixVisitor.getExprList();
+
+            SetUnion setUnion = getSetUnion((EntryLabel) entry, exprList);
+            variableFactory.setEntryLabel(parent, setUnion);
+
             String lhs = node.getLeftHandSide().toString();
-            List<ExpressionLiteral>  exprToReassign = getExpressionsInvolving(lhs);
+            List<ExpressionLiteral>  exprToSubtract = getExpressionsInvolving(lhs);
+            SetDifference setDifference = getSetDifference(setUnion, exprToSubtract);
 
-            for (ExpressionLiteral e : exprToReassign) {
-                exit.setSymbVarNum(e, symbVarCount++);
-            }
-
-            result.add(newSubsetConstraint(exit, entry));
+            variableFactory.setEntryLabel(parent, setDifference);
+            result.add(newSubsetConstraint(exit, setDifference));
 
             constraints.addAll(result);
         }
@@ -173,23 +137,15 @@ public class AEVisitor extends ASTVisitor {
             //*****************//
             List<Constraint> result = new ArrayList<Constraint>();
 
-            NodeLabel entry = variableFactory.createEntryLabel(node);
-            NodeLabel exit = variableFactory.createExitLabel(node);
+            ConstraintTerm entry = variableFactory.createEntryLabel(node);
+            ConstraintTerm exit = variableFactory.createExitLabel(node);
 
-            if(exitStmts.size() > 1){
-                MeetLabel meetLabel = new MeetLabel(availableExpressions);
+            if(!exitStmts.isEmpty()){
                 for (ASTNode stmt : exitStmts) {
-                    NodeLabel prevExit = variableFactory.createExitLabel(stmt);
-                    meetLabel.addNodeLabel(prevExit);
-                }
-                result.add(newSubsetConstraint(entry, meetLabel));
-            } else {
-                for (ASTNode stmt : exitStmts) {
-                    NodeLabel prevExit = variableFactory.createExitLabel(stmt);
+                    ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
                     result.add(newSubsetConstraint(entry, prevExit));
                 }
             }
-
 
             result.add(newSubsetConstraint(exit, entry));
 
@@ -206,21 +162,21 @@ public class AEVisitor extends ASTVisitor {
             //***************//
             Expression cond = node.getExpression();
 
-            NodeLabel condEntry = variableFactory.createEntryLabel(cond);
-            NodeLabel condExit = variableFactory.createExitLabel(cond);
+            ConstraintTerm condEntry = variableFactory.createEntryLabel(cond);
+            ConstraintTerm condExit = variableFactory.createExitLabel(cond);
 
             //*******************//
             //   possible infix  //
             //*******************//
-/*            ExpressionVisitor infixVisitor = new ExpressionVisitor();
+            InfixVisitor infixVisitor = new InfixVisitor();
 
             cond.accept(infixVisitor);
-            List<ExpressionLiteral> exprList = infixVisitor.getExprMap();
+            List<ExpressionLiteral> exprList = infixVisitor.getExprList();
 
-            NodeLabel setUnion = getSetUnion((EntryLabel) condEntry, exprList);
+            ConstraintTerm setUnion = getSetUnion((EntryLabel) condEntry, exprList);
             variableFactory.setEntryLabel(cond, setUnion);
 
-            exitStmts.add(cond);*/
+            exitStmts.add(cond);
 
             //************//
             //    body    //
@@ -247,16 +203,9 @@ public class AEVisitor extends ASTVisitor {
                 exitStmts.add(stmt);
             }
 
-            if(exitStmts.size() > 1){
-                MeetLabel meetLabel = new MeetLabel(availableExpressions);
+            if(!exitStmts.isEmpty()){
                 for (ASTNode stmt : exitStmts) {
-                    NodeLabel prevExit = variableFactory.createExitLabel(stmt);
-                    meetLabel.addNodeLabel(prevExit);
-                }
-                result.add(newSubsetConstraint(variableFactory.createEntryLabel(cond), meetLabel));
-            } else {
-                for (ASTNode stmt : exitStmts) {
-                    NodeLabel prevExit = variableFactory.createExitLabel(stmt);
+                    ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
                     result.add(newSubsetConstraint(variableFactory.createEntryLabel(cond), prevExit));
                 }
             }
@@ -276,21 +225,14 @@ public class AEVisitor extends ASTVisitor {
             //*******************//
             // foreach statement //
             //*******************//
-            NodeLabel entry = variableFactory.createEntryLabel(node);
-            NodeLabel exit = variableFactory.createExitLabel(node);
+            ConstraintTerm entry = variableFactory.createEntryLabel(node);
+            ConstraintTerm exit = variableFactory.createExitLabel(node);
 
             List<Constraint> result = new ArrayList<Constraint>();
 
-            if(exitStmts.size() > 1){
-                MeetLabel meetLabel = new MeetLabel(availableExpressions);
+            if(!exitStmts.isEmpty()){
                 for (ASTNode stmt : exitStmts) {
-                    NodeLabel prevExit = variableFactory.createExitLabel(stmt);
-                    meetLabel.addNodeLabel(prevExit);
-                }
-                result.add(newSubsetConstraint(entry, meetLabel));
-            } else {
-                for (ASTNode stmt : exitStmts) {
-                    NodeLabel prevExit = variableFactory.createExitLabel(stmt);
+                    ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
                     result.add(newSubsetConstraint(entry, prevExit));
                 }
             }
@@ -336,21 +278,14 @@ public class AEVisitor extends ASTVisitor {
             //*******************//
             //   for statement   //
             //*******************//
-            NodeLabel entry = variableFactory.createEntryLabel(node);
-            NodeLabel exit = variableFactory.createExitLabel(node);
+            ConstraintTerm entry = variableFactory.createEntryLabel(node);
+            ConstraintTerm exit = variableFactory.createExitLabel(node);
 
             List<Constraint> result = new ArrayList<Constraint>();
 
-            if(exitStmts.size() > 1){
-                MeetLabel meetLabel = new MeetLabel(availableExpressions);
+            if(!exitStmts.isEmpty()){
                 for (ASTNode stmt : exitStmts) {
-                    NodeLabel prevExit = variableFactory.createExitLabel(stmt);
-                    meetLabel.addNodeLabel(prevExit);
-                }
-                result.add(newSubsetConstraint(entry, meetLabel));
-            } else {
-                for (ASTNode stmt : exitStmts) {
-                    NodeLabel prevExit = variableFactory.createExitLabel(stmt);
+                    ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
                     result.add(newSubsetConstraint(entry, prevExit));
                 }
             }
@@ -369,21 +304,12 @@ public class AEVisitor extends ASTVisitor {
             //*******************//
             Expression init = (Expression) node.initializers().get(0);
 
-            NodeLabel initEntry = variableFactory.createEntryLabel(init);
-            NodeLabel initExit = variableFactory.createExitLabel(init);
+            ConstraintTerm initEntry = variableFactory.createEntryLabel(init);
+            ConstraintTerm initExit = variableFactory.createExitLabel(init);
 
-            if(exitStmts.size() > 1){
-                MeetLabel meetLabel = new MeetLabel(availableExpressions);
-                for (ASTNode stmt : exitStmts) {
-                    NodeLabel prevExit = variableFactory.createExitLabel(stmt);
-                    meetLabel.addNodeLabel(prevExit);
-                }
-                result.add(newSubsetConstraint(initEntry, meetLabel));
-            } else {
-                for (ASTNode stmt : exitStmts) {
-                    NodeLabel prevExit = variableFactory.createExitLabel(stmt);
-                    result.add(newSubsetConstraint(initEntry, prevExit));
-                }
+            for (ASTNode stmt : exitStmts) {
+                ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
+                result.add(newSubsetConstraint(initEntry, prevExit));
             }
 
             result.add(newSubsetConstraint(initExit, initEntry));
@@ -401,13 +327,26 @@ public class AEVisitor extends ASTVisitor {
             //****************//
             Expression cond = node.getExpression();
 
-            NodeLabel condEntry = variableFactory.createEntryLabel(cond);
-            NodeLabel condExit = variableFactory.createExitLabel(cond);
+            ConstraintTerm condEntry = variableFactory.createEntryLabel(cond);
+            ConstraintTerm condExit = variableFactory.createExitLabel(cond);
 
+            //*******************//
+            //   possible infix  //
+            //*******************//
+            InfixVisitor infixVisitor = new InfixVisitor();
 
-            result.add(newSubsetConstraint(condEntry, initExit));
+            cond.accept(infixVisitor);
+            List<ExpressionLiteral> exprList = infixVisitor.getExprList();
 
-            result.add(newSubsetConstraint(condExit, condEntry));
+            ConstraintTerm setUnion = getSetUnion((EntryLabel) condEntry, exprList);
+            variableFactory.setEntryLabel(cond, setUnion);
+
+            for (ASTNode stmt : exitStmts) {
+                ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
+                result.add(newSubsetConstraint(variableFactory.createEntryLabel(cond), prevExit));
+            }
+
+            result.add(newSubsetConstraint(condExit, variableFactory.createEntryLabel(cond)));
 
             exitStmts.clear();
             exitStmts.add(cond);
@@ -437,19 +376,12 @@ public class AEVisitor extends ASTVisitor {
             //*************//
             Expression update = (Expression) node.updaters().get(0);
 
-            NodeLabel updateEntry = variableFactory.createEntryLabel(update);
-            NodeLabel updateExit = variableFactory.createExitLabel(update);
+            ConstraintTerm updateEntry = variableFactory.createEntryLabel(update);
+            ConstraintTerm updateExit = variableFactory.createExitLabel(update);
 
-            if(exitStmts.size() > 1){
-                MeetLabel meetLabel = new MeetLabel(availableExpressions);
+            if(!exitStmts.isEmpty()){
                 for (ASTNode stmt : exitStmts) {
-                    NodeLabel prevExit = variableFactory.createExitLabel(stmt);
-                    meetLabel.addNodeLabel(prevExit);
-                }
-                result.add(newSubsetConstraint(updateEntry, meetLabel));
-            } else {
-                for (ASTNode stmt : exitStmts) {
-                    NodeLabel prevExit = variableFactory.createExitLabel(stmt);
+                    ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
                     result.add(newSubsetConstraint(updateEntry, prevExit));
                 }
             }
@@ -473,19 +405,12 @@ public class AEVisitor extends ASTVisitor {
             //**************//
             // if statement //
             //**************//
-            NodeLabel entry = variableFactory.createEntryLabel(node);
-            NodeLabel exit = variableFactory.createExitLabel(node);
+            ConstraintTerm entry = variableFactory.createEntryLabel(node);
+            ConstraintTerm exit = variableFactory.createExitLabel(node);
 
-            if(exitStmts.size() > 1){
-                MeetLabel meetLabel = new MeetLabel(availableExpressions);
+            if(!exitStmts.isEmpty()){
                 for (ASTNode stmt : exitStmts) {
-                    NodeLabel prevExit = variableFactory.createExitLabel(stmt);
-                    meetLabel.addNodeLabel(prevExit);
-                }
-                result.add(newSubsetConstraint(entry, meetLabel));
-            } else {
-                for (ASTNode stmt : exitStmts) {
-                    NodeLabel prevExit = variableFactory.createExitLabel(stmt);
+                    ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
                     result.add(newSubsetConstraint(entry, prevExit));
                 }
             }
@@ -500,11 +425,26 @@ public class AEVisitor extends ASTVisitor {
             //**************//
             Expression cond = node.getExpression();
 
-            NodeLabel condEntry = variableFactory.createEntryLabel(cond);
-            NodeLabel condExit = variableFactory.createExitLabel(cond);
+            ConstraintTerm condEntry = variableFactory.createEntryLabel(cond);
+            ConstraintTerm condExit = variableFactory.createExitLabel(cond);
 
-            result.add(newSubsetConstraint(condEntry, exit));
-            result.add(newSubsetConstraint(condExit, condEntry));
+            //*******************//
+            //   possible infix  //
+            //*******************//
+            InfixVisitor infixVisitor = new InfixVisitor();
+
+            cond.accept(infixVisitor);
+            List<ExpressionLiteral> exprList = infixVisitor.getExprList();
+
+            ConstraintTerm setUnion = getSetUnion((EntryLabel) condEntry, exprList);
+            variableFactory.setEntryLabel(cond, setUnion);
+
+            for (ASTNode stmt : exitStmts) {
+                ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
+                result.add(newSubsetConstraint(variableFactory.createEntryLabel(cond), prevExit));
+            }
+
+            result.add(newSubsetConstraint(condExit, variableFactory.createEntryLabel(cond)));
 
             exitStmts.clear();
             exitStmts.add(cond);
@@ -570,22 +510,26 @@ public class AEVisitor extends ASTVisitor {
 
             ASTNode parent = node.getParent();
 
-            NodeLabel entry = variableFactory.createEntryLabel(parent);
-            NodeLabel exit = variableFactory.createExitLabel(parent);
+            ConstraintTerm entry = variableFactory.createEntryLabel(parent);
+            ConstraintTerm exit = variableFactory.createExitLabel(parent);
 
-            if(exitStmts.size() > 1){
-                MeetLabel meetLabel = new MeetLabel(availableExpressions);
+            if(!exitStmts.isEmpty()){
                 for (ASTNode stmt : exitStmts) {
-                    NodeLabel prevExit = variableFactory.createExitLabel(stmt);
-                    meetLabel.addNodeLabel(prevExit);
-                }
-                result.add(newSubsetConstraint(entry, meetLabel));
-            } else {
-                for (ASTNode stmt : exitStmts) {
-                    NodeLabel prevExit = variableFactory.createExitLabel(stmt);
+                    ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
                     result.add(newSubsetConstraint(entry, prevExit));
                 }
             }
+
+            //*******************//
+            //   possible infix  //
+            //*******************//
+            InfixVisitor infixVisitor = new InfixVisitor();
+
+            node.accept(infixVisitor);
+            List<ExpressionLiteral> exprList = infixVisitor.getExprList();
+
+            ConstraintTerm setUnion = getSetUnion((EntryLabel) entry, exprList);
+            variableFactory.setEntryLabel(parent, setUnion);
 
             result.add(newSubsetConstraint(exit, variableFactory.createEntryLabel(parent)));
 
@@ -609,19 +553,12 @@ public class AEVisitor extends ASTVisitor {
         public void endVisit(PostfixExpression node) {
             List<Constraint> result = new ArrayList<Constraint>();
 
-            NodeLabel entry = variableFactory.createEntryLabel(node);
-            NodeLabel exit = variableFactory.createExitLabel(node);
+            ConstraintTerm entry = variableFactory.createEntryLabel(node);
+            ConstraintTerm exit = variableFactory.createExitLabel(node);
 
-            if(exitStmts.size() > 1){
-                MeetLabel meetLabel = new MeetLabel(availableExpressions);
+            if(!exitStmts.isEmpty()){
                 for (ASTNode stmt : exitStmts) {
-                    NodeLabel prevExit = variableFactory.createExitLabel(stmt);
-                    meetLabel.addNodeLabel(prevExit);
-                }
-                result.add(newSubsetConstraint(entry, meetLabel));
-            } else {
-                for (ASTNode stmt : exitStmts) {
-                    NodeLabel prevExit = variableFactory.createExitLabel(stmt);
+                    ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
                     result.add(newSubsetConstraint(entry, prevExit));
                 }
             }
@@ -645,34 +582,36 @@ public class AEVisitor extends ASTVisitor {
         public void endVisit(VariableDeclarationStatement node) {
             List<Constraint> result = new ArrayList<Constraint>();
 
-            NodeLabel entry = variableFactory.createEntryLabel(node);
-            NodeLabel exit = variableFactory.createExitLabel(node);
+            ConstraintTerm entry = variableFactory.createEntryLabel(node);
+            ConstraintTerm exit = variableFactory.createExitLabel(node);
 
-            if(exitStmts.size() > 1){
-                MeetLabel meetLabel = new MeetLabel(availableExpressions);
+            if(!exitStmts.isEmpty()){
                 for (ASTNode stmt : exitStmts) {
-                    NodeLabel prevExit = variableFactory.createExitLabel(stmt);
-                    meetLabel.addNodeLabel(prevExit);
-                }
-                result.add(newSubsetConstraint(entry, meetLabel));
-            } else {
-                for (ASTNode stmt : exitStmts) {
-                    NodeLabel prevExit = variableFactory.createExitLabel(stmt);
+                    ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
                     result.add(newSubsetConstraint(entry, prevExit));
+
                 }
             }
 
             VariableDeclarationFragment fragment = ((List<VariableDeclarationFragment>)
                     node.fragments()).get(0);
 
+            //*******************//
+            //   possible infix  //
+            //*******************//
+            InfixVisitor infixVisitor = new InfixVisitor();
+
+            fragment.getInitializer().accept(infixVisitor);
+            List<ExpressionLiteral> exprList = infixVisitor.getExprList();
+
+            SetUnion setUnion = getSetUnion((EntryLabel) entry, exprList);
+
             String lhs = fragment.getName().getIdentifier();
-            List<ExpressionLiteral>  exprToReassign = getExpressionsInvolving(lhs);
+            List<ExpressionLiteral>  exprToSubtract = getExpressionsInvolving(lhs);
+            SetDifference setDifference = getSetDifference(setUnion, exprToSubtract);
 
-            for (ExpressionLiteral e : exprToReassign) {
-                exit.setSymbVarNum(e, symbVarCount++);
-            }
-
-            result.add(newSubsetConstraint(exit, entry));
+            variableFactory.setEntryLabel(node, setDifference);
+            result.add(newSubsetConstraint(exit, setDifference));
 
             exitStmts.clear();
             exitStmts.add(node);
@@ -687,19 +626,12 @@ public class AEVisitor extends ASTVisitor {
             //*******************//
             //  while statement  //
             //*******************//
-            NodeLabel entry = variableFactory.createEntryLabel(node);
-            NodeLabel exit = variableFactory.createExitLabel(node);
+            ConstraintTerm entry = variableFactory.createEntryLabel(node);
+            ConstraintTerm exit = variableFactory.createExitLabel(node);
 
-            if(exitStmts.size() > 1){
-                MeetLabel meetLabel = new MeetLabel(availableExpressions);
+            if(!exitStmts.isEmpty()){
                 for (ASTNode stmt : exitStmts) {
-                    NodeLabel prevExit = variableFactory.createExitLabel(stmt);
-                    meetLabel.addNodeLabel(prevExit);
-                }
-                result.add(newSubsetConstraint(entry, meetLabel));
-            } else {
-                for (ASTNode stmt : exitStmts) {
-                    NodeLabel prevExit = variableFactory.createExitLabel(stmt);
+                    ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
                     result.add(newSubsetConstraint(entry, prevExit));
                 }
             }
@@ -714,11 +646,28 @@ public class AEVisitor extends ASTVisitor {
             //***************//
             Expression cond = node.getExpression();
 
-            NodeLabel condEntry = variableFactory.createEntryLabel(cond);
-            NodeLabel condExit = variableFactory.createExitLabel(cond);
+            ConstraintTerm condEntry = variableFactory.createEntryLabel(cond);
+            ConstraintTerm condExit = variableFactory.createExitLabel(cond);
 
-            result.add(newSubsetConstraint(condEntry, exit));
-            result.add(newSubsetConstraint(condExit, condEntry));
+            //*******************//
+            //   possible infix  //
+            //*******************//
+            InfixVisitor infixVisitor = new InfixVisitor();
+
+            cond.accept(infixVisitor);
+            List<ExpressionLiteral> exprList = infixVisitor.getExprList();
+
+            ConstraintTerm setUnion = getSetUnion((EntryLabel) condEntry, exprList);
+            variableFactory.setEntryLabel(cond, setUnion);
+
+            if(!exitStmts.isEmpty()){
+                for (ASTNode stmt : exitStmts) {
+                    ConstraintTerm prevExit = variableFactory.createExitLabel(stmt);
+                    result.add(newSubsetConstraint(variableFactory.createEntryLabel(cond), prevExit));
+                }
+            }
+
+            result.add(newSubsetConstraint(condExit, variableFactory.createEntryLabel(cond)));
 
             exitStmts.clear();
             exitStmts.add(cond);
@@ -742,32 +691,29 @@ public class AEVisitor extends ASTVisitor {
                 bodyExit.clear();
             }
 
-            if(bodyExit.size() > 1){
-                MeetLabel meetLabel = new MeetLabel(availableExpressions);
-                for (ASTNode stmt : bodyExit) {
-                    NodeLabel prevExit = variableFactory.createExitLabel(stmt);
-                    meetLabel.addNodeLabel(prevExit);
-                }
-                result.add(newSubsetConstraint(condEntry, meetLabel));
-            } else {
-                for (ASTNode stmt : bodyExit) {
-                    NodeLabel prevExit = variableFactory.createExitLabel(stmt);
-                    result.add(newSubsetConstraint(condEntry, prevExit));
-                }
+            for (ASTNode stmt : bodyExit) {
+                ConstraintTerm exitStmt = variableFactory.createExitLabel(stmt);
+                result.add(newSubsetConstraint(condEntry, exitStmt));
             }
 
             constraints.addAll(result);
 
-            // exitStmts contains condition
             return false;
         }
 
 
 
         public Constraint newSubsetConstraint(ConstraintTerm l, ConstraintTerm r) {
-            return new Constraint(l, new RelOperator(), r);
+            return new Constraint(l, new SubsetOperator(), r);
         }
 
+        public SetUnion getSetUnion(EntryLabel t1, List<ExpressionLiteral>  t2) {
+            return new SetUnion(t1, t2);
+        }
+
+        public SetDifference getSetDifference(SetUnion t1,  List<ExpressionLiteral>  t2) {
+            return new SetDifference(t1, t2);
+        }
 
         public List<ASTNode> getExitStmts() {
             return exitStmts;

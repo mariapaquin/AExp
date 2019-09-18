@@ -1,4 +1,3 @@
-/*
 package AE;
 
 import Constraint.Constraint;
@@ -38,7 +37,7 @@ public class TestAE {
 
         ExpressionVisitor exprVisitor = new ExpressionVisitor();
         cu.accept(exprVisitor);
-        List<ExpressionLiteral> ae = exprVisitor.getExprMap();
+        List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
         AEVisitor AEVisitor = new AEVisitor(ae);
         cu.accept(AEVisitor);
@@ -71,7 +70,7 @@ public class TestAE {
 
         ExpressionVisitor exprVisitor = new ExpressionVisitor();
         cu.accept(exprVisitor);
-        List<ExpressionLiteral> ae = exprVisitor.getExprMap();
+        List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
         AEVisitor AEVisitor = new AEVisitor(ae);
         cu.accept(AEVisitor);
@@ -103,7 +102,7 @@ public class TestAE {
 
         ExpressionVisitor exprVisitor = new ExpressionVisitor();
         cu.accept(exprVisitor);
-        List<ExpressionLiteral> ae = exprVisitor.getExprMap();
+        List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
         AEVisitor AEVisitor = new AEVisitor(ae);
         cu.accept(AEVisitor);
@@ -135,7 +134,7 @@ public class TestAE {
 
         ExpressionVisitor exprVisitor = new ExpressionVisitor();
         cu.accept(exprVisitor);
-        List<ExpressionLiteral> ae = exprVisitor.getExprMap();
+        List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
         AEVisitor AEVisitor = new AEVisitor(ae);
         cu.accept(AEVisitor);
@@ -169,7 +168,7 @@ public class TestAE {
 
         ExpressionVisitor exprVisitor = new ExpressionVisitor();
         cu.accept(exprVisitor);
-        List<ExpressionLiteral> ae = exprVisitor.getExprMap();
+        List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
         AEVisitor AEVisitor = new AEVisitor(ae);
         cu.accept(AEVisitor);
@@ -206,7 +205,7 @@ public class TestAE {
 
         ExpressionVisitor exprVisitor = new ExpressionVisitor();
         cu.accept(exprVisitor);
-        List<ExpressionLiteral> ae = exprVisitor.getExprMap();
+        List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
         AEVisitor AEVisitor = new AEVisitor(ae);
         cu.accept(AEVisitor);
@@ -238,7 +237,7 @@ public class TestAE {
 
         ExpressionVisitor exprVisitor = new ExpressionVisitor();
         cu.accept(exprVisitor);
-        List<ExpressionLiteral> ae = exprVisitor.getExprMap();
+        List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
         AEVisitor AEVisitor = new AEVisitor(ae);
         cu.accept(AEVisitor);
@@ -270,7 +269,7 @@ public class TestAE {
 
         ExpressionVisitor exprVisitor = new ExpressionVisitor();
         cu.accept(exprVisitor);
-        List<ExpressionLiteral> ae = exprVisitor.getExprMap();
+        List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
         AEVisitor AEVisitor = new AEVisitor(ae);
         cu.accept(AEVisitor);
@@ -303,7 +302,7 @@ public class TestAE {
 
         ExpressionVisitor exprVisitor = new ExpressionVisitor();
         cu.accept(exprVisitor);
-        List<ExpressionLiteral> ae = exprVisitor.getExprMap();
+        List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
         AEVisitor AEVisitor = new AEVisitor(ae);
         cu.accept(AEVisitor);
@@ -335,7 +334,7 @@ public class TestAE {
 
         ExpressionVisitor exprVisitor = new ExpressionVisitor();
         cu.accept(exprVisitor);
-        List<ExpressionLiteral> ae = exprVisitor.getExprMap();
+        List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
         AEVisitor AEVisitor = new AEVisitor(ae);
         cu.accept(AEVisitor);
@@ -367,7 +366,7 @@ public class TestAE {
 
         ExpressionVisitor exprVisitor = new ExpressionVisitor();
         cu.accept(exprVisitor);
-        List<ExpressionLiteral> ae = exprVisitor.getExprMap();
+        List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
         AEVisitor AEVisitor = new AEVisitor(ae);
         cu.accept(AEVisitor);
@@ -399,7 +398,7 @@ public class TestAE {
 
         ExpressionVisitor exprVisitor = new ExpressionVisitor();
         cu.accept(exprVisitor);
-        List<ExpressionLiteral> ae = exprVisitor.getExprMap();
+        List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
         AEVisitor AEVisitor = new AEVisitor(ae);
         cu.accept(AEVisitor);
@@ -431,7 +430,7 @@ public class TestAE {
 
         ExpressionVisitor exprVisitor = new ExpressionVisitor();
         cu.accept(exprVisitor);
-        List<ExpressionLiteral> ae = exprVisitor.getExprMap();
+        List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
         AEVisitor AEVisitor = new AEVisitor(ae);
         cu.accept(AEVisitor);
@@ -463,7 +462,7 @@ public class TestAE {
 
         ExpressionVisitor exprVisitor = new ExpressionVisitor();
         cu.accept(exprVisitor);
-        List<ExpressionLiteral> ae = exprVisitor.getExprMap();
+        List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
         AEVisitor AEVisitor = new AEVisitor(ae);
         cu.accept(AEVisitor);
@@ -496,7 +495,7 @@ public class TestAE {
 
         ExpressionVisitor exprVisitor = new ExpressionVisitor();
         cu.accept(exprVisitor);
-        List<ExpressionLiteral> ae = exprVisitor.getExprMap();
+        List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
         AEVisitor AEVisitor = new AEVisitor(ae);
         cu.accept(AEVisitor);
@@ -528,7 +527,7 @@ public class TestAE {
 
         ExpressionVisitor exprVisitor = new ExpressionVisitor();
         cu.accept(exprVisitor);
-        List<ExpressionLiteral> ae = exprVisitor.getExprMap();
+        List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
         AEVisitor AEVisitor = new AEVisitor(ae);
         cu.accept(AEVisitor);
@@ -560,7 +559,7 @@ public class TestAE {
 
         ExpressionVisitor exprVisitor = new ExpressionVisitor();
         cu.accept(exprVisitor);
-        List<ExpressionLiteral> ae = exprVisitor.getExprMap();
+        List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
         AEVisitor AEVisitor = new AEVisitor(ae);
         cu.accept(AEVisitor);
@@ -592,7 +591,7 @@ public class TestAE {
 
         ExpressionVisitor exprVisitor = new ExpressionVisitor();
         cu.accept(exprVisitor);
-        List<ExpressionLiteral> ae = exprVisitor.getExprMap();
+        List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
         AEVisitor AEVisitor = new AEVisitor(ae);
         cu.accept(AEVisitor);
@@ -624,7 +623,7 @@ public class TestAE {
 
         ExpressionVisitor exprVisitor = new ExpressionVisitor();
         cu.accept(exprVisitor);
-        List<ExpressionLiteral> ae = exprVisitor.getExprMap();
+        List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
         AEVisitor AEVisitor = new AEVisitor(ae);
         cu.accept(AEVisitor);
@@ -656,7 +655,7 @@ public class TestAE {
 
         ExpressionVisitor exprVisitor = new ExpressionVisitor();
         cu.accept(exprVisitor);
-        List<ExpressionLiteral> ae = exprVisitor.getExprMap();
+        List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
 
         AEVisitor AEVisitor = new AEVisitor(ae);
         cu.accept(AEVisitor);
@@ -672,4 +671,3 @@ public class TestAE {
     }
 
 }
-*/

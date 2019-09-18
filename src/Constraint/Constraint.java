@@ -1,7 +1,6 @@
 package Constraint;
 
 import Constraint.Term.ConstraintTerm;
-import Constraint.Term.NodeLabel;
 
 /**
  * An edge in the constraint graph.
@@ -10,9 +9,9 @@ public class Constraint {
 
     private ConstraintTerm lhs;
     private ConstraintTerm rhs;
-    private RelOperator op;
+    private SubsetOperator op;
 
-    public Constraint(ConstraintTerm lhs, RelOperator op, ConstraintTerm rhs) {
+    public Constraint(ConstraintTerm lhs, SubsetOperator op, ConstraintTerm rhs) {
         this.lhs = lhs;
         this.rhs = rhs;
         this.op = op;
@@ -26,7 +25,7 @@ public class Constraint {
         return rhs;
     }
 
-    public RelOperator getOp() {
+    public SubsetOperator getOp() {
         return op;
     }
 

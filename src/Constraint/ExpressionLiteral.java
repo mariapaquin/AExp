@@ -5,15 +5,16 @@ import org.eclipse.jdt.core.dom.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Will keep track of variables used in expression.
+ */
 public class ExpressionLiteral {
 
     private Expression node;
     private List<String> varsUsed;
-    private int symbVarNum;
 
-    public ExpressionLiteral(Expression node, int symbVarNum) {
+    public ExpressionLiteral(Expression node) {
         this.node = node;
-        this.symbVarNum = symbVarNum;
         varsUsed = new ArrayList<>();
     }
 
@@ -33,16 +34,8 @@ public class ExpressionLiteral {
         return node;
     }
 
-    public int getSymbVarNum() {
-        return symbVarNum;
-    }
-
-    public void setSymbVarNum(int symbVarNum) {
-        this.symbVarNum = symbVarNum;
-    }
-
     @Override
     public boolean equals(Object obj) {
-        return node.toString().equals(((ExpressionLiteral) obj).getNode().toString());
+        return toString().equals(obj.toString());
     }
 }

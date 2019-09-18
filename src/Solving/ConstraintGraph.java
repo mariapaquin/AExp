@@ -3,9 +3,7 @@ package Solving;
 import Constraint.Constraint;
 import Constraint.Term.ConstraintTerm;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class ConstraintGraph {
     private ArrayList<Constraint> constraints;
@@ -34,18 +32,6 @@ public class ConstraintGraph {
         return edgeMap.get(term);
     }
 
-    public List<Constraint> getConstraintsWithLHS(ConstraintTerm term) {
-        List<Constraint> allConstraintsWithTerm = edgeMap.get(term);
-        List<Constraint> constraintsWithTermOnLHS = new ArrayList<Constraint>();
-
-        for (Constraint c : allConstraintsWithTerm) {
-            if (c.getLhs().equals(term)) {
-                constraintsWithTermOnLHS.add(c);
-            }
-        }
-        return constraintsWithTermOnLHS;
-    }
-
     public ArrayList<Constraint> getConstraints() {
         return constraints;
     }
@@ -66,6 +52,7 @@ public class ConstraintGraph {
         }
 
         public void processTerm(ConstraintTerm term) {
+//			System.out.println(term + " " + term.hashCode());
             List<Constraint> c;
             if (edgeMap.containsKey(term)) {
                 c = edgeMap.get(term);
@@ -79,6 +66,5 @@ public class ConstraintGraph {
                 allTerms.add(term);
             }
         }
-
     }
 }

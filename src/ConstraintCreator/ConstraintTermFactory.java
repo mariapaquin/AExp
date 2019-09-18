@@ -1,63 +1,51 @@
 package ConstraintCreator;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import Constraint.ExpressionLiteral;
 import Constraint.Term.*;
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.Expression;
 
 public class ConstraintTermFactory {
 
-    private HashMap<ASTNode, NodeLabel> termMapEntry;
-    private HashMap<ASTNode, NodeLabel> termMapExit;
-    private List<ExpressionLiteral> exprList;
+    private HashMap<ASTNode, ConstraintTerm> termMapEntry;
+    private HashMap<ASTNode, ConstraintTerm> termMapExit;
 
     public ConstraintTermFactory() {
         termMapEntry = new HashMap<>();
         termMapExit = new HashMap<>();
     }
 
-    public NodeLabel createEntryLabel(ASTNode node) {
-        NodeLabel t = termMapEntry.get(node);
+    public ConstraintTerm createEntryLabel(ASTNode node) {
+        ConstraintTerm t = termMapEntry.get(node);
         if (t == null) {
-            List<ExpressionLiteral> newExprList = new ArrayList<>();
-            for (ExpressionLiteral e : exprList) {
-                ExpressionLiteral newExpr = new ExpressionLiteral(e.getNode(), e.getSymbVarNum());
-                newExprList.add(newExpr);
-            }
-            t = new EntryLabel(node, newExprList);
+            t = new EntryLabel((node));
             termMapEntry.put(node, t);
         }
 
         return t;
     }
 
-    public NodeLabel createExitLabel(ASTNode node) {
-        NodeLabel t = termMapExit.get(node);
+    public ConstraintTerm createExitLabel(ASTNode node) {
+        ConstraintTerm t = termMapExit.get(node);
         if (t == null) {
-            List<ExpressionLiteral> newExprList = new ArrayList<>();
-            for (ExpressionLiteral e : exprList) {
-                ExpressionLiteral newExpr = new ExpressionLiteral(e.getNode(), e.getSymbVarNum());
-                newExprList.add(newExpr);
-            }
-            t = new ExitLabel(node, newExprList);
+            t = new ExitLabel(node);
             termMapExit.put(node, t);
         }
         return t;
     }
 
+    public ExpressionLiteral createExpressionLiteral(Expression expr) {
+        ExpressionLiteral def = new ExpressionLiteral(expr);
+        return def;
+    }
 
-    public void setEntryLabel(ASTNode node, NodeLabel term) {
+    public void setEntryLabel(ASTNode node, ConstraintTerm term) {
         termMapEntry.put(node, term);
     }
 
-    public HashMap<ASTNode, NodeLabel> getTermMapEntry() {
+    public HashMap<ASTNode, ConstraintTerm> getTermMapEntry() {
         return termMapEntry;
-    }
-
-    public void setExprList(List<ExpressionLiteral> exprList) {
-        this.exprList = exprList;
     }
 }

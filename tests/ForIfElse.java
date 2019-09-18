@@ -1,6 +1,5 @@
 public class ForIfElse {
     public void m(int a){
-        a = a*a;
         for (int i = 0; i < a; i++) {
             if (i == 0) {
                 a = 1;

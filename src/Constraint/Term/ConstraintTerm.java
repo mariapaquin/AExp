@@ -1,52 +1,28 @@
 package Constraint.Term;
 
 import Constraint.ExpressionLiteral;
+import org.eclipse.jdt.core.dom.ASTNode;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-public class ConstraintTerm {
-//    public List<ExpressionLiteral> exprList;
-    public HashMap<ExpressionLiteral, Integer> exprMap;
+public abstract class ConstraintTerm {
+    public List<ExpressionLiteral> availableExpressions;
+    public boolean isInitial;
+    protected ASTNode node;
 
-    public ConstraintTerm(List<ExpressionLiteral> exprList){
-//        this.exprList = exprList;
-        exprMap = new HashMap<>();
-        for (ExpressionLiteral expr : exprList) {
-            exprMap.put(expr, expr.getSymbVarNum());
-        }
+    public abstract List<ExpressionLiteral> getAvailableExpressions();
+    public abstract List<String> getAvailableExpressionsAsString();
+    public abstract void setAvailableExpressions(List<ExpressionLiteral> expressions);
+    public abstract ASTNode getNode();
+
+    public boolean isInitial() {
+        return isInitial;
     }
 
-    public void setSymbVarNum(ExpressionLiteral expr, int varNum){
-        for (ExpressionLiteral e : exprMap.keySet()) {
-            if (e.equals(expr)) {
-                e.setSymbVarNum(varNum);
-                exprMap.put(e, varNum);
-            }
-        }
+    public void setInitial(boolean initial) {
+        isInitial = initial;
     }
 
-    public ExpressionLiteral getExpr(ExpressionLiteral expr) {
-        for (ExpressionLiteral e : exprMap.keySet()) {
-            if (e.equals(expr)) {
-                return e;
-            }
-        }
-        return null;
-    }
-
-    public HashMap<ExpressionLiteral, Integer> getExprMap() {
-        return exprMap;
-    }
-
-    public List<String> getAvailableExpressionsAsString() {
-        List<String> ret = new ArrayList<>();
-        for (ExpressionLiteral e : exprMap.keySet()) {
-            ret.add(e.getNode().toString());
-        }
-        return ret;
-    }
 
     public interface TermProcessor {
         void processTerm(ConstraintTerm term);
@@ -55,4 +31,5 @@ public class ConstraintTerm {
     public void processTerms(TermProcessor processor) {
         processor.processTerm(this);
     }
+
 }

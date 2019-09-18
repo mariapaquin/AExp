@@ -1,8 +1,8 @@
 package Constraint;
 
-public class RelOperator {
+public class SubsetOperator {
 
     public String toString(){
-        return " >= ";
+        return "subset";
     }
 }

@@ -1,9 +1,6 @@
 package Constraint.Term;
 
-import Constraint.ExpressionLiteral;
 import org.eclipse.jdt.core.dom.*;
-
-import java.util.List;
 
 /**
  * RD_exit[n]
@@ -11,8 +8,8 @@ import java.util.List;
  */
 public class ExitLabel extends NodeLabel {
 
-	public ExitLabel(ASTNode node, List<ExpressionLiteral> exprList) {
-		super(node, exprList);
+	public ExitLabel(ASTNode node) {
+		super(node);
 	}
 
 	public String toString() {
