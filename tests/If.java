@@ -1,11 +1,10 @@
 public class If {
 
-    public void m(int a, int b){
-        a = b+1;
-
+    public void m(int a, int b, int c){
+        a = b*c;
         if (true) {
-            b = 0;
+            b = b+1;
         }
-        a = b+2;
+        a = b*c;
     }
 }
