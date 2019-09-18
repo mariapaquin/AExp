@@ -9,7 +9,6 @@ import org.eclipse.jdt.core.dom.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.SimpleTimeZone;
 
 /**
  * This visitor creates a map from statement nodes to entry labels
