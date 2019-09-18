@@ -5,30 +5,21 @@ This version keeps track of what symbolic variables each expression maps to for 
 
 For example,
 
-public class If {
-
-    public void m(int a, int b, int c){
-        a = b*c;
-        if (true) {
-            b = b+1;
-        }
-        a = b*c;
-    }
+a = b*c;
+if (true) {
+  b = b+1;
 }
+a = b*c;
 
-will be transformed to
+will be be transformed to
 
-public class If {
+int x0 = Debug.makeSymbolicInteger("x0");
+int x2 = Debug.makeSymbolicInteger("x2");
 
-    public void m(int a, int b, int c){
-        int x0 = Debug.makeSymbolicInteger("x0");
-	int x2 = Debug.makeSymbolicInteger("x2");
-	
-	a = x0;
-        
-	if (true) {
-            b = b+1;
-        }
-        a = x2;
-    }
+a = x0;    
+if (true) {
+  b = b+1;
 }
+a = x2;
+    
+
