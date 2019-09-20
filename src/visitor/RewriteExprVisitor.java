@@ -12,25 +12,17 @@ import java.util.List;
 public class RewriteExprVisitor extends ASTVisitor {
     private HashMap<String, Integer> exprToVarmap;
     private HashMap<ASTNode, KillSet> killMap;
-    private int varCount;
-    private ASTRewrite rewriter;
     private AST ast;
-    private List<ExpressionLiteral> exprList;
+    private ASTRewrite rewriter;
 
 
-    public RewriteExprVisitor(int varCount, HashMap<String, Integer> exprToVarmap,
-                              HashMap<ASTNode, KillSet> killMap, List<ExpressionLiteral> exprList) {
-        this.varCount = varCount;
+    public RewriteExprVisitor(HashMap<String, Integer> exprToVarmap,
+                              HashMap<ASTNode, KillSet> killMap,
+                              ASTRewrite rewriter, AST ast) {
         this.exprToVarmap = exprToVarmap;
         this.killMap = killMap;
-        this.exprList = exprList;
-    }
-
-    @Override
-    public boolean visit(CompilationUnit node) {
-        ast = node.getAST();
-        rewriter = ASTRewrite.create(ast);
-        return true;
+        this.rewriter = rewriter;
+        this.ast = ast;
     }
 
     @Override

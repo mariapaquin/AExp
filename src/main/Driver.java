@@ -29,23 +29,32 @@ public class Driver {
         parser.setKind(ASTParser.K_COMPILATION_UNIT);
 
         CompilationUnit cu = (CompilationUnit) parser.createAST(null);
+        AST ast = cu.getAST();
 
-        // TODO: Need to do this separately for each method
+        ASTRewrite rewriter = ASTRewrite.create(ast);
 
-        ExpressionVisitor exprVisitor = new ExpressionVisitor();
-        cu.accept(exprVisitor);
-        List<ExpressionLiteral> exprList = exprVisitor.getNonlinearVarExpr();
-        HashMap<String, Integer> exprToVarMap = exprVisitor.getExprMap();
-        int varCount = exprVisitor.getVarCount();
+        List<TypeDeclaration> types = cu.types();
+        for (TypeDeclaration type : types) {
+            for (MethodDeclaration methodDeclaration : type.getMethods()) {
 
-        AEVisitor aeVisitor = new AEVisitor(exprList);
-        cu.accept(aeVisitor);
-        HashMap<ASTNode, KillSet> killMap = aeVisitor.getKillMap();
+                ExpressionVisitor exprVisitor = new ExpressionVisitor();
+                methodDeclaration.accept(exprVisitor);
+                List<ExpressionLiteral> exprList = exprVisitor.getNonlinearVarExpr();
+                HashMap<String, Integer> exprToVarMap = exprVisitor.getExprMap();
+                int varCount = exprVisitor.getVarCount();
 
-        RewriteExprVisitor rewriteVisitor = new RewriteExprVisitor(varCount, exprToVarMap, killMap, exprList);
-        cu.accept(rewriteVisitor);
+                AEVisitor aeVisitor = new AEVisitor(exprList);
+                methodDeclaration.accept(aeVisitor);
+                HashMap<ASTNode, KillSet> killMap = aeVisitor.getKillMap();
 
-        ASTRewrite rewriter = rewriteVisitor.getRewriter();
+                RewriteExprVisitor rewriteVisitor = new RewriteExprVisitor(exprToVarMap,
+                        killMap, rewriter, ast);
+                methodDeclaration.accept(rewriteVisitor);
+
+
+
+            }
+        }
 
         Document document = new Document(source);
         TextEdit edits = rewriter.rewriteAST(document, null);
@@ -54,7 +63,9 @@ public class Driver {
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
+
         System.out.println(document.get());
+
 /*        BufferedWriter out = new BufferedWriter(new FileWriter(file));
         out.write(document.get());
         out.flush();
