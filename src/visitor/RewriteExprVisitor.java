@@ -57,16 +57,15 @@ public class RewriteExprVisitor extends ASTVisitor {
 
     @Override
     public boolean visit(Assignment node) {
-        ASTNode parent = node.getParent();
-
-        while (!(parent instanceof ExpressionStatement)) {
-            parent = parent.getParent();
+        if (!(node.getParent() instanceof ExpressionStatement)) {
+            return true;
         }
 
-        ASTNode methodDec = parent.getParent();
+        ExpressionStatement parent = (ExpressionStatement) node.getParent();
+        ASTNode block = parent.getParent();
 
-        while (!(methodDec instanceof MethodDeclaration)) {
-            methodDec = methodDec.getParent();
+        while (!(block instanceof Block)) {
+            block = block.getParent();
         }
 
         KillSet ks = killMap.get(node);
@@ -92,15 +91,14 @@ public class RewriteExprVisitor extends ASTVisitor {
             assignment.setRightHandSide(randMethodInvocation);
             ExpressionStatement stmt = ast.newExpressionStatement(assignment);
 
-            addAssignmentStatement((ExpressionStatement) parent, stmt, (MethodDeclaration) methodDec);
+            addAssignmentStatement(parent, stmt, (Block) block);
         }
 
         return true;
     }
 
     private void addAssignmentStatement(ExpressionStatement parent, ExpressionStatement stmt,
-                                        MethodDeclaration methodDeclaration) {
-        Block block = methodDeclaration.getBody();
+                                        Block block) {
 
         if (block != null) { // not abstract
             ListRewrite listRewrite = rewriter.getListRewrite(block, Block.STATEMENTS_PROPERTY);

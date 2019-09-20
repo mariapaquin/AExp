@@ -5,6 +5,7 @@ public class DoWhile {
         do {
             a++;
         } while (a < 10);
+        a = a+a;
         System.out.println(a);
     }
 }
