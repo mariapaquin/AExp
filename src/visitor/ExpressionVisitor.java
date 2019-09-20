@@ -13,6 +13,8 @@ import java.util.List;
 public class ExpressionVisitor extends ASTVisitor {
     private List<ExpressionLiteral> nonlinearVarExpr;
     private HashMap<String, Integer> exprMap;
+
+
     private int varCount;
 
 
@@ -22,9 +24,12 @@ public class ExpressionVisitor extends ASTVisitor {
         varCount = 0;
     }
 
-
     public List<ExpressionLiteral> getNonlinearVarExpr() {
         return nonlinearVarExpr;
+    }
+
+    public int getVarCount() {
+        return varCount;
     }
 
     @Override
