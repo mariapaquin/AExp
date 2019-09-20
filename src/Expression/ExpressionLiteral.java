@@ -27,7 +27,7 @@ public class ExpressionLiteral {
     }
 
     public String toString() {
-        return "(" + node + ")";
+        return node.toString();
     }
 
     public Expression getNode() {

@@ -42,9 +42,11 @@ public class Driver {
         cu.accept(aeVisitor);
         HashMap<ASTNode, KillSet> killMap = aeVisitor.getKillMap();
 
+/*
         for (ASTNode n : killMap.keySet()) {
             System.out.println(n + ": " + killMap.get(n).getExprs());
         }
+*/
 
         RewriteExprVisitor rewriteVisitor = new RewriteExprVisitor(varCount, exprToVarMap, killMap);
         cu.accept(rewriteVisitor);

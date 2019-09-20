@@ -23,7 +23,6 @@ public class AEVisitor extends ASTVisitor {
 
         String lhs = node.getLeftHandSide().toString();
         List<ExpressionLiteral>  killedExprs = getExpressionsInvolving(lhs);
-
         ks.setExprs(killedExprs);
 
         return true;
