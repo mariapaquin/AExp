@@ -114,7 +114,94 @@ public class RewriteExprVisitor extends ASTVisitor {
         return true;
     }
 
-    private void addAssignmentStatement(ExpressionStatement parent, ExpressionStatement stmt,
+    @Override
+    public boolean visit(PostfixExpression node) {
+
+        if (!(node.getParent() instanceof ExpressionStatement)) {
+            return true;
+        }
+
+        ExpressionStatement parent = (ExpressionStatement) node.getParent();
+        ASTNode block = parent.getParent();
+
+        while (!(block instanceof Block)) {
+            block = block.getParent();
+        }
+
+        KillSet ks = killMap.get(node);
+        if (ks == null) {
+            return true;
+        }
+
+        List<ExpressionLiteral> exprs = ks.getExprs();
+
+        for (ExpressionLiteral expr : exprs) {
+            int symbVarNum = exprToVarmap.get(expr.toString());
+            String name = "x" + symbVarNum;
+
+            MethodInvocation randMethodInvocation = ast.newMethodInvocation();
+            randMethodInvocation.setExpression(ast.newSimpleName("Debug"));
+            randMethodInvocation.setName(ast.newSimpleName("makeSymbolicInteger"));
+            StringLiteral str = ast.newStringLiteral();
+            str.setLiteralValue(name);
+            randMethodInvocation.arguments().add(str);
+
+            Assignment assignment = ast.newAssignment();
+            assignment.setLeftHandSide(ast.newSimpleName(name));
+            assignment.setRightHandSide(randMethodInvocation);
+            ExpressionStatement stmt = ast.newExpressionStatement(assignment);
+
+            addAssignmentStatement(parent, stmt, (Block) block);
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean visit(PrefixExpression node) {
+
+        if (!(node.getParent() instanceof ExpressionStatement)) {
+            return true;
+        }
+
+        ExpressionStatement parent = (ExpressionStatement) node.getParent();
+        ASTNode block = parent.getParent();
+
+        while (!(block instanceof Block)) {
+            block = block.getParent();
+        }
+
+        KillSet ks = killMap.get(node);
+        if (ks == null) {
+            return true;
+        }
+
+        List<ExpressionLiteral> exprs = ks.getExprs();
+
+        for (ExpressionLiteral expr : exprs) {
+            int symbVarNum = exprToVarmap.get(expr.toString());
+            String name = "x" + symbVarNum;
+
+            MethodInvocation randMethodInvocation = ast.newMethodInvocation();
+            randMethodInvocation.setExpression(ast.newSimpleName("Debug"));
+            randMethodInvocation.setName(ast.newSimpleName("makeSymbolicInteger"));
+            StringLiteral str = ast.newStringLiteral();
+            str.setLiteralValue(name);
+            randMethodInvocation.arguments().add(str);
+
+            Assignment assignment = ast.newAssignment();
+            assignment.setLeftHandSide(ast.newSimpleName(name));
+            assignment.setRightHandSide(randMethodInvocation);
+            ExpressionStatement stmt = ast.newExpressionStatement(assignment);
+
+            addAssignmentStatement(parent, stmt, (Block) block);
+        }
+
+        return true;
+    }
+
+
+    private void addAssignmentStatement(Statement parent, ExpressionStatement stmt,
                                         Block block) {
 
         if (block != null) { // not abstract
