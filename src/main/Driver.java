@@ -42,7 +42,7 @@ public class Driver {
         cu.accept(aeVisitor);
         HashMap<ASTNode, KillSet> killMap = aeVisitor.getKillMap();
 
-        RewriteExprVisitor rewriteVisitor = new RewriteExprVisitor(varCount, exprToVarMap, killMap);
+        RewriteExprVisitor rewriteVisitor = new RewriteExprVisitor(varCount, exprToVarMap, killMap, exprList);
         cu.accept(rewriteVisitor);
 
         ASTRewrite rewriter = rewriteVisitor.getRewriter();

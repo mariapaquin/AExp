@@ -15,13 +15,15 @@ public class RewriteExprVisitor extends ASTVisitor {
     private int varCount;
     private ASTRewrite rewriter;
     private AST ast;
+    private List<ExpressionLiteral> exprList;
 
 
     public RewriteExprVisitor(int varCount, HashMap<String, Integer> exprToVarmap,
-                              HashMap<ASTNode, KillSet> killMap) {
+                              HashMap<ASTNode, KillSet> killMap, List<ExpressionLiteral> exprList) {
         this.varCount = varCount;
         this.exprToVarmap = exprToVarmap;
         this.killMap = killMap;
+        this.exprList = exprList;
     }
 
     @Override
@@ -30,6 +32,21 @@ public class RewriteExprVisitor extends ASTVisitor {
         rewriter = ASTRewrite.create(ast);
         return true;
     }
+
+    @Override
+    public void endVisit(InfixExpression node) {
+        Integer symbVarNum = exprToVarmap.get(node.toString());
+        if (symbVarNum == null) {
+            return;
+        }
+
+        String name = "x" + symbVarNum;
+
+        SimpleName exprSymbVar = ast.newSimpleName(name);
+        rewriter.replace(node, exprSymbVar, null);
+    }
+
+
 
     @Override
     public void endVisit(MethodDeclaration node) {
