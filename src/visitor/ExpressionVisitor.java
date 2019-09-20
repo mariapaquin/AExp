@@ -1,24 +1,30 @@
 package visitor;
 
-import Constraint.ExpressionLiteral;
+import Expression.ExpressionLiteral;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.SimpleName;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ExpressionVisitor extends ASTVisitor {
-    private List<ExpressionLiteral> availableExpressions;
+    private List<ExpressionLiteral> nonlinearVarExpr;
+    private HashMap<String, Integer> exprMap;
+    private int varCount;
+
 
     public ExpressionVisitor() {
-        availableExpressions = new ArrayList<>();
+        nonlinearVarExpr = new ArrayList<>();
+        exprMap = new HashMap<>();
+        varCount = 0;
     }
 
 
-    public List<ExpressionLiteral> getAvailableExpressions() {
-        return availableExpressions;
+    public List<ExpressionLiteral> getNonlinearVarExpr() {
+        return nonlinearVarExpr;
     }
 
     @Override
@@ -43,13 +49,14 @@ public class ExpressionVisitor extends ASTVisitor {
         expressionLiteral.setVarsUsed(varsUsed);
 
         boolean existingExpr = false;
-        for (ExpressionLiteral e : availableExpressions) {
+        for (ExpressionLiteral e : nonlinearVarExpr) {
             if (e.getNode().toString().equals(node.toString())) {
                 existingExpr = true;
             }
         }
         if(!existingExpr) {
-            availableExpressions.add(expressionLiteral);
+            nonlinearVarExpr.add(expressionLiteral);
+            exprMap.put(node.toString(), varCount++);
         }
         return true;
     }
@@ -65,5 +72,9 @@ public class ExpressionVisitor extends ASTVisitor {
         };
         node.accept(visitor);
         return vars;
+    }
+
+    public HashMap<String, Integer> getExprMap() {
+        return exprMap;
     }
 }

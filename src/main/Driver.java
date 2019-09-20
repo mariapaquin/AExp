@@ -1,8 +1,7 @@
 package main;
 
-import Constraint.Constraint;
-import Constraint.ExpressionLiteral;
-import Solving.ConstraintSolver;
+import Expression.*;
+
 import org.eclipse.jdt.core.dom.*;
 import visitor.ExpressionVisitor;
 import visitor.AEVisitor;
@@ -29,44 +28,14 @@ public class Driver {
 
         ExpressionVisitor exprVisitor = new ExpressionVisitor();
         cu.accept(exprVisitor);
-        List<ExpressionLiteral> ae = exprVisitor.getAvailableExpressions();
+        List<ExpressionLiteral> exprList = exprVisitor.getNonlinearVarExpr();
+        HashMap<String, Integer> exprToVarMap = exprVisitor.getExprMap();
 
-        AEVisitor aeVisitor = new AEVisitor(ae);
+        AEVisitor aeVisitor = new AEVisitor(exprList);
         cu.accept(aeVisitor);
+        HashMap<ASTNode, KillSet> killMap = aeVisitor.getKillMap();
 
-        // TODO: Need to use the same cu for rewriting.
-
-        System.out.println(" ------------- \n| Constraints |\n ------------- ");
-        ArrayList<Constraint> constraints = aeVisitor.getConstraints();
-
-        int i = 0;
-        for (Constraint constraint : constraints) {
-            System.out.println(++i + ") " + constraint);
-        }
-
-        System.out.println();
-
-        System.out.println(" ------------  \n| Constraint |\n| Solutions  |\n ------------  ");
-        ConstraintSolver solver = new ConstraintSolver(constraints, ae);
-
-        solver.buildConstraintGraph();
-
-        solver.initializeAESet();
-
-        solver.processWorkList();
-
-        solver.buildEntryMap();
-
-        HashMap<ASTNode, List<String>>  entryMap = solver.getEntryMap();
-        Set set = (Set) entryMap.entrySet();
-        Iterator iterator = set.iterator();
-
-        while (iterator.hasNext()) {
-            Map.Entry mapEntry = (Map.Entry) iterator.next();
-            System.out.println("Key : " + mapEntry.getKey() + "Value : " + mapEntry.getValue() + "\n");
-        }
-
-        RewriteExprVisitor rewriteVisitor = new RewriteExprVisitor(ae, entryMap);
+        RewriteExprVisitor rewriteVisitor = new RewriteExprVisitor(exprToVarMap, killMap);
         cu.accept(rewriteVisitor);
     }
 }
