@@ -1,29 +1,26 @@
 # AvailableExpressions
-Implementation of available expressions through constraint based analysis.
 
-Track available expressions for each program point. Initialize the first
-constraint term (exit[init]) to empty set. Initialize every other
-constraint term to AE (the set of expressions) and kill when we find
-a path along which it is not available).
-
-After the analysis is performed, we have a map from each statement to the
-expressions that are available *upon entry* to that statement.
+Initialize a symbolic variable for each non-linear variable
+expression. Every time the expression is killed, reassign
+the *same* symbolic variable (rather than generating a new
+one, as in the first approach). 
 
 For example,
 
-a = b*c;
+    public void m(int a, int b) {
+        while (b == 1) {
+                b = b+1;
+        }
+        a = b*b;
+    }
 
-b = a*d;
+is rewritten as
 
-c = b*c;
-
-produces the key value pairs:
-
-Key : a=b * c;
-Value : []
-
-Key : b=a * d;
-Value : [b * c]
-
-Key : c=b * c;
-Value : [a * d]
+    public void m(int a, int b) {
+        int x0 = Debug.makeSymbolicInteger("x0");
+		while (b == 1) {
+                b = b+1;
+				x0 = Debug.makeSymbolicInteger("x0");
+        }
+        a = x0;
+    }
