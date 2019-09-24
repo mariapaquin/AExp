@@ -1,10 +1,10 @@
 public class For {
 
     public void m(int a){
-        a = 0;
+        a = a*a;
         for (int i = 0; i < a; i++) {
-            a = 1;
+            a = a*a;
         }
-        a = 2;
+        a = a*a;
     }
 }
