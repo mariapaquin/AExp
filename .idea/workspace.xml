@@ -333,11 +333,11 @@
       </method>
     </configuration>
     <list>
+      <item itemvalue="Application.Driver" />
       <item itemvalue="JUnit.TestAE.testEnhancedFor" />
       <item itemvalue="JUnit.TestAE.testIfElse" />
       <item itemvalue="JUnit.TestAE.testStatementSequence" />
       <item itemvalue="JUnit.TestAE.testIf" />
-      <item itemvalue="Application.Driver" />
     </list>
     <recent_temporary>
       <list>
